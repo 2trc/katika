@@ -29,6 +29,9 @@ INSTALLED_APPS = [
     'home',
     'search',
     'blog',
+    'static_pages',
+    'incident',
+    'kistory',
 
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
@@ -44,6 +47,12 @@ INSTALLED_APPS = [
 
     'modelcluster',
     'taggit',
+    'hitcount',
+    #'django_forms_bootstrap',
+    'crispy_forms',
+    #'bootstrap3_datetime',
+    #'bootstrap_datepicker',
+    #'datetimewidget',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,6 +61,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+ALLOWED_HOSTS = [
+    'mighty-bayou-75045.herokuapp.com',
+    '8abd6756.ngrok.io',
+    'localhost', '127.0.0.1', '[::1]'
+]
+
 
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
