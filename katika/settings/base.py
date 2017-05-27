@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'home',
     'search',
     'blog',
-    'static_pages',
+#    'static_pages',
     'incident',
     'kistory',
 
@@ -68,7 +68,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 ALLOWED_HOSTS = [
     'mighty-bayou-75045.herokuapp.com',
     '8abd6756.ngrok.io',
-    'localhost', '127.0.0.1', '[::1]'
+    'localhost', '127.0.0.1', '[::1]',
+    '165.227.128.134',
 ]
 
 
