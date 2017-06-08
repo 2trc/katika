@@ -1,0 +1,306 @@
+/*
+ * Globals
+ */
+ /* Sticky footer styles
+-------------------------------------------------- */
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 100px;
+}
+
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+/*.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}*/
+
+body {
+  /*font-family: "Source Sans Pro", "Times New Roman", Georgia, Times, serif;
+  font-size: 1.15385rem;
+  line-height: 1.5em;*/
+
+  font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 1.3em;
+  color: #555;
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+  /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+  font-weight: normal;
+  color: #333;
+}
+
+/*h3 {
+    font-size: 1.2em;
+}
+
+h4 {
+    font-size: 0.7em;
+}*/
+
+/**/
+
+.navbar-brand {
+    padding: 1px 1px;
+}
+
+.navbar {
+    background-color: #000;
+    color: #AAAAAA;
+    margin-bottom: 0px;
+}
+
+/*.navbar-default >a:focus, .navbar-default> a:hover {
+    color: #FFFFFF;
+}*/
+.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover {
+    color: #EEE;
+    background-color: transparent;
+}
+
+.navbar-default {
+  background-color: #000000;
+  border-color: #000000;
+}
+.navbar-default .navbar-brand {
+  color: #e0e0e0;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+  color: #ffffff;
+}
+.navbar-default .navbar-text {
+  color: #e0e0e0;
+}
+.navbar-default .navbar-nav > li > a {
+  color: #e0e0e0;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+  color: #ffffff;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+  color: #ffffff;
+  background-color: #000000;
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #ffffff;
+  background-color: #000000;
+}
+.navbar-default .navbar-toggle {
+  border-color: #000000;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+  background-color: #000000;
+}
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: #e0e0e0;
+}
+.navbar-default .navbar-collapse,
+.navbar-default .navbar-form {
+  border-color: #e0e0e0;
+}
+.navbar-default .navbar-link {
+  color: #e0e0e0;
+}
+.navbar-default .navbar-link:hover {
+  color: #ffffff;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #e0e0e0;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #ffffff;
+  }
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #ffffff;
+    background-color: #000000;
+  }
+}
+
+
+.promotion {
+    background-color: #EEE;
+    padding: 5px 0px 0px 0px;
+}
+
+.blogs {
+    padding: 2px 2px;
+
+}
+
+.blog-ext {
+    margin: 10px 0px 10px 0px;
+    background-color: #FAFAFA;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.blog-ext:hover {
+    background-color: #F0F0F0;
+}
+
+.blog {
+    padding: 1px 1px;
+
+
+    /*padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;*/
+
+}
+
+.blog a:link {
+    color: #7E7E7E;
+}
+
+.blog a:visited {
+    color: #7E7E7E;
+}
+
+.blog-figure {
+    float: left;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-top: 5px;
+  padding-top: 5px;
+  /* Set the fixed height of the footer here */
+  /*height: 60px;*/
+  background-color: #000;
+  color: #E7E7E7 !important;
+}
+
+/*footer {
+    background-color: #000;
+    color: #E7E7E7 !important;
+    padding: 32px 10px 150px 32px;
+    position: relative;
+    clear: both;
+
+}
+*/
+
+.footer h4 {
+    color: #E7E7E7;
+}
+
+footer a:link {
+    color: #7E7E7E;
+}
+
+footer a:visited {
+    color: #7E7E7E;
+}
+
+.item-title {
+    font-size: 16px;
+}
+
+.item-date {
+    font-size: 8px;
+    /*color: #E7E7E7;*/
+}
+
+.casualties {
+    text-align: center;
+}
+
+.casualties > h3 {
+    font-size: 48px;
+}
+
+.casualties > h5 {
+    font-size: 10px;
+}
+
+.submission-form {
+    /*margin: 0px 0px 50px 0px;*/
+    padding-bottom: 10px;
+    /*background-color: #F0F0F0;
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;*/
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.btn-regular {
+  color: #ffffff;
+  background-color: #000000;
+  border-color: #FFFFFF;
+}
+
+.btn-regular:hover,
+.btn-regular:focus,
+.btn-regular:active,
+.btn-regular.active,
+.open .dropdown-toggle.btn-regular {
+  color: #ffffff;
+  background-color: #CCCCCC;
+  border-color: #FFFFFF;
+}
+
+.btn-regular:active,
+.btn-regular.active,
+.open .dropdown-toggle.btn-regular {
+  background-image: none;
+}
+
+.btn-regular.disabled,
+.btn-regular[disabled],
+fieldset[disabled] .btn-regular,
+.btn-regular.disabled:hover,
+.btn-regular[disabled]:hover,
+fieldset[disabled] .btn-regular:hover,
+.btn-regular.disabled:focus,
+.btn-regular[disabled]:focus,
+fieldset[disabled] .btn-regular:focus,
+.btn-regular.disabled:active,
+.btn-regular[disabled]:active,
+fieldset[disabled] .btn-regular:active,
+.btn-regular.disabled.active,
+.btn-regular[disabled].active,
+fieldset[disabled] .btn-regular.active {
+  background-color: #000000;
+  border-color: #FFFFFF;
+}
+
+.btn-regular .badge {
+  color: #000000;
+  background-color: #ffffff;
+}
