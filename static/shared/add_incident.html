@@ -1,0 +1,103 @@
+<div class="container">
+	<div ng-if="error!=null">
+		<div>Data validation error</div>
+		<div ng-repeat="(key, value) in error">
+			<div>{{key}}: {{value}}</div>
+		</div>
+	</div>
+	<div ng-if="response!=null">
+		New Incident successfully registered!
+	</div>
+    <form ng-submit="submit()" class="submission-form">    	
+
+        <div class="col-xs-9 col-md-9">
+        <div class="form-actions">
+			<div id="div_id_type" class="form-group"> 
+				<label for="id_type" class="control-label  requiredField">Type<span class="asteriskField">*</span> 
+				</label>
+
+     
+				<div class="controls ">
+					<select name="type" ng-model="incident.type" class="select form-control" required id="id_type">
+				      <option ng-repeat="option in incidentType.types" ng-value="option.id">{{option.name}}</option>
+				    </select>
+				</div> 
+			</div> 
+
+			<div id="div_id_address" class="form-group">
+
+
+				<label for="id_address" class="control-label  requiredField">Location<span class="asteriskField">*</span>
+				<div class="row"><locationpicker options="locationpickerOptions"></locationpicker></div>
+				</label> 
+				<div class="controls "> 
+					<input type="text" name="location" maxlength="255" class="textinput textInput form-control" required id="id_address" ng-model="incident.location"/> 
+				</div> 
+			</div> 
+			<div id="div_id_date" class="form-group"> 
+				<label for="id_date" class="control-label  requiredField">Date<span class="asteriskField">*</span> 
+	        	</label>
+	        	<!-- <md-datepicker ng-model="birthday"></md-datepicker> -->
+				<!-- <script type="text/javascript">
+		        	$(document).ready(function() {
+
+			        	$('.datepicker').pickadate({
+			        	format: 'yyyy-mm-dd'
+						})
+			        });
+				</script> -->
+	        	
+	        	<!-- <datetimepicker data-ng-model="incident.date" data-datetimepicker-config="{ minView: 'day' }"></datetimepicker> -->
+
+	        	<!-- <div class="controls "> 
+	        		<input name="date" class="datepicker form-control" required id="id_date" value="{{incident.date|date:'yyyy-MM-dd'}}" /> 
+	        	</div> -->
+
+	        	<div class="dropdown">
+				    <a class="dropdown-toggle" id="dropdown" role="button" data-toggle="dropdown" data-target=".dropdown">
+				      <div class="input-group">
+				        <input type="text" id="date" name="date" class="form-control" value="{{incident.date|date:'yyyy-MM-dd'}}">
+				        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+				      </div>
+				    </a>
+				    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				      <datetimepicker   data-ng-model="incident.date" 
+				                        data-datetimepicker-config="{ dropdownSelector: '#dropdown',  minView: 'day' }"></datetimepicker>
+				    </ul>
+			  	</div>
+	        	
+	       	</div> 
+	       	<div id="div_id_description" class="form-group"> 
+	       		<label for="id_description" class="control-label  requiredField">
+	        Description<span class="asteriskField">*</span> 
+	        	</label> 
+		        <div class="controls ">
+					<textarea name="description" rows="10" required class="form-control"
+							  cols="40" id="id_description" ng-model="incident.description"></textarea>
+				</div>
+			</div> 
+			<div id="div_id_source" class="form-group"> 
+				<label for="id_source" class="control-label  requiredField">Source<span class="asteriskField">*</span> 
+				</label> 
+		    	<div class="controls "> <input type="url" name="source" maxlength="200" class="urlinput form-control" required id="id_source" ng-model="incident.source"/> 
+		    	</div> 
+		    </div> 
+		    <div id="div_id_wounded" class="form-group"> 
+		    	<label for="id_wounded" class="control-label ">
+		        Wounded
+		    	</label> 
+		    	<div class="controls "> <input type="number" name="wounded" min="0" class="numberinput form-control" id="id_wounded" ng-model="incident.wounded"/> 
+		    	</div> 
+		    </div> 
+		    <div id="div_id_deaths" class="form-group"> 
+		    	<label for="id_deaths" class="control-label ">Deaths
+		    	</label> 
+		    	<div class="controls "> 
+		    		<input type="number" name="deaths" min="0" class="numberinput form-control" id="id_deaths" ng-model="incident.deaths"/> 
+		    	</div> 
+		    </div>		                        
+		    <input class="btn btn-lg btn-regular" type="submit" value="Submit">
+		</div>
+    </div>
+   </form>
+</div>
