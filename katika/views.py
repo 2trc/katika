@@ -8,6 +8,7 @@ def busted(request):
     #return render(request, 'home.html', {'incidents': incidents})
     return render(request, 'busted.html')
 
+
 def home(request):
 
     #return render(request, 'home.html', {'incidents': incidents})
@@ -17,5 +18,4 @@ def home(request):
 def about(request):
 
     return render(request, 'about.html')
-
 

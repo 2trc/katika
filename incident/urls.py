@@ -5,6 +5,7 @@ from .views import incident_home, incident_geo_serialize,IncidentViewSet, \
     IncidentTypeViewSet, incident_add
 
 
+
 # urlpatterns = [
 #     url(r'', incident_home),
 #     ]

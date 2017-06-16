@@ -1,4 +1,5 @@
 from django.db import models
+
 from django.contrib import admin
 from django import forms
 from django.contrib.gis.db import models as geo_models
@@ -6,6 +7,7 @@ from django.contrib.gis import forms as geo_forms
 
 from rest_framework import serializers
 from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
+
 
 
 # Create your models here.
@@ -53,12 +55,6 @@ class Incident(models.Model):
         verbose_name_plural = 'Incidents' #?
         ordering = ['-date']
 
-    # search_fields = Page.search_fields + [
-    #     index.SearchField('description'),
-    #     index.SearchField('date'),
-    #     index.SearchField('address'),
-    # ]
-
 
 class IncidentAdmin(admin.ModelAdmin):
 
@@ -83,6 +79,7 @@ class IncidentForm(forms.ModelForm):
                     'source', 'wounded', 'deaths')
 
         widgets = {'location': GooglePointFieldWidget}
+
 
 
 class IncidentTypeSerializer(serializers.ModelSerializer):
