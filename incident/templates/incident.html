@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block content %}
+
+    <div class="promotion">
+        <div class="container">
+
+            {%comment%}
+
+            <h1>{{ page.title }}
+                <a href="submit-incident"><button class="btn btn-regular">Report New</button></a>
+            </h1>
+
+            <div class="intro">{{ page.intro|richtext }}</div>
+            {%endcomment%}
+        </div>
+    </div>
+
+    <div ng-app="incidentApp">
+        {% csrf_token %}
+
+
+        <!--div ng-controller="IncidentController"-->
+        <ng-view></ng-view>
+
+            <!--div class="container">
+                {% if incidents.has_other_pages %}
+                  <ul class="pagination">
+                    {% if incidents.has_previous %}
+                      <li><a href="?page={{ incidents.previous_page_number }}">&laquo;</a></li>
+                    {% else %}
+                      <li class="disabled"><span>&laquo;</span></li>
+                    {% endif %}
+                    {% for i in incidents.paginator.page_range %}
+                      {% if incidents.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                    {% if incidents.has_next %}
+                      <li><a href="?page={{ incidents.next_page_number }}">&raquo;</a></li>
+                    {% else %}
+                      <li class="disabled"><span>&raquo;</span></li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+            </div-->
+
+    </div>
+
+{% endblock %}
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+
+    {%comment%}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datepicker/classic.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datepicker/classic.date.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/datetimepicker/datetimepicker.css' %}">
+
+    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+    {%endcomment%}
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script-->
+    <!-- Google maps API -->
+    <script type="text/javascript" src='https://maps.google.com/maps/api/js?libraries=places&key=AIzaSyDHHE5tErzaD6H1jVJzwLuzWYGIRYM-p4w'></script>
+
+    {%comment%}
+    <!-- Locationpicker -->
+    <script src="{% static 'js/locationpicker.jquery.min.js' %}"></script>
+    <script src="{% static 'js/angularLocationpicker.jquery.min.js' %}"></script>
+    <!-- <script src="{% static 'js/picker.js' %}"></script>
+    <script src="{% static 'js/picker.date.js' %}"></script> -->
+
+    <!--https://github.com/dalelotts/angular-bootstrap-datetimepicker-->
+
+    <script src="{% static 'js/moment.js' %}"></script>
+    <script src="{% static 'js/datetimepicker.js' %}"></script>
+    <script src="{% static 'js/datetimepicker.templates.js' %}"></script>
+    {%endcomment%}
+    <script src="{% static 'js/incident.js' %}"></script>
+{% endblock %}

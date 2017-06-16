@@ -1,0 +1,90 @@
+<div class="promotion">
+    <div class="container">
+        <h1>Incident reporting and visualizing
+            <a href="/incident/add"><button class="btn btn-regular">Report New</button></a>
+        </h1>
+    </div>
+</div>
+<div class="container">
+    <div>Filter by: Type| date | wounded | Deaths | date (registration)</div>
+    <div>Order by: Type| date | wounded | Deaths | date (registration)</div>
+    <div id="map"></div>
+    <div ng-repeat="incident in incidents">
+        <div class="blog-ext col-xs-12 col-md-10">
+            <div class="col-xs-12 col-md-8">
+                <a href="{{incident.source}}" target="_blank">
+                    <span class="item-title">{{incident.type.name}}</span>,
+                    <span class="item-date">{{incident.date}}</span>
+                </a>, {{incident.location}}
+                <p>{{incident.description}}</p>
+            </div>
+            <div class="col-xs-6 col-md-1 casualties wounded" ng-switch="incident.wounded">
+                <h5>Wounded</h5>
+                <span ng-switch-when="0">&nbsp;</span>
+                <h3 ng-switch-default>{{incident.wounded}}</h3>
+            </div>
+            <div class="col-xs-6 col-md-1 casualties deaths" ng-switch="incident.deaths">
+                <h5>Deaths</h5>
+                <span ng-switch-when="0">&nbsp;</span>
+                <h3 ng-switch-default>{{incident.deaths}}</h3>
+
+            </div>
+      </div>
+    </div>
+</div>
+<div class="container">
+      <ul class="pagination" ng-show="pages.num_pages > 1">
+        
+          <li ng-show="pages.previous">
+          <a ng-click="gotoPage(pages.page -1)">&laquo;</a>
+          </li>
+        
+          <li ng-show="!pages.previous" class="disabled"><span>&laquo;</span></li>
+
+          <!-- <li ng-repeat="ii in [pages.range_min.. pages.range_max]" class="active">
+          <a ng-click="gotoPage(ii)">(current) {{ii}}</a>
+          </li> -->
+
+          
+          <!-- {% for i in incidents.paginator.page_range %}
+                      {% if incidents.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %} -->
+        
+            <li class="active"><span>{{ pages.page }}/{{pages.num_pages}} <span class="sr-only">(current)</span></span></li>
+
+            <!-- <li><a href="?page={{ i }}">{{ pages.page }}</a></li> -->
+          <li ng-show="pages.next"><a ng-click="gotoPage(pages.page +1)">&raquo;</a></li>
+
+          <li ng-show="!pages.next" class="disabled"><span>&raquo;</span></li>
+      </ul>
+
+</div>
+<script>
+    var map;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 6,
+        center: {lat: 6.9182, lng: 13.8516}
+
+      });
+
+      // NOTE: This uses cross-domain XHR, and may not work on older browsers.
+      map.data.loadGeoJson('http://165.227.128.134:8080/incident/geojson');
+      //map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
+
+      map.data.setStyle({
+            fillColor: '#2687bf',
+            strokeColor: '#ff3333',
+            fillOpacity: .3,
+            strokeWeight: 3
+          });
+
+    }
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpiyibjB8tK9rviFMyQYriE9X9wIFUQiM&callback=initMap">
+</script>
