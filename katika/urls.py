@@ -63,7 +63,7 @@ urlpatterns += [
     url(r'^incident/', include('incident.urls')),
     url(r'^about/', about, name='about'),
     url(r'^$', home, name='home'),
-
+    url(r'anycluster/', include('anycluster.urls')),
 
     # HOMEPAGE FOR A BLOG-ONLY SITE
     # -----------------------------
@@ -111,4 +111,3 @@ urlpatterns += [
 # pages can use JS, CSS and images.
 handler404 = "mezzanine.core.views.page_not_found"
 handler500 = "mezzanine.core.views.server_error"
-

@@ -1,3 +1,4 @@
+
 from __future__ import absolute_import, unicode_literals
 import os
 
@@ -181,7 +182,7 @@ STATIC_URL = "/static/"
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(PROJECT_ROOT, STATIC_URL.strip("/"))
 
@@ -256,13 +257,14 @@ INSTALLED_APPS = (
     "mezzanine.twitter",
     # "mezzanine.accounts",
     # "mezzanine.mobile",
-    'eseka',
+    #'eseka',
     'incident',
 
     'rest_framework',
     'mapwidgets',
     'crispy_forms',
     'django.contrib.gis',
+    'anycluster',
 )
 
 MAP_WIDGETS = {
@@ -289,6 +291,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+ANYCLUSTER_GEODJANGO_MODEL = "incident.Incident"
+ANYCLUSTER_COORDINATES_COLUMN = "location"
 
 # List of middleware classes to use. Order is important; in the request phase,
 # these middleware classes will be applied in the order given, and in the
@@ -377,4 +381,3 @@ except ImportError:
     pass
 else:
     set_dynamic_settings(globals())
-
