@@ -7,6 +7,8 @@ from rest_framework import viewsets
 
 from .models import IncidentType, Incident, IncidentSerializer, IncidentTypeSerializer, IncidentForm
 
+from anycluster.MapClusterer import MapClusterer
+
 
 def incident_home(request):
 
@@ -58,6 +60,14 @@ def incident_geo_serialize(request):
 
 #    return render(request, 'thanks.html')
 
+
+def anycluster(request):
+    #cluster = MapClusterer(request)
+    #geostuff = cluster.kmeansCluster()
+    #print(geostuff)
+
+    #return HttpResponse(serialize('geojson',{}))
+    return render(request, 'anybase.html', {})
 
 class IncidentTypeViewSet(viewsets.ModelViewSet):
     """

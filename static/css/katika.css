@@ -217,7 +217,15 @@ h4 {
 */
 
 #map {
-    height: 600px;
+    height: 300px;
+    width: 100%;
+    fillColor: '#2687bf';
+    fillOpacity: .3;
+    strokeWeight: 0;
+}
+
+#gmap {
+    height: 300px;
     width: 100%;
     fillColor: '#2687bf';
     fillOpacity: .3;

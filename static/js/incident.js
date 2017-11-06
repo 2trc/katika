@@ -1,13 +1,7 @@
-<<<<<<< HEAD
 var incidentApp = angular.module('incidentApp', ["ngRoute"
 //  ,"angular-jquery-locationpicker",
 //  "ui.bootstrap.datetimepicker"
 ]);
-=======
-var incidentApp = angular.module('incidentApp', ["ngRoute", 
-  "angular-jquery-locationpicker",
-  "ui.bootstrap.datetimepicker"]);
->>>>>>> b6cff5543a0702e0c71eb833e4de8bb3017feb5b
 
 //https://stackoverflow.com/questions/41211875/angularjs-1-6-0-latest-now-routes-not-working
 incidentApp.config(['$locationProvider', '$httpProvider', function($locationProvider,$httpProvider) {
@@ -37,11 +31,8 @@ incidentApp.config(['$locationProvider', '$httpProvider', function($locationProv
 // }
 
 function incidentService($http) {
-<<<<<<< HEAD
 
 
-=======
->>>>>>> b6cff5543a0702e0c71eb833e4de8bb3017feb5b
   this.get = function(url) {
     return $http.get(url)
     .then(function(res) {
@@ -77,11 +68,8 @@ function incidentService($http) {
 
 function IncidentCtrl(incidentService, $scope, $filter) {
 
-<<<<<<< HEAD
   console.log("Hollalalalalal");
 
-=======
->>>>>>> b6cff5543a0702e0c71eb833e4de8bb3017feb5b
   var self = this;
 
   $scope.incidentType = {};
@@ -98,7 +86,7 @@ function IncidentCtrl(incidentService, $scope, $filter) {
       console.log($scope.incidents);
       console.log($scope.pages);
 
-    });  
+    });
 
   incidentService.get('/incident/api/type/')
     .then(function(types){
@@ -129,7 +117,7 @@ function IncidentCtrl(incidentService, $scope, $filter) {
 
     incidentService.post('/incident/api/', data)
       .then( function (res_data) {
-          
+
           $scope.response = res_data.response;
           $scope.error = res_data.error;
 
@@ -139,7 +127,7 @@ function IncidentCtrl(incidentService, $scope, $filter) {
 
           console.log($scope.response);
           console.log($scope.error);
-          
+
       });
     };
 
@@ -153,7 +141,6 @@ function IncidentCtrl(incidentService, $scope, $filter) {
 
 
     //(function(){this.init()})();
-<<<<<<< HEAD
 //    $scope.locationpickerOptions = {
 //      location: {
 //          latitude: 3.8480,
@@ -169,23 +156,6 @@ function IncidentCtrl(incidentService, $scope, $filter) {
 //      radius: 0,
 //      enableAutocomplete: true
 //    };
-=======
-    $scope.locationpickerOptions = {
-      location: {
-          latitude: 3.8480,
-          longitude: 11.5021
-      },
-      inputBinding: {
-          latitudeInput: $('#us3-lat'),
-          longitudeInput: $('#us3-lon'),
-          radiusInput: $('#us3-radius'),
-          //locationNameInput: $('#us3-address')
-          locationNameInput: $('#id_address')
-      },
-      radius: 0,
-      enableAutocomplete: true
-    };
->>>>>>> b6cff5543a0702e0c71eb833e4de8bb3017feb5b
 }
 
 
@@ -201,17 +171,10 @@ incidentApp.config(function($routeProvider) {
         templateUrl : "/static/shared/incident.html",
         controller: "IncidentController"
     })
-<<<<<<< HEAD
 //   .when("/add", {
 //       templateUrl : "/static/shared/add_incident.html",
 //       controller : "IncidentController"
 //   })
-=======
-   .when("/add", {
-       templateUrl : "/static/shared/add_incident.html",
-       controller : "IncidentController"
-   })
->>>>>>> b6cff5543a0702e0c71eb833e4de8bb3017feb5b
    .otherwise({
       redirectTo: '/'
     });
