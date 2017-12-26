@@ -2,34 +2,38 @@
 
 {%load static%}
 
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/incident.css' %}">
+{% endblock %}
+
 {% block content %}
 
     <div class="promotion">
         <div class="container">
+            <h2>Incident reporting and visualizing
+                <a href="/incident/add"><button class="btn btn-regular">Report New</button></a>
+            </h2>
 
-            {%comment%}
-
-            <h1>{{ page.title }}
-                <a href="submit-incident"><button class="btn btn-regular">Report New</button></a>
-            </h1>
-
-            <div class="intro">{{ page.intro|richtext }}</div>
-            {%endcomment%}
         </div>
     </div>
 
     <div id="gmap"></div>
     <div id="clustererPopup" style="border:2px solid black; position: absolute; left:30%;top:50%; background-color: #aaa; border-radius:10px; padding: 10px; display:none;">
-			<div id="clusterContentPopup"></div>
-			<div style="text-align:center; margin-top: 20px;"><button onclick="closePopup();">close</button></div>
-		</div>
+        <div id="clusterContentPopup"></div>
+        <div style="text-align:center; margin-top: 20px;">
+            <button onclick="closePopup();">close</button>
+        </div>
+    </div>
+
     <!--
-		<div style="margin-top:30px;">
-			<div><button onclick="loadViewportMarkers();">Load all markers on the map as list</button></div>
-			<div id="markerList"></div>
-		</div>
-     <input type="radio" name="clusterstyle" value="grid" id="clusterGrid"><label for="clusterGrid">Grid</label>
-    <input type="radio" name="clusterstyle" value="kmeans" id="clusterKmeans" checked><label for="clusterKmeans">Bubble</label> -->
+    <div style="margin-top:30px;">
+        <div><button onclick="loadViewportMarkers();">Load all markers on the map as list</button></div>
+        <div id="markerList"></div>
+    </div>
+    <input type="radio" name="clusterstyle" value="grid" id="clusterGrid"><label for="clusterGrid">Grid</label>
+    <input type="radio" name="clusterstyle" value="kmeans" id="clusterKmeans" checked><label for="clusterKmeans">Bubble</label>
+    -->
 
     <div ng-app="incidentApp">
         {% csrf_token %}
@@ -42,14 +46,9 @@
 {% block extra_js %}
     {# Override this in templates to add extra javascript #}
 
-    {%comment%}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/datepicker/classic.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/datepicker/classic.date.css' %}">
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/datetimepicker/datetimepicker.css' %}">
-
-    <!-- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
-    {%endcomment%}
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script-->
     <!-- Google maps API -->
@@ -78,6 +77,13 @@
     {%endcomment%}
 
     <script src="{% static 'js/incident.js' %}"></script>
+
+    <script src="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'bower_components/angular-daterangepicker/js/angular-daterangepicker.js' %}"></script>
+
+    <!--<link rel="stylesheet" href="{% static 'bower_components/bootstrap/dist/css/bootstrap.css' %}"/>-->
+    <link rel="stylesheet" href="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.css' %}"/>
+
     <script type="text/javascript" src="{% static 'anycluster/anycluster.js' %}"></script>
     <script type="text/javascript" src="{% static 'anycluster/django_ajax_csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'anycluster/anycluster_marker.js' %}"></script>
@@ -122,10 +128,11 @@
       // do not use both maps simultaneously as this will confuse the cache
       anycluster = new Anycluster("gmap", anyclusterSettings);
       //var osmap = new Anycluster("osmap", anyclusterSettings_osm);
-      // anycluster.gridSize = 256;
-      // anycluster.clusterMethod = "kmeans";
-      // anycluster.clearMarkers = true;
-      // anycluster.cluster(true);
+       anycluster.gridSize = 256;
+       anycluster.clusterMethod = "kmeans";
+       anycluster.clearMarkers = true;
+       anycluster.cluster(true);
+
 
       /*
       var gridRadio = document.getElementById("clusterGrid");
@@ -136,6 +143,7 @@
         anycluster.cluster(true);
       });
 
+
       var kmeansRadio = document.getElementById("clusterKmeans");
       kmeansRadio.addEventListener("change", function(){
         anycluster.gridSize = 256;
@@ -144,6 +152,7 @@
         anycluster.cluster(true);
       });
       */
+
     }
   </script>
 

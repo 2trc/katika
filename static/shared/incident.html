@@ -1,13 +1,45 @@
 <div class="promotion">
     <div class="container">
-        <h1>Incident reporting and visualizing
-            <a href="/incident/add"><button class="btn btn-regular">Report New</button></a>
-        </h1>
+        <h2>Reported Incidents: {{incidentCount}} &nbsp; Wounded: {{woundedCount}} &nbsp; Deaths: {{deathsCount}}</h2>
     </div>
 </div>
 <div class="container">
-    <div>Filter by: Type| date | wounded | Deaths | date (registration)</div>
-    <div>Order by: Type| date | wounded | Deaths | date (registration)</div>
+    <div class="row">
+        <div class="col-xs-6 col-md-2">
+            <div class="form-group">
+              <!--<label for="incidenttype">Filter by Type</label>-->
+                <select id="incidenttype" class="form-control" ng-model="typeSelected"
+
+                        ng-options="type as type.name for type in incidentTypes"
+                        ng-change="applyDateRange()">
+                    <option value="">Filter by Type</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-8 col-md-3">
+            <div class="form-group">
+            <label for="daterange">Pick date range</label>
+            <input id="daterange"
+                    date-range-picker class="form-control date-picker" type="text" ng-model="datePicker.date"
+            options="{eventHandlers: {'apply.daterangepicker': applyDateRange}}"/>
+            </div>
+        </div>
+        <div class="col-xs-8 col-md-2">
+            <div class="form-group">
+            <!--<label for="orderType">Order by</label>-->
+            <select id="orderType" class="form-control" ng-model="orderType" ng-change="orderTypeChanged()"
+            ng-init="orderType=orderByList[0]">
+                <option ng-repeat="order in orderByList" value="{{order}}">Order by: {{order}}</option>
+            </select>
+
+            </div>
+        </div>
+        <div class="col-xs-1 col-md-1">
+            <i class="{{orderIcon}}" ng-click="orderDirectionChanged()"></i>
+        </div>
+    </div>
+
     <!--<div id="map"></div>-->
     <div ng-repeat="incident in incidents">
         <div class="blog-ext col-xs-12 col-md-10">
@@ -33,10 +65,10 @@
     </div>
 </div>
 <div class="container">
-      <ul class="pagination" ng-show="pages.num_pages > 1">
+      <ul class="pagination" ng-show="pages.next || pages.previous ">
 
           <li ng-show="pages.previous">
-          <a ng-click="gotoPage(pages.page -1)">&laquo;</a>
+            <a ng-click="gotoPage(pages.previous)">&laquo;</a>
           </li>
 
           <li ng-show="!pages.previous" class="disabled"><span>&laquo;</span></li>
@@ -57,7 +89,7 @@
             <li class="active"><span>{{ pages.page }}/{{pages.num_pages}} <span class="sr-only">(current)</span></span></li>
 
             <!-- <li><a href="?page={{ i }}">{{ pages.page }}</a></li> -->
-          <li ng-show="pages.next"><a ng-click="gotoPage(pages.page +1)">&raquo;</a></li>
+          <li ng-show="pages.next"><a ng-click="gotoPage(pages.next)">&raquo;</a></li>
 
           <li ng-show="!pages.next" class="disabled"><span>&raquo;</span></li>
       </ul>

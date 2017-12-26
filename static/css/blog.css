@@ -1,0 +1,36 @@
+
+.blogs {
+    padding: 2px 2px;
+
+}
+
+.blog-ext {
+    margin: 10px 0px 10px 0px;
+    background-color: #FAFAFA;
+    border-bottom: 1px solid #F0F0F0;
+}
+
+.blog-ext:hover {
+    background-color: #F0F0F0;
+}
+
+.blog {
+    padding: 1px 1px;
+
+
+    /*padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;*/
+
+}
+
+.blog a:link {
+    color: #7E7E7E;
+}
+
+.blog a:visited {
+    color: #7E7E7E;
+}
+
+.blog-figure {
+    float: left;
+}
