@@ -2,6 +2,7 @@
 
 {% load static %}
 
+
 {%comment%}
 https://blog.bixly.com/awesome-forms-django-crispy-forms
 {%endcomment%}
@@ -10,6 +11,7 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
 {% crispy form %}
 
 {% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/incident.css' %}">
 	<!--<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">-->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/ol.css' %}">
 <!--<script type="text/javascript" src="{% static 'js/jquery-3.2.1.js' %}"></script>-->

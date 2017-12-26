@@ -56,11 +56,17 @@ class Incident(models.Model):
         verbose_name_plural = 'Incidents' #?
         ordering = ['-date']
 
+
+    def get_address(self):
+        geolocator = Nominatim()
+        e = geolocator.reverse((self.location.y, self.location.x))
+        self.address = e.address
+
+
     def save(self, *args, **kwargs):
         #TODO is one instance efficient?
-        geolocator = Nominatim()
-        e = geolocator.reverse((self.location.y,self.location.x))
-        self.address = e.address
+        print("saving")
+        self.get_address()
         super(Incident, self).save(*args, **kwargs)
 
 
@@ -69,9 +75,9 @@ class IncidentAdmin(admin.ModelAdmin):
     # fields = ['name', 'age', 'residence']
     #fieldset = {'address', fields = ['type', 'location', 'date', 'description', 'source', 'deaths', 'wounded']
     fields = ['type', 'location', 'date', 'description', 'source', 'deaths', 'wounded']
-    # formfield_overrides = {
-    #     geo_models.PointField: {"widget": GooglePointFieldWidget}
-    # }
+    formfield_overrides = {
+        geo_models.PointField: {"widget": GooglePointFieldWidget}
+    }
 
 
 admin.site.register(Incident, IncidentAdmin)
@@ -79,8 +85,16 @@ admin.site.register(Incident, IncidentAdmin)
 
 class IncidentForm(forms.ModelForm):
 
+    #TODO reposition Cameroon by default and zoom level
+    #TODO at least 2 level down
     location = geo_forms.PointField(widget=geo_forms.OSMWidget(attrs={'map_width':800,
-                                                                      'map_height':500}))
+                                                                      'map_height':500,
+                                                                      ## default_zoom not working
+                                                                      ## version too old?
+                                                                      'default_zoom': 6,
+                                                                      'default_lon': 13.3934,
+                                                                      'default_lat': 9.3226
+                                                                      }))
     class Meta:
         model = Incident
         fields = ('type', 'location', 'date', 'description',

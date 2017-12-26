@@ -2,10 +2,14 @@ from django.shortcuts import render, HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
+from django.db.models import Sum
+from django.http import JsonResponse
 
 from rest_framework import viewsets
 
 from .models import IncidentType, Incident, IncidentSerializer, IncidentTypeSerializer, IncidentForm
+
+from datetime import datetime
 
 from anycluster.MapClusterer import MapClusterer
 
@@ -50,6 +54,19 @@ def incident_add(request):
     return render(request, 'add_incident.html', {'form': form})
 
 
+def incident_aggregation(request):
+
+    queryset = Incident.objects.all()
+
+    startdate = request.GET.get('startdate')
+    enddate = request.GET.get('enddate')
+    type = request.GET.get('type')
+
+    queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate, type=type)
+
+    return HttpResponse(JsonResponse(queryset.aggregate(Sum('wounded'), Sum('deaths'))))
+
+
 def incident_geo_serialize(request):
 
     return HttpResponse(serialize('geojson', Incident.objects.all()))
@@ -73,13 +90,61 @@ class IncidentTypeViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = IncidentType.objects.all()#.order_by('-date_joined')
     serializer_class = IncidentTypeSerializer
+    queryset = IncidentType.objects.all()
+
+
+
+def filter_query_set(queryset,startdate_str, enddate_str, type ):
+
+    print("startdate: {}, endate: {}, type: {}".format(startdate_str, enddate_str, type))
+
+    if startdate_str is not None:
+        startdate = datetime.strptime(startdate_str, "%Y-%m-%d")
+        queryset = queryset.filter(date__gte=startdate)
+
+    if enddate_str is not None:
+        enddate = datetime.strptime(enddate_str, "%Y-%m-%d")
+        queryset = queryset.filter(date__lte=enddate)
+
+    if type is not None:
+        queryset = queryset.filter(type__name=type)
+
+    return queryset
 
 
 class IncidentViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    queryset = Incident.objects.all()
     serializer_class = IncidentSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Incident.objects.all()  # .order_by('-date_joined')
+        startdate = self.request.query_params.get('startdate', None)
+        enddate = self.request.query_params.get('enddate', None)
+        type = self.request.query_params.get('type', None)
+
+        queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate, type=type)
+
+        orderby = self.request.query_params.get('orderby', None)
+        order = self.request.query_params.get('order', None)
+
+        #TODO order by 'wounded' not working
+        if orderby is not None:
+
+            if order is not None and order == "ascending":
+                queryset = queryset.order_by(orderby)
+            else:
+                queryset = queryset.order_by("-{}".format(orderby))
+
+        return queryset
+
+
+
+
+#TODO function for parsing query parameters

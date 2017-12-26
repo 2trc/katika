@@ -40,7 +40,7 @@ urlpatterns += [
     # one homepage pattern, so if you use a different one, comment this
     # one out.
 
-    url("^$", direct_to_template, {"template": "index.html"}, name="home"),
+    # url("^$", direct_to_template, {"template": "index.html"}, name="home"),
 
     # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
     # ---------------------------------------------
@@ -61,9 +61,11 @@ urlpatterns += [
     url("^eseka/", include("eseka.urls")),
 
     url(r'^incident/', include('incident.urls')),
+    url(r'^kthesis/', include('kthesis.urls')),
     url(r'^about/', about, name='about'),
     url(r'^$', home, name='home'),
     url(r'anycluster/', include('anycluster.urls')),
+    url(r'^blog/', include('kblog.urls')),
 
     # HOMEPAGE FOR A BLOG-ONLY SITE
     # -----------------------------
