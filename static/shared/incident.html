@@ -1,17 +1,25 @@
+<ng-map center="[6.9182, 13.8516]" zoom="5">
+    <marker ng-repeat="pos in clusterer.markerList"
+            position="{{pos.latitude}},{{pos.longitude}}"
+            label="'{{pos.icon.label}}'"
+            icon="{{pos.icon}}"
+            on-click="clusterer.onClick(pos)">
+    </marker>
+
+</ng-map>
 <div class="promotion">
     <div class="container">
         <h2>Reported Incidents: {{incidentCount}} &nbsp; Wounded: {{woundedCount}} &nbsp; Deaths: {{deathsCount}}</h2>
     </div>
 </div>
 <div class="container">
-    <div class="row">
+    <div id="incident-filter" class="row">
         <div class="col-xs-6 col-md-2">
             <div class="form-group">
-              <!--<label for="incidenttype">Filter by Type</label>-->
                 <select id="incidenttype" class="form-control" ng-model="typeSelected"
 
                         ng-options="type as type.name for type in incidentTypes"
-                        ng-change="applyDateRange()">
+                        ng-change="applyIncidentType()">
                     <option value="">Filter by Type</option>
                 </select>
             </div>
@@ -19,10 +27,10 @@
 
         <div class="col-xs-8 col-md-3">
             <div class="form-group">
-            <label for="daterange">Pick date range</label>
             <input id="daterange"
                     date-range-picker class="form-control date-picker" type="text" ng-model="datePicker.date"
-            options="{eventHandlers: {'apply.daterangepicker': applyDateRange}}"/>
+            options="{eventHandlers: {'apply.daterangepicker': applyDateRange}}"
+            placeholder="Choose date range"/>
             </div>
         </div>
         <div class="col-xs-8 col-md-2">

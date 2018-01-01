@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    <div id="gmap"></div>
+    <!--<div id="gmap"></div>-->
     <div id="clustererPopup" style="border:2px solid black; position: absolute; left:30%;top:50%; background-color: #aaa; border-radius:10px; padding: 10px; display:none;">
         <div id="clusterContentPopup"></div>
         <div style="text-align:center; margin-top: 20px;">
@@ -49,6 +49,8 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
+    <script type="text/javascript" src="{% static 'js/ng-map.min.js' %}"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script-->
     <!-- Google maps API -->
@@ -64,8 +66,8 @@
 
     {%comment%}
     <!-- Locationpicker -->
-    <script src="{% static 'js/locationpicker.jquery.min.js' %}"></script>
-    <script src="{% static 'js/angularLocationpicker.jquery.min.js' %}"></script>
+    <!--<script src="{% static 'js/locationpicker.jquery.min.js' %}"></script>
+    <script src="{% static 'js/angularLocationpicker.jquery.min.js' %}"></script>-->
     <!-- <script src="{% static 'js/picker.js' %}"></script>
     <script src="{% static 'js/picker.date.js' %}"></script> -->
 
@@ -94,6 +96,7 @@
       center: [6.9182, 13.8516],
       gridSize: 256, //integer
       zoom: 5, //initial zoom
+      autostart: true,
       //center: [49,11], //initial center in lng lat
       MapTypeId: "TERRAIN", //google only - choose from  ROADMAP,SATELLITE,HYBRID or TERRAIN
       clusterMethod : "kmeans", //"grid" or "kmeans" or "centroid"
@@ -124,7 +127,7 @@
 
     }
 
-    window.onload = function(){
+    /*window.onload = function(){
       // do not use both maps simultaneously as this will confuse the cache
       anycluster = new Anycluster("gmap", anyclusterSettings);
       //var osmap = new Anycluster("osmap", anyclusterSettings_osm);
@@ -132,6 +135,7 @@
        anycluster.clusterMethod = "kmeans";
        anycluster.clearMarkers = true;
        anycluster.cluster(true);
+    */
 
 
       /*
@@ -153,7 +157,7 @@
       });
       */
 
-    }
+    /*}*/
   </script>
 
   <script type="text/javascript">
