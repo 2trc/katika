@@ -1,0 +1,74 @@
+#incident-filter {
+    padding-top: 15px;
+    background-color: whitesmoke;
+}
+
+.input-group {
+    padding-bottom: 15px;
+}
+
+.incident {
+
+    /*background: #fafafa;
+    border-radius: 2px;*/
+    border-bottom: 2px solid #f0f2f4;
+    margin-bottom: 10px;
+    padding: 10px 0px;
+
+}
+
+.incident .title {
+    font-size: 1.1em;
+    font-weight: 1000;
+}
+
+.incident .address {
+    margin-left: 4px;
+    color: #303;
+}
+
+.incident .date {
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+.info p {
+    margin-top: 0.5em;
+    color: #576366;
+}
+
+
+.casualties {
+    text-align: center;
+}
+
+.casualties > h3 {
+    font-size: 48px;
+}
+
+.casualties > h5 {
+    font-size: 0.85em;
+}
+
+.submission-form {
+    /*margin: 0px 0px 50px 0px;*/
+    padding-bottom: 10px;
+    /*background-color: #F0F0F0;
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;*/
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  /*line-height: 34px;*/
+  line-height: 1.42857143 !important;
+}
+
+
+.promotion p {
+    font-size: 1.2em;
+}

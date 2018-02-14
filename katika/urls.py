@@ -58,13 +58,14 @@ urlpatterns += [
 
     # url("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
     url("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
-    url("^eseka/", include("eseka.urls")),
+    #url("^eseka/", include("eseka.urls")),
 
-    url(r'^incident/', include('incident.urls')),
+    #url(r'^incident/', include('incident.urls')),
     url(r'^kthesis/', include('kthesis.urls')),
+    url(r'^khistory/', include('khistory.urls')),
     url(r'^about/', about, name='about'),
     url(r'^$', home, name='home'),
-    url(r'anycluster/', include('anycluster.urls')),
+    #url(r'anycluster/', include('anycluster.urls')),
     url(r'^blog/', include('kblog.urls')),
 
     # HOMEPAGE FOR A BLOG-ONLY SITE

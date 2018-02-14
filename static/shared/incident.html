@@ -6,15 +6,26 @@
             on-click="clusterer.onClick(pos)">
     </marker>
 
+    <info-window id="foo-iw">
+        <div >
+          <!--what's happening: <br>-->
+          <!--what's happening: <br>-->
+          <!--what's happening: <br>-->
+        </div>
+    </info-window>
+
 </ng-map>
 <div class="promotion">
     <div class="container">
-        <h2>Reported Incidents: {{incidentCount}} &nbsp; Wounded: {{woundedCount}} &nbsp; Deaths: {{deathsCount}}</h2>
+        <div class="col-xs-6 col-md-3"><p>Reported Incidents: {{incidentCount}}</p></div>
+        <div class="col-xs-6 col-md-3"><p>Wounded: {{woundedCount}}</p></div>
+        <div class="col-xs-6 col-md-3"><p>Deaths: {{deathsCount}}</p></div>
+        <div class="col-xs-6 col-md-3"><p>Missing: {{missingCount||0}}</p></div>
     </div>
 </div>
-<div class="container">
-    <div id="incident-filter" class="row">
-        <div class="col-xs-6 col-md-2">
+<div id="incident-filter" class="container">
+    <div clas="row">
+        <div class="col-xs-10 col-md-3">
             <div class="form-group">
                 <select id="incidenttype" class="form-control" ng-model="typeSelected"
 
@@ -25,7 +36,7 @@
             </div>
         </div>
 
-        <div class="col-xs-8 col-md-3">
+        <div class="col-xs-10 col-md-3">
             <div class="form-group">
             <input id="daterange"
                     date-range-picker class="form-control date-picker" type="text" ng-model="datePicker.date"
@@ -33,45 +44,57 @@
             placeholder="Choose date range"/>
             </div>
         </div>
-        <div class="col-xs-8 col-md-2">
-            <div class="form-group">
+        <div class="col-xs-10 col-md-3">
+            <div class="input-group">
             <!--<label for="orderType">Order by</label>-->
             <select id="orderType" class="form-control" ng-model="orderType" ng-change="orderTypeChanged()"
             ng-init="orderType=orderByList[0]">
                 <option ng-repeat="order in orderByList" value="{{order}}">Order by: {{order}}</option>
             </select>
+                <span class="input-group-addon">
+                    <i class="{{orderIcon}}" ng-click="orderDirectionChanged()"></i>
+                </span>
 
             </div>
         </div>
-        <div class="col-xs-1 col-md-1">
-            <i class="{{orderIcon}}" ng-click="orderDirectionChanged()"></i>
-        </div>
-    </div>
-
-    <!--<div id="map"></div>-->
-    <div ng-repeat="incident in incidents">
-        <div class="blog-ext col-xs-12 col-md-10">
-            <div class="col-xs-12 col-md-8">
-                <a href="{{incident.source}}" target="_blank">
-                    <span class="item-title">{{incident.type.name}}</span>,
-                    <span class="item-date">{{incident.date}}</span>
-                </a>, {{incident.address}}
-                <p>{{incident.description}}</p>
-            </div>
-            <div class="col-xs-6 col-md-1 casualties wounded" ng-switch="incident.wounded">
-                <h5>Wounded</h5>
-                <span ng-switch-when="0">&nbsp;</span>
-                <h3 ng-switch-default>{{incident.wounded}}</h3>
-            </div>
-            <div class="col-xs-6 col-md-1 casualties deaths" ng-switch="incident.deaths">
-                <h5>Deaths</h5>
-                <span ng-switch-when="0">&nbsp;</span>
-                <h3 ng-switch-default>{{incident.deaths}}</h3>
-
-            </div>
-      </div>
     </div>
 </div>
+<div class="container">
+
+    <div ng-repeat="incident in incidents">
+        <div class="incident row">
+            <div class="col-xs-12 col-md-10">
+                <div class="info col-xs-12 col-md-8">
+                    <span class="title">{{incident.type.name}} </span>
+                    <span class="address">{{incident.address}} </span>
+                    <span class="date">{{incident.date| date: 'MMM dd, yyyy'}} </span>
+
+                    <span>
+                        <a href="{{incident.source}}" target="_blank">
+                            <i class="glyphicon glyphicon-link"></i>
+                        </a>
+                    </span>
+                    <p>{{incident.description}}</p>
+                </div>
+                <div class="col-xs-4 col-md-1 casualties deaths" ng-switch="incident.deaths">
+                    <h5>Deaths</h5>
+                    <span ng-switch-when="0">&nbsp;</span>
+                    <h3 ng-switch-default>{{incident.deaths}}</h3>
+                </div>
+                <div class="col-xs-4 col-md-1 casualties wounded" ng-switch="incident.wounded">
+                    <h5>Wounded</h5>
+                    <span ng-switch-when="0">&nbsp;</span>
+                    <h3 ng-switch-default>{{incident.wounded}}</h3>
+                </div>
+                <div class="col-xs-4 col-md-1 casualties deaths" ng-switch="incident.missing">
+                    <h5>Missing</h5>
+                    <span ng-switch-when="0">&nbsp;</span>
+                    <h3 ng-switch-default>{{incident.missing}}</h3>
+                </div>
+
+          </div>
+        </div>
+    </div>
 <div class="container">
       <ul class="pagination" ng-show="pages.next || pages.previous ">
 
@@ -103,50 +126,7 @@
       </ul>
 
 </div>
-<!-- <script>
-    var map;
 
-    function getGeoJson() {
-
-        var bounds = map.getBounds();
-
-        var ne = bounds.getNorthEast();
-        var sw = bounds.getSouthWest();
-
-        var viewportPoints = [
-            ne, new google.maps.LatLng(ne.lat(), sw.lng()),
-            sw, new google.maps.LatLng(sw.lat(), ne.lng()), ne
-        ];
-
-        queryUrl = 'http://165.227.128.134:8080/incident/geojson/' +
-            str(ne.lat) + ',' + str(sw.lng) + ',' + str(sw.lat) +',' + str(sw.lat)
-
-        map.data.loadGeoJson(queryUrl);
-    }
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 6,
-        center: {lat: 6.9182, lng: 13.8516}
-
-      });
-
-      // NOTE: This uses cross-domain XHR, and may not work on older browsers.
-      map.data.loadGeoJson('http://165.227.128.134:8080/incident/geojson');
-      //map.data.loadGeoJson('https://storage.googleapis.com/mapsdevsite/json/google.json');
-
-      map.data.setStyle({
-            fillColor: '#2687bf',
-            strokeColor: '#ff3333',
-            fillOpacity: .3,
-            strokeWeight: 3
-          });
-
-      marker.addListener('resize', getGeoJson);
-      marker.addListener('dragend', getGeoJson);
-
-    }
-</script>
-<script async defer
+<!--<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCpiyibjB8tK9rviFMyQYriE9X9wIFUQiM&callback=initMap">
-</script> -->
+</script>-->

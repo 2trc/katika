@@ -2,35 +2,37 @@
 
 {%load static%}
 
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
 
     <section id="header">
         <!--<div id="header2">-->
 
-            <div class="block">
-                <div class="container">
-
-                    <h1>Corruption <span class="highlight">KILLS</span> and it's our citizen's</h1>
-                <h1>duty to help connect the dots</h1>
+            <div class="outer-block">
+                <div class="block">
+                    <div class="container">
+                        <h2>Corruption <span class="highlight">KILLS</span> and it's our citizen's</h2>
+                        <h2>duty to help connect the dots</h2>
+                    </div>
                 </div>
             </div>
 
-            <div class="block-alt">
-                <div class="container">
-                <h2>C'est notre devoir citoyen de lutter contre</h2>
-                <h2>la malgouvernance en l'exposant</h2>
+            <div class="outer-block-alt">
+                <div class="block-alt">
+                    <div class="container">
+                    <h2>C'est notre devoir citoyen de lutter contre</h2>
+                    <h2>la malgouvernance en l'exposant</h2>
+                    </div>
                 </div>
             </div>
         <!--</div>-->
     </section>
     <section id="projects">
-        <div class="project-item">
-            <div class="container">
-                <h3><a href="/blog">Blog and Infographics</a></h3><br>
-                <h4>Distilled data through succinct <strong>visualization</strong></h4>
-                <p>We want to make our point through visually appealing infographics and less boring and lengthy text</p>
-            </div>
-        </div>
+
         <div class="project-item project-alt">
             <div class="container">
                 <h3><a href="/incident">Incident Visualization</a></h3><br>
@@ -39,26 +41,61 @@
                 <p>Or "what are the fire incidents during the current year"</p>
             </div>
         </div>
-        <div class="project-item">
+        <div class="project-item project">
             <div class="container">
-                <h3><a href="/kthesis">Kamerun Thesis Database</a></h3><br>
-                <h4>Taking seriously our <strong>academic</strong> achievements</h4>
-                <p>As we got an increase of universities and scholar, it's imperative to take of the hardwork with take</p>
+                <h3><a href="/khistory">Kamerun History</a></h3><br>
+                <h4>Interactive history Project</h4>
+                <p>Go back and forth throughout our history</p>
             </div>
         </div>
         <div class="project-item project-alt">
             <div class="container">
-                <h3><a href="/">Eseka Catastrophe</a></h3><br>
+                <h3><a href="/blog">Blog and Infographics</a></h3><br>
+                <h4>Distilled data through succinct <strong>visualization</strong></h4>
+                <p>We want to make our point through visually appealing infographics and less boring and lengthy text</p>
+            </div>
+        </div>
+        <div class="project-item">
+            <div class="container">
+                <h3><a href="/kthesis">Kamerun Thesis Database</a></h3><br>
+                <h4>Taking our <strong>academic</strong> achievements seriously</h4>
+                <p>As we got an increase of universities and scholars, it's imperative to nurture and reuse the hard work</p>
+            </div>
+        </div>
+        <div class="project-item project-alt">
+            <div class="container">
+                <h3>Eseka Catastrophe (Upcoming)</h3><br>
                 <h4>We cannot keep waiting for <strong>official reports</strong></h4>
-                <p>This is upcoming project will collect and display data from various sources in order to shed light</p>
+                <p>This upcoming project will collect and display data from various sources in order to shed light</p>
                 <p>on one of the most devastating catastrophes of Kamerun's history</p>
             </div>
         </div>
         <div class="project-item">
             <div class="container">
-                <h3><a href="/">Kamerun History</a></h3><br>
-                <h4>Under construction: Interactive history Project</h4>
-                <p>Go back and forth throughout our history</p>
+                <div class="row">
+                    <div class="col-xs-8 col-md-4">
+                        <h3><a href="/about"></a>About us</h3>
+                        Check out our <a href="/about">About page</a> to see reasoning behind Katika and
+                        where this name comes from ;-)
+                    </div>
+                    <div class="col-xs-8 col-md-4">
+                        <h3>Contributions wanted</h3>
+                        Lots of our data is crowdsourced and we are especially looking for volunteer
+                        journalists, scholars, historians and software developers
+                    </div>
+                    <div class="col-xs-8 col-md-4">
+                        <h3>Feedback</h3>
+                        <p>Feel free to reach to me
+                            <a href="https://twitter.com/tassingremi" target="_blank">@tassingremi</a>
+                         or by mail with <i>tassingremi</i> at gmail.
+                        </p>
+                        <p>
+                            Preferably post your comments and feedback on the
+                            <a href="https://mpodol.com" target="_blank">mpodol.com</a> forum.
+                             It's an amazing discussion platform launched solely for Cameroonians (topics)
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

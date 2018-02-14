@@ -1,0 +1,93 @@
+<section id="page-header">
+    <div class="container">
+        <h1>Thesis database in Cameroon
+        </h1>
+    </div>
+</section>
+
+
+<div ng-repeat="thesis in these">
+    <div class="container thesis-block">
+        <!--<div class="thesis-block">-->
+            <div class="logo">
+                <div ng-show="thesis.university">
+                    <a ng-href="{{thesis.university.link}}" target="_blank">
+                        <img ng-src="/static/media/{{thesis.university.featured_image}}" alt="">
+                        <!--University: <span class="thesis-university"> {{thesis.university.name}}-->
+                        </span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-xs-8 col-md-8 thesis-content">
+                <div>
+                    <span>
+                        <a href="/kthesis/scholar/{{thesis.author.slug}}">
+                            {{thesis.author.last_name}} {{thesis.author.first_name}}
+                        </a>
+                    </span>:
+                </div>
+                <div class="thesis-title">{{thesis.title}}
+                    <span  ng-switch="thesis.link" class="thesis-link">
+                        <a href="{{thesis.link}}" target="_blank">
+                            <i class="glyphicon glyphicon-link"></i>
+                        </a>
+                    </span>
+                    <span class="thesis-date">{{thesis.date}}</span>
+                </div>
+
+                <p>{{thesis.abstract}}</p>
+
+                <div ng-show="thesis.supervisors.length">
+                    Supervisors:
+                    <span class="thesis-supervisor" ng-repeat="supervisor in thesis.supervisors">
+                    {{supervisor.last_name}} {{supervisor.first_name}}, </span>
+                </div>
+
+                <div ng-show="thesis.committee.length">
+                    Committee:
+                    <span class="thesis-committee" ng-repeat="jury in thesis.committee">
+                    {{jury.last_name}} {{jury.first_name}}, </span>
+                </div>
+
+                <div ng-show="thesis.faculty">
+                    Faculty: <span class="thesis-faculty">{{thesis.faculty}}</span>
+                </div>
+                <div ng-show="thesis.department">
+                    <span class="thesis-department">Department: {{thesis.department}}</span>
+                </div>
+            <!--</div>-->
+        </div>
+  </div>
+</div>
+<!--</div>-->
+<div class="container">
+      <ul class="pagination" ng-show="pages.next || pages.previous ">
+
+          <li ng-show="pages.previous">
+            <a ng-click="gotoPage(pages.previous)">&laquo;</a>
+          </li>
+
+          <li ng-show="!pages.previous" class="disabled"><span>&laquo;</span></li>
+
+          <!-- <li ng-repeat="ii in [pages.range_min.. pages.range_max]" class="active">
+          <a ng-click="gotoPage(ii)">(current) {{ii}}</a>
+          </li> -->
+
+
+          <!-- {% for i in incidents.paginator.page_range %}
+                      {% if incidents.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %} -->
+
+            <li class="active"><span>{{ pages.page }}/{{pages.num_pages}} <span class="sr-only">(current)</span></span></li>
+
+            <!-- <li><a href="?page={{ i }}">{{ pages.page }}</a></li> -->
+          <li ng-show="pages.next"><a ng-click="gotoPage(pages.next)">&raquo;</a></li>
+
+          <li ng-show="!pages.next" class="disabled"><span>&raquo;</span></li>
+      </ul>
+
+</div>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{%load static kblog_tags%}
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="block-content col-xs-10 col-md-8">
+            <div class="header">
+                <h2>
+                    {{ blog_post.title }}
+                </h2>
+                <h6 class="post-meta">
+                    Posted by:
+                    {% with blog_post.user as author %}
+                    {%comment%}
+                    <a href="{% url "blog_post_list_author" author %}">{{ author.get_full_name|default:author.username }}</a>
+                    {%endcomment%}
+                    {{ author.get_full_name|default:author.username }}
+                    {% endwith %}
+                    {% with blog_post.categories.all as categories %}
+                    {% if categories %}
+                    "in"
+                    {% for category in categories %}
+                    <a href="{% url "blog_post_list_category" category.slug %}">{{ category }}</a>{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    {{blog_post.publish_date|timesince|upto}} ago
+                </h6>
+            </div>
+            <div>
+                {{blog_post.content | safe}}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}

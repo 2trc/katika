@@ -6,12 +6,16 @@
 
 .blog-ext {
     margin: 10px 0px 10px 0px;
+    padding-top: 10px;
     background-color: #FAFAFA;
+
     border-bottom: 1px solid #F0F0F0;
+    border-radius: 5px;
 }
 
 .blog-ext:hover {
     background-color: #F0F0F0;
+    box-shadow: 1px 1px 1px #F0F0F0;
 }
 
 .blog {
@@ -33,4 +37,8 @@
 
 .blog-figure {
     float: left;
+}
+
+.block-content {
+    margin-top: 15px;
 }

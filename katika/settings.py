@@ -262,6 +262,7 @@ INSTALLED_APPS = (
     'incident',
     'kthesis',
     'kblog',
+    'khistory',
 
     'rest_framework',
     'mapwidgets',
@@ -272,10 +273,11 @@ INSTALLED_APPS = (
 
 MAP_WIDGETS = {
     "GooglePointFieldWidget": (
-        ("zoom", 12),
-        ("mapCenterLocationName", "yaounde"),
-        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'cameroon'}}),
+        ("zoom", 6),
+        ("mapCenterLocationName", "ngaroundere"),
+        ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'cm'}}),
         ("markerFitZoom", 12),
+        ("size", "600x600"),
     ),
     "GOOGLE_MAP_API_KEY": "AIzaSyCpiyibjB8tK9rviFMyQYriE9X9wIFUQiM"
 }

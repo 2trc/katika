@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/kthesis.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p>Thesis database in Cameroon</p>
+    </div>
+</section>
+
+{% if selected_author %}
+<div class="container">
+    <a href="/kthesis">Authors</a>»
+    {{selected_author.last_name}} {{selected_author.first_name}}
+</div>
+{% endif %}
+
+{% if selected_university %}
+<div class="container">
+    <a href="/kthesis">Universities</a>>>
+    {{selected_university.name}}
+    {% if thesis.university.link%}
+    <span>External <a href={{thesis.university.link}}" target="_blank">link</a></span>
+    {% endif %}
+</div>
+{% endif %}
+
+{% for thesis in theses %}
+    <div class="container thesis-block">
+        <div class="logo">
+            {% if thesis.university %}
+                <a href="/kthesis/university/{{thesis.university.id}}">
+                    <img src= "{{thesis.university.featured_image.url}}" alt=""/>
+                    </span>
+                </a>
+            {% endif %}
+        </div>
+        <div class="col-xs-8 col-md-8 thesis-content">
+            <div>
+                <span>
+                    <a href="/kthesis/scholar/{{thesis.author.slug}}">
+                        {{thesis.author.last_name}} {{thesis.author.first_name}}
+                    </a>
+                </span>:
+            </div>
+            <div class="thesis-title">{{thesis.title}}
+                {% if thesis.link %}
+                <span class="thesis-link">
+                    <a href="{{thesis.link}}" target="_blank">
+                        <i class="glyphicon glyphicon-link"></i>
+                    </a>
+                </span>
+                {% endif %}
+                <span class="thesis-date">{{thesis.date}}</span>
+            </div>
+
+            <p>{{thesis.abstract}}</p>
+
+            {% if thesis.supervisors.all %}
+                <div>
+                    Supervisors:
+                    {% for supervisor in thesis.supervisors.all %}
+                    <span class="thesis-supervisor">
+                        <a href="/kthesis/scholar/{{supervisor.slug}}">
+                            {{supervisor.last_name}} {{supervisor.first_name}}
+                        </a>,
+                    </span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if thesis.committee.all %}
+                <div>
+                    Committee:
+                    {% for jury in thesis.committee.all %}
+                        <span class="thesis-committee">
+                            <a href="/kthesis/scholar/{{jury.slug}}">
+                                {{jury.last_name}} {{jury.first_name}}
+                            </a>,
+                        </span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if thesis.faculty%}
+            <div>
+                Faculty: <span class="thesis-faculty">{{thesis.faculty}}</span>
+            </div>
+            {% endif %}
+
+            {% if thesis.department %}
+            <div>
+                <span class="thesis-department">Department: {{thesis.department}}</span>
+            </div>
+            {% endif %}
+        </div>
+  </div>
+{% endfor %}
+
+<div class="container">
+
+    {% if theses.has_other_pages %}
+      <ul class="pagination">
+        {% if users.has_previous %}
+          <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for i in users.paginator.page_range %}
+          {% if users.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% else %}
+            <li><a href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if users.has_next %}
+          <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+        {% else %}
+          <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+    <script src="{% static 'js/kthesis.js' %}"></script>
+{% endblock %}

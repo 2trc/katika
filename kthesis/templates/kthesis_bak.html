@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/kthesis.css' %}">
+{% endblock %}
+{% block content %}
+
+<div ng-app="kthesisApp">
+    {% csrf_token %}
+    <ng-view></ng-view>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+    <script src="{% static 'js/kthesis.js' %}"></script>
+{% endblock %}

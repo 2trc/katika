@@ -68,11 +68,12 @@ function incidentService($http) {
 // })
 
 
-function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
+function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
   initializeOrderDirection = function() {
      $scope.isAscendingOrder = false;
-     $scope.orderIcon = "glyphicon glyphicon-arrow-down";
+     // $scope.orderIcon = "glyphicon glyphicon-arrow-down";
+     $scope.orderIcon = "glyphicon glyphicon-sort-by-attributes-alt";
 
      console.log("initializing order");
      console.log($scope.orderIcon);
@@ -92,10 +93,12 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
   $scope.incidentCount = 0;
   $scope.woundedCount = 0;
   $scope.deathsCount= 0;
+  $scope.missingCount= 0;
 
-  $scope.orderByList = ['date', 'wounded', 'deaths'];
+  $scope.orderByList = ['date', 'deaths', 'wounded', 'missing'];
 
   $scope.datePicker = { 'date': {startDate: null, endDate: null} };
+
 
   incidentsQuery = function() {
     queryUrl = getQueryUrl();
@@ -112,7 +115,6 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
       $scope.pages.results = undefined;
       console.log($scope.incidents);
       console.log($scope.pages);
-
     });
 
     url = '/incident/aggregate?' + queryUrl;
@@ -120,13 +122,12 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     .then(function(result) {
       $scope.woundedCount = result.wounded__sum;
       $scope.deathsCount= result.deaths__sum;
+      $scope.missingCount= result.missing__sum;
     })
 /*    .then(function() {
         clusterer.removeAllMarkers();
     })*/
-    .then(function() {
-        clusterer.cluster(false);
-    });
+
   }
 
   $scope.applyDateRange = function(ev, picker) {
@@ -140,6 +141,7 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     clusterer.filter(filters);
 
     incidentsQuery();
+    clusterer.cluster(false);
 
   }
 
@@ -153,6 +155,7 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     }
 
     incidentsQuery();
+    clusterer.cluster(false);
 
   }
 
@@ -206,7 +209,7 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
   $scope.orderDirectionChanged = function() {
 
     invertOrderDirection();
-    $scope.applyDateRange(null, null);
+    incidentsQuery();
 
   }
 
@@ -246,9 +249,11 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     $scope.isAscendingOrder = !$scope.isAscendingOrder;
 
     if( $scope.isAscendingOrder ){
-        $scope.orderIcon = "glyphicon glyphicon-arrow-up";
+        //$scope.orderIcon = "glyphicon glyphicon-arrow-up";
+        $scope.orderIcon = "glyphicon glyphicon-sort-by-attributes";
     }else{
-        $scope.orderIcon = "glyphicon glyphicon-arrow-down";
+        //$scope.orderIcon = "glyphicon glyphicon-arrow-down";
+        $scope.orderIcon = "glyphicon glyphicon-sort-by-attributes-alt";
     }
 
     console.log("inverting order");
@@ -279,6 +284,7 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
       //$scope.incidentCount = result.count;
       $scope.woundedCount = result.wounded__sum;
       $scope.deathsCount= result.deaths__sum;
+      $scope.missingCount= result.missing__sum;
     });
 
   incidentService.get('/incident/api/type/')
@@ -299,6 +305,10 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
       $scope.pages.results = undefined;
       console.log($scope.incidents);
       console.log($scope.pages);
+
+      // scroll to page top
+      console.log("anchor scrolling");
+      $window.scrollTo(0, angular.element('#incident-filter').offsetTop);
 
     });
   }
@@ -328,23 +338,19 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
       });
     };
 
+
 /* AnyCluster addition*/
     var clusterer = this;
+    clusterer.finalMarkerHtmlContent = "regard social";
 
     //very risky scoping
     $scope.clusterer = this;
-
-    console.log("var clusterer = ");
-    console.log(clusterer);
-
-    console.log("$scope.clusterer");
-    console.log($scope.clusterer);
 
     clusterer.anyclusterSettings = {
       mapType : "google", // "google" or "osm"
       //zoom: 6,
       //center: [6.9182, 13.8516],
-      gridSize: 512, //integer
+      gridSize: 256, //integer
       //gridSize: 512, //integer
       //zoom: 5, //initial zoom
       //autostart: true,
@@ -369,32 +375,24 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     this.startClustering = function(){
         var firstLoad = true;
 
-        //console.log("In start startClustering and gmap=");
-        //console.log(clusterer.gmap);
-
         // To remove temptation
-        clusterer.cluster(true);
+        clusterer.cluster(false);
 
         google.maps.event.addListener(clusterer.gmap, 'idle', function() {
-        //google.maps.event.addListener(clusterer.gmap, 'tilesloaded', function() {
-        //clusterer.gmap.addListener('idle', function() {
 
-        console.log("During idle, firstLoad=");
-        console.log(firstLoad);
+//            if (firstLoad === true){
+//                firstLoad = false;
+//                clusterer.cluster(true);
+//            }
+//            else {
+//                clusterer.cluster(false);
+//            }
 
-            if (firstLoad === true){
-                firstLoad = false;
-                clusterer.cluster(true);
-            }
-            else {
-                clusterer.cluster(false);
-            }
-
+           clusterer.cluster(false);
         });
 
 
         google.maps.event.addListener(clusterer.gmap, 'zoom_changed', function() {
-            console.log("zoom changed and removing markers");
              clusterer.removeAllMarkers();
         });
     }
@@ -402,16 +400,11 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
     this.initializeMap = function() {
 
         NgMap.getMap().then(function(map) {
+
             clusterer.gmap = map;
             clusterer.startClustering();
 
         });
-        /*.then(function(){
-            console.log("Map initialization");
-            console.log(clusterer.gmap);
-            //clusterer.startClustering();
-        });*/
-
     }
 
     this.loadSettings = function(settings_) {
@@ -482,24 +475,9 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
             ids: ids
         };
 
-        //console.log(this.selectPinIcon(count, pinicon));
         console.log(marker);
 
         clusterer.markerList.push(marker);
-
-
-        //TODO to be added later
-        /*if (clusterer.zoom >= 13 || count <= 3) {
-            google.maps.event.addListener(marker, 'click', function() {
-                clusterer.markerFinalClickFunction(this);
-            });
-        }
-
-        else {
-            google.maps.event.addListener(marker, 'click', function() {
-                clusterer.markerClickFunction(this);
-            });
-        }*/
 
     }
 
@@ -511,23 +489,6 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
         var ids = cluster["ids"];
 
         var piniconObj = clusterer.selectPinIcon(count,pinimg);
-
-        /*
-        var marker = new clusterMarker(center, count, clusterer.gmap, ids);
-
-        clusterer.markerList.push(marker);
-
-        if (clusterer.zoom >= 13 || count <= 3) {
-            google.maps.event.addListener(marker, 'click', function() {
-                clusterer.markerFinalClickFunction(this);
-            });
-        }
-
-        else {
-            google.maps.event.addListener(marker, 'click', function() {
-                clusterer.markerClickFunction(this);
-            });
-        }*/
 
         var marker = {
             position: center,
@@ -561,16 +522,13 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
 
     this.onClick = function(event, marker){
 
-        console.log("event:");
-        console.log(event);
-
-        console.log("marker:");
-        console.log(marker);
-
-        console.log("zoom: ");
-        console.log(clusterer.zoom);
-
         if (clusterer.zoom >= 13 || marker.count <= 3) {
+
+            popupWindow = angular.element(( document.querySelector("#clustererPopup")))[0];
+
+            popupWindow.style.left = String(event.pixel.x) + "px";
+            popupWindow.style.top = String(event.pixel.y) + "px";
+
             clusterer.markerFinalClickFunction(marker);
         }
         else {
@@ -634,10 +592,6 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
 			};
 			this.getAreaContent(geojson, this.onFinalClick);
 		}
-	}
-
-	onFinalClick = function(entries_html){
-		alert(entries_html);
 	}
 
 	this.markerClickFunction = function(marker) {
@@ -709,9 +663,9 @@ function IncidentCtrl(incidentService, $scope, $filter, NgMap) {
 			'geometry_type': geometry_type
 		}
 
-		if (cache === true){
+		/*if (cache === true){
 			postParams['cache'] = 'load';
-		}
+		}*/
 
 		//send the ajax request
 		url = encodeURI(url);

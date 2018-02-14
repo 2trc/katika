@@ -9,22 +9,20 @@
 
 {% block content %}
 
+    {{ form.media }}
+
     <div class="promotion">
         <div class="container">
-            <h2>Incident reporting and visualizing
-                <a href="/incident/add"><button class="btn btn-regular">Report New</button></a>
-            </h2>
+            <span>Incident reporting and visualizing</span>
+            {%comment%}
+            <span class="add_item"><a href="/incident/add">REPORT NEW</a></span>
+            {%endcomment%}
 
         </div>
     </div>
 
     <!--<div id="gmap"></div>-->
-    <div id="clustererPopup" style="border:2px solid black; position: absolute; left:30%;top:50%; background-color: #aaa; border-radius:10px; padding: 10px; display:none;">
-        <div id="clusterContentPopup"></div>
-        <div style="text-align:center; margin-top: 20px;">
-            <button onclick="closePopup();">close</button>
-        </div>
-    </div>
+
 
     <!--
     <div style="margin-top:30px;">
@@ -38,6 +36,12 @@
     <div ng-app="incidentApp">
         {% csrf_token %}
         <ng-view></ng-view>
+    </div>
+    <div id="clustererPopup" style="border:2px solid black; position: absolute; left:30%;top:50%; background-color: #aaa; border-radius:10px; padding: 10px; display:none;">
+        <div id="clusterContentPopup"></div>
+        <div style="text-align:center; margin-top: 20px;">
+            <button onclick="closePopup();">close</button>
+        </div>
     </div>
 
 

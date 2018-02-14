@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{%comment%}
+https://blog.bixly.com/awesome-forms-django-crispy-forms
+{%endcomment%}
+
+{% load crispy_forms_tags %}
+{% crispy form %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/khistory.css' %}">
+{% endblock %}
+
+{% block extra_js_in_head %}
+    {# Override this in templates to add extra js in header #}
+    {{ form.media }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <form method="POST" action="" role="form" class="submission-form uniForm">
+            <div class="col-xs-9 col-md-9">
+            {% csrf_token %}
+                <div class="form-actions">
+                {{form|crispy}}
+                    <input class="btn btn-lg btn-regular" type="submit" value="Submit">
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

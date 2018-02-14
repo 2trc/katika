@@ -10,18 +10,22 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
 {% load crispy_forms_tags %}
 {% crispy form %}
 
+
 {% block extra_css %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/incident.css' %}">
 	<!--<link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">-->
 	<link rel="stylesheet" type="text/css" href="{% static 'css/ol.css' %}">
-<!--<script type="text/javascript" src="{% static 'js/jquery-3.2.1.js' %}"></script>-->
+    <script type="text/javascript" src="{% static 'js/jquery-3.2.1.js' %}"></script>
 <!--https://stackoverflow.com/questions/27306180/how-to-use-geodjango-pointfield-in-form-->
-	{{ form.media }}
-
 {% endblock %}
 
-{% block content %}
+{% block extra_js_in_head %}
+    {# Override this in templates to add extra js in header #}
+    {{ form.media }}
+{% endblock %}
 
+
+{% block content %}
 
     <div class="container">
         <!--div class="submission-form"-->
@@ -52,5 +56,4 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
 	</script>
 	<script type="text/javascript" src="{% static 'js/ol.js' %}"></script>
 	<!--script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.min.js' %}"></script-->
-
 {% endblock %}

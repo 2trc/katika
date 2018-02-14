@@ -48,6 +48,7 @@ class Incident(models.Model):
     source = models.URLField()
     deaths = models.PositiveIntegerField(blank=True, null=True)
     wounded = models.PositiveIntegerField(blank=True, null=True)
+    missing = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return "{}: {}, {}".format(self.type, self.date, self.address)
@@ -60,12 +61,39 @@ class Incident(models.Model):
     def get_address(self):
         geolocator = Nominatim()
         e = geolocator.reverse((self.location.y, self.location.x))
-        self.address = e.address
+
+        prefix = None
+        state = None
+
+        address = e.raw['address']
+
+        if 'state' in address:
+            state = address['state']
+
+        if 'building' in address :
+            prefix = address['building']
+        elif 'village' in address :
+            prefix = address['village']
+        elif 'suburb' in address :
+            prefix = address['suburb']
+        elif 'town' in address :
+            prefix = address['town']
+        elif 'city' in address:
+            prefix = address['city']
+
+        if not prefix or not state:
+            self.address = e.address
+        else:
+            self.address = "{}, {}".format(prefix, state)
+
+        print("Address: {}".format(self.address))
 
 
     def save(self, *args, **kwargs):
         #TODO is one instance efficient?
-        print("saving")
+        # print("saving, location {}".format(self.location))
+        # print(*args)
+        # print(**kwargs)
         self.get_address()
         super(Incident, self).save(*args, **kwargs)
 
@@ -74,7 +102,8 @@ class IncidentAdmin(admin.ModelAdmin):
 
     # fields = ['name', 'age', 'residence']
     #fieldset = {'address', fields = ['type', 'location', 'date', 'description', 'source', 'deaths', 'wounded']
-    fields = ['type', 'location', 'date', 'description', 'source', 'deaths', 'wounded']
+    fields = ['type', 'location', 'date', 'description', 'source',
+              'deaths', 'wounded', 'missing']
     formfield_overrides = {
         geo_models.PointField: {"widget": GooglePointFieldWidget}
     }
@@ -82,23 +111,33 @@ class IncidentAdmin(admin.ModelAdmin):
 
 admin.site.register(Incident, IncidentAdmin)
 
-
 class IncidentForm(forms.ModelForm):
 
     #TODO reposition Cameroon by default and zoom level
     #TODO at least 2 level down
-    location = geo_forms.PointField(widget=geo_forms.OSMWidget(attrs={'map_width':800,
-                                                                      'map_height':500,
-                                                                      ## default_zoom not working
-                                                                      ## version too old?
-                                                                      'default_zoom': 6,
-                                                                      'default_lon': 13.3934,
-                                                                      'default_lat': 9.3226
-                                                                      }))
+    # location = geo_forms.PointField(widget=geo_forms.OSMWidget(attrs={'map_width':800,
+    #                                                                   'map_height':500,
+    #                                                                   ## default_zoom not working
+    #                                                                   ## version too old?
+    #                                                                   'default_zoom': 6,
+    #                                                                   'default_lon': 13.3934,
+    #                                                                   'default_lat': 9.3226,
+    #                                                                   ## map_srid creates confusion
+    #                                                                   ## potential bug
+    #                                                                   ##'map_srid': 4326
+    #                                                                   }))
+
+    date = forms.DateField(
+        widget=forms.TextInput(
+            attrs={'type': 'date'}
+        )
+    )
+
+
     class Meta:
         model = Incident
         fields = ('type', 'location', 'date', 'description',
-                    'source', 'wounded', 'deaths')
+                    'source', 'deaths', 'wounded', 'missing')
 
         widgets = {'location': GooglePointFieldWidget}
 

@@ -5,7 +5,8 @@
 -------------------------------------------------- */
 
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+/*@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');*/
+@import url('https://fonts.googleapis.com/css?family=Lato');
 
 
 html {
@@ -158,18 +159,28 @@ h4 {
     padding: 5px 0px 0px 0px;
 }
 
-#incident-filter {
-    padding-top: 5px;
+.d-text {
+    margin: 40px 0px;
 }
 
-#header {
-    /*background-image: url("../img/red_black_bg.png");
-    background=repeat: repeat-x;*/
+.d-text.first {
+    margin-top: 30px;
+}
+
+.d-text.last {
+    margin-bottom: 50px;
+}
+
+
+
+/*#header {
+    *//*background-image: url("../img/red_black_bg.png");
+    background=repeat: repeat-x;*//*
 }
 
 #header2 {
     background-image: url("../img/mapNdots.svg");
-}
+}*/
 
 #page-header {
     padding: 30px 0px;
@@ -183,18 +194,52 @@ h4 {
     font-weight: bold;
 }
 
-.block {
+.outer-block {
     color: #dddddd;
-    padding-top: 100px;
-    padding-bottom: 10px;
     background-color: #c63d0f;
+}
+
+.block {
+    padding-top: 150px;
+    padding-bottom: 10px;
+    background-image: url(/static/img/cm_map_dots.png);
+    background-repeat: no-repeat;
+    background-position: calc(100%) calc(100% + 245px);
+}
+
+@media screen and (max-width: 768px) { /* Specific to this particular image */
+  .block {
+    padding-top: 20px;
+    padding-bottom: 10px;
+    background-image: url(/static/img/cm_map_dots.png);
+    background-repeat: no-repeat;
+    background-position: calc(100% + 200px) calc(100% + 245px);
+  }
+}
+
+.outer-block-alt {
+    color: #bbbbbb;
+    background-color: #000000;
 }
 
 .block-alt {
     color: #bbbbbb;
     padding-top: 10px;
     padding-bottom: 100px;
-    background-color: #000000;
+    background-image: url(/static/img/cm_map_dots_alt.png);
+    background-repeat: no-repeat;
+    background-position: calc(100%) calc(0% - 255px)
+}
+
+@media screen and (max-width: 768px) { /* Specific to this particular image */
+  .block-alt {
+    color: #bbbbbb;
+    padding-top: 10px;
+    padding-bottom: 100px;
+    background-image: url(/static/img/cm_map_dots_alt.png);
+    background-repeat: no-repeat;
+    background-position: calc(100% + 200px) calc(0% - 255px)
+  }
 }
 
 .project-item {
@@ -216,10 +261,10 @@ h4 {
 
 .footer {
   position: absolute;
-  bottom: 0;
+  bottom: -1.5em;
   width: 100%;
   margin-top: 5px;
-  padding-top: 5px;
+  padding: 35px 0px;
   /* Set the fixed height of the footer here */
   /*height: 60px;*/
   background-color: #000;
@@ -309,4 +354,22 @@ fieldset[disabled] .btn-regular.active {
 .btn-regular .badge {
   color: #000000;
   background-color: #ffffff;
+}
+
+.promotion span {
+    white-space: nowrap;
+}
+
+.promotion .add_item {
+    float: right;
+}
+
+.promotion .add_item a:link, a:visited {
+    color: #F49777;
+    border-bottom: 3px solid #F49777;
+}
+
+.promotion .add_item a:hover {
+    text-decoration: none;
+    border-bottom: 3px solid #e0e0e0;
 }

@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.http import JsonResponse
 
 from rest_framework import viewsets
@@ -64,7 +64,9 @@ def incident_aggregation(request):
 
     queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate, type=type)
 
-    return HttpResponse(JsonResponse(queryset.aggregate(Sum('wounded'), Sum('deaths'))))
+    return HttpResponse(JsonResponse(queryset.aggregate(Sum('wounded'),
+                                                        Sum('deaths'),
+                                                        Sum('missing'))))
 
 
 def incident_geo_serialize(request):
@@ -97,7 +99,7 @@ class IncidentTypeViewSet(viewsets.ModelViewSet):
 
 def filter_query_set(queryset,startdate_str, enddate_str, type ):
 
-    print("startdate: {}, endate: {}, type: {}".format(startdate_str, enddate_str, type))
+    # print("startdate: {}, endate: {}, type: {}".format(startdate_str, enddate_str, type))
 
     if startdate_str is not None:
         startdate = datetime.strptime(startdate_str, "%Y-%m-%d")
@@ -134,13 +136,18 @@ class IncidentViewSet(viewsets.ModelViewSet):
         orderby = self.request.query_params.get('orderby', None)
         order = self.request.query_params.get('order', None)
 
-        #TODO order by 'wounded' not working
+        #TODO descending ordering by deaths and wounded
+        #not working. Why is missing working??
         if orderby is not None:
 
+            #Null stuff https://stackoverflow.com/questions/5235209/django-order-by-position-ignoring-null
+
+            queryset = queryset.annotate(null_stuff=Count(orderby))
+
             if order is not None and order == "ascending":
-                queryset = queryset.order_by(orderby)
+                queryset = queryset.order_by('-null_stuff', orderby)
             else:
-                queryset = queryset.order_by("-{}".format(orderby))
+                queryset = queryset.order_by('-null_stuff', '-{}'.format(orderby))
 
         return queryset
 
