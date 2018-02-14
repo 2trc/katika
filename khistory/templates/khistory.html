@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/khistory.css' %}">
+    <!-- always load the CSS -->
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.knightlab.com/libs/timeline/latest/css/timeline.css">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <span>Kamerun History</span>
+        {%comment%}
+        <span class="add_item">
+            <a href="/khistory/event/add">Add Event</a> &nbsp;
+
+            <a href="/khistory/personnage/add">Add Personnage</a>
+
+        </span>
+        {%endcomment%}
+    </div>
+</section>
+
+<div class="container">
+    <div id="khistory-timeline"></div>
+    <div>Go to <a href="archive">Archive</a></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
+    <!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+
+    <script src="{% static 'js/khistory.js' %}"></script>
+
+    <!-- StoryLine Timeline -->
+    <!--<script type="text/javascript"-->
+            <!--src="https://cdn.knightlab.com/libs/timeline/latest/js/timeline-min.js"></script>-->
+    <script type="text/javascript"
+            src="https://cdn.knightlab.com/libs/timeline/latest/js/storyjs-embed.js"></script>
+    <!-- but no need for both -->
+
+
+    <script>
+        /*var timelineObject = {
+            "timeline":
+            {
+                "headline":"Khistory - Kamerun History",
+                "type":"default",
+                "text":"<p>For the curious ones ;-)</p>",
+
+                "date": [
+                    {
+                        "startDate":"1960,01,01",
+                        "endDate":"1960,01,01",
+                        "headline":"Indépendance de la République du Cameroun",
+                        "text":"<p>Indépendance de la République du Cameroun</p>",
+                        "classname":"optionaluniqueclassnamecanbeaddedhere",
+                        "asset": {
+                            "caption":"Indépendance"
+                        }
+                    },
+                    {
+                        "startDate":"1958,09,13",
+
+                        "headline":"Murder of Ruben Um Nyobe",
+                        "text":"<p>Um is slained by the French army near his natal village of Boumnyebel, in the department of Nyong-et-Kellé in the maquis Bassa</p>",
+                        "tag":"mpodol",
+
+                    },
+                    {
+                        "startDate":"1913,04,10",
+
+                        "headline":"Birth of Ruben Um Nyobe",
+                        "text":"<p>Um Nyobè was born at Song Mpeck in the Cameroon on April 10, 1913, when it was still a colonial possession of Germany.</p>",
+                        "tag":"mpodol",
+                        "classname":"optionaluniqueclassnamecanbeaddedhere",
+                        "asset": {
+                            "media":"http://www.blackpast.org/files/Ruben_um_Nyobe.jpg",
+                            "credit":"http://www.blackpast.org",
+                            "caption":"Um Nyobe"
+                        }
+                    },
+                    {
+                        "startDate":"1868",
+
+                        "headline":"First German trade post",
+                        "text":"<p>The first German trading post in the Duala area (present day Douala) on the Kamerun River delta (present day Wouri River delta) was established in 1868 by the Hamburg trading company C. Woermann. The firm’s agent in Gabon, Johannes Thormählen, expanded activities to the Kamerun River delta</p>",
+                        "classname":"optionaluniqueclassnamecanbeaddedhere",
+
+                    },
+                    {
+                        "startDate":"1860",
+
+                        "headline":"Birth of King Ibrahim Mbouombouo Njoya",
+                        "text":"<p>was 17th in a long dynasty of kings that ruled over Bamum and its people in western Cameroon dating back to the 14th century. He succeeded his father Nsangu,[1] and ruled from 1886 or 1887 until his death in 1933, when he was succeeded by his son, Seidou Njimoluh Njoya. He ruled from the ancient walled city of Fumban.</p>",
+                        "tag":"This is Optional",
+                        "classname":"optionaluniqueclassnamecanbeaddedhere",
+                        "asset": {
+                            "media":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Njoya_of_Bamun.jpg/330px-Njoya_of_Bamun.jpg",
+                            "caption":"King Ibrahim Mbouombouo Njoya"
+                        }
+                    }
+                ],
+                "era": [
+                    {
+                        "startDate":"2011,12,10",
+                        "endDate":"2011,12,11",
+                        "headline":"Kamerun Hisotry",
+                        "text":"<p>Body text goes here, some HTML is OK</p>",
+                        "tag":"This is Optional"
+                    }
+
+                ]
+            }
+        };*/
+
+        var url = "/khistory/api/event";
+        var items = [];
+        var timelineObject = {};
+
+        $.getJSON( url, function( data ) {
+
+          //$.each( data.results, function( key, val ) {
+          //without pagination
+          $.each( data, function( key, val ) {
+
+            item = {
+                "startDate": val.date.replace(/-/g,","),
+                "headline": val.title,
+                "text": val.content,
+                "asset": {}
+            };
+
+            if (val.source ) {
+                item.text += "<div class=\"event-source\"><a href=" + val.source +
+                " target=\"_blank\">Source <i class=\"glyphicon glyphicon-link\"></i></a></div>"
+            }
+
+            if( val.image_url ) {
+                item.asset.media = val.image_url;
+            } else if( val.featured_image ) {
+                item.asset.media = "/static/media/" + val.featured_image;
+            }
+
+            if( val.image_credits ) {
+                item.asset.credit = val.image_credits;
+            }
+
+            if( val.image_caption ) {
+                item.asset.caption = val.image_caption;
+            }
+
+            items.push( item );
+
+          });
+
+          //console.log(items);
+
+            timelineObject = {
+                "timeline":
+                {
+                    "headline":"Khistory - Kamerun History",
+                    "type":"default",
+                    "text":"<p>For the curious ones ;-)</p>",
+
+                    "date": items,
+                    "era": [
+                        {
+                            "startDate":"2011,12,10",
+                            "endDate":"2011,12,11",
+                            "headline":"Headline Goes Here",
+                            "text":"<p>Body text goes here, some HTML is OK</p>",
+                            "tag":"This is Optional"
+                        }
+
+                    ]
+                }
+            };
+
+            console.log(items);
+            console.log(timelineObject);
+
+
+            $(document).ready(function() {
+                createStoryJS({
+                    type:		'timeline',
+                    width:		'100%',
+                    height:		'600',
+                    source:		timelineObject,
+                    embed_id:	'khistory-timeline'
+                });
+            });
+        });
+
+
+
+
+    </script>
+    <!-- END TimelineJS -->
+
+{% endblock %}

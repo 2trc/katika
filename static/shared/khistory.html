@@ -1,0 +1,60 @@
+<section id="page-header">
+    <div class="container">
+        <h1>Khistory - Kamerun History
+        </h1>
+    </div>
+</section>
+
+<div ng-repeat="event in events">
+    <div class="container thesis-block">
+        <!--<div class="thesis-block">-->
+
+            <div class="col-xs-8 col-md-8 thesis-content">
+                <span class="thesis-date">{{event.date}} </span>
+
+                <span class="thesis-title">{{event.title}}
+                </span>
+
+                <p>{{event.content}}</p>
+
+                <div ng-show="event.personnages.length">
+                    With:
+                    <span class="thesis-supervisor" ng-repeat="personnage in event.personnages">
+                    {{personnage.last_name}} {{personnage.first_name}}, </span>
+                </div>
+            <!--</div>-->
+        </div>
+  </div>
+</div>
+<!--</div>-->
+<div class="container">
+      <ul class="pagination" ng-show="pages.next || pages.previous ">
+
+          <li ng-show="pages.previous">
+            <a ng-click="gotoPage(pages.previous)">&laquo;</a>
+          </li>
+
+          <li ng-show="!pages.previous" class="disabled"><span>&laquo;</span></li>
+
+          <!-- <li ng-repeat="ii in [pages.range_min.. pages.range_max]" class="active">
+          <a ng-click="gotoPage(ii)">(current) {{ii}}</a>
+          </li> -->
+
+
+          <!-- {% for i in incidents.paginator.page_range %}
+                      {% if incidents.number == i %}
+                        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li><a href="?page={{ i }}">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %} -->
+
+            <li class="active"><span>{{ pages.page }}/{{pages.num_pages}} <span class="sr-only">(current)</span></span></li>
+
+            <!-- <li><a href="?page={{ i }}">{{ pages.page }}</a></li> -->
+          <li ng-show="pages.next"><a ng-click="gotoPage(pages.next)">&raquo;</a></li>
+
+          <li ng-show="!pages.next" class="disabled"><span>&raquo;</span></li>
+      </ul>
+
+</div>

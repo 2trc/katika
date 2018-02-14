@@ -1,0 +1,61 @@
+.thesis-block{
+    padding: 20px 0px 25px;
+    border-bottom: 2px solid #f0f2f4;
+    font-size: 11pt;
+    line-height: 1.5em;
+}
+
+.thesis-content{
+    /*border-bottom: 2px solid #f0f2f4;*/
+}
+
+.thesis-block img{
+  width: 100%;
+  height: auto;
+}
+
+.thesis-author {
+    /*font-size: 16px;*/
+    color: #000
+}
+
+.thesis-supervisor {
+    font-size:0.7em;
+    color: #000
+}
+
+.thesis-committee {
+    color: #000
+}
+
+.thesis-block .logo {
+    margin-right:1px;
+    width: 100px;
+    float: left;
+}
+
+
+.thesis-title {
+    padding-bottom: 10px;
+    /*font-size: 1.5em;
+    font-weight: 500;*/
+    font-weight: 600;
+    font-family: 'Lato', 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
+
+.thesis-date {
+    font-size: 0.9em;
+    color: #565656;
+}
+
+.thesis-link{
+    padding-bottom: 20px;
+}
+
+.event-source {
+    padding-top: 15px;
+}
+
+.promotion {
+    margin-bottom: 5px;
+}
