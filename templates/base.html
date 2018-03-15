@@ -6,8 +6,24 @@
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
     <head>
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-114334932-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-114334932-1');
+        </script>
+
+
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="Data Visualization, Data Project and Infographics for waking
+            consciences in Cameroon. Increase Transparency and fighting Corruption">
+        <meta name="keywords" content="Cameroon, Katika, Corruption, Data, Transparency,
+            Visualization, Cameroun">
         <title>
             {%comment%}
             {% block title %}
@@ -76,8 +92,9 @@
 
                     <ul class="dropdown-menu">
                     <li><a href="/incident/">Incidents</a></li>
-                    <li><a href="/kthesis/">Theses</a></li>
                     <li><a href="/khistory">Kamerun History</a></li>
+                    <li><a href="/kthesis/">Theses</a></li>
+
                     {%comment%}
                         <li><a href="#">Register NGOs...</a></li>
                         <li><a href="#">Eseka case</a></li>
@@ -100,7 +117,20 @@
                 </li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li><a href="/about">ABOUT</a></li>
+                  <li><a href="/about">ABOUT</a></li>
+                  {%if user.is_authenticated %}
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                          <i class="glyphicon glyphicon-user"></i> {{user.username}}
+                          <span class="caret"></span>
+                      </a>
+                        <ul class="dropdown-menu">
+                        <li><a href="/logout">LOGOUT</a></li>
+                        </ul>
+                    </li>
+                  {%else%}
+                  <li><a href="/login">LOGIN</a></li>
+                  {%endif%}
                 <!--
                 <li class="active"><a href="./">Static top <span class="sr-only">(current)</span></a></li>
                 <li><a href="#">Contact</a></li>

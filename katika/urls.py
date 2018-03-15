@@ -4,11 +4,12 @@ from django.conf.urls import include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.views.i18n import set_language
+from django.contrib.auth import views as auth_views
 
 from mezzanine.core.views import direct_to_template
 from mezzanine.conf import settings
 
-from katika.views import busted, home, about
+from katika.views import home, about
 import eseka
 
 
@@ -57,7 +58,7 @@ urlpatterns += [
     # NOTE: Don't forget to import the view function too!
 
     # url("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
-    url("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
+    # url("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
     #url("^eseka/", include("eseka.urls")),
 
     #url(r'^incident/', include('incident.urls')),
@@ -67,6 +68,15 @@ urlpatterns += [
     url(r'^$', home, name='home'),
     #url(r'anycluster/', include('anycluster.urls')),
     url(r'^blog/', include('kblog.urls')),
+
+
+    ## User mgnmt, signup, login, logout
+    # https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
+
+    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+
 
     # HOMEPAGE FOR A BLOG-ONLY SITE
     # -----------------------------

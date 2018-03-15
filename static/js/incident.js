@@ -75,17 +75,19 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
      // $scope.orderIcon = "glyphicon glyphicon-arrow-down";
      $scope.orderIcon = "glyphicon glyphicon-sort-by-attributes-alt";
 
-     console.log("initializing order");
-     console.log($scope.orderIcon);
+     //console.log("initializing order");
+     //console.log($scope.orderIcon);
   }
 
   //var self = this;
 
   $scope.incidentTypes = [];
+  $scope.tags_facet = []
   $scope.incident = {};
   $scope.incidents = [];
   $scope.pages = {};
   $scope.orderType ="";
+  $scope.selectedTag = "";
   $scope.prevOrderType="";
   $scope.orderIcon ="";
   $scope.isAscendingOrder = false;
@@ -100,44 +102,16 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   $scope.datePicker = { 'date': {startDate: null, endDate: null} };
 
 
-  incidentsQuery = function() {
-    queryUrl = getQueryUrl();
 
-    url = '/incident/api?' + queryUrl;
-    console.log('url: ' + url);
-
-    incidentService.get(url)
-    .then(function(incidents) {
-
-      $scope.incidents = incidents.results;
-      $scope.incidentCount = incidents.count;
-      $scope.pages = incidents;
-      $scope.pages.results = undefined;
-      console.log($scope.incidents);
-      console.log($scope.pages);
-    });
-
-    url = '/incident/aggregate?' + queryUrl;
-    incidentService.get(url)
-    .then(function(result) {
-      $scope.woundedCount = result.wounded__sum;
-      $scope.deathsCount= result.deaths__sum;
-      $scope.missingCount= result.missing__sum;
-    })
-/*    .then(function() {
-        clusterer.removeAllMarkers();
-    })*/
-
-  }
 
   $scope.applyDateRange = function(ev, picker) {
-    console.log('date range applied');
+    /*console.log('date range applied');
     console.log(ev);
     console.log(picker);
-    console.log("daterange: " + JSON.stringify($scope.datePicker));
+    console.log("daterange: " + JSON.stringify($scope.datePicker));*/
 
     var filters = buildFilters();
-    console.log("filters"); console.log(filters);
+    //console.log("filters"); console.log(filters);
     clusterer.filter(filters);
 
     incidentsQuery();
@@ -150,7 +124,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
     if($scope.typeSelected && $scope.incidentTypes.indexOf($scope.typeSelected)!=-1){
         var filters = buildFilters();
-        console.log("filters"); console.log(filters);
+        //console.log("filters"); console.log(filters);
         clusterer.filter(filters);
     }
 
@@ -160,7 +134,54 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   }
 
   /*
+  * Choose 'tag' filter
+  */
+  $scope.filterByTag = function( selectedTag ) {
+
+    if($scope.selectedTag.id === selectedTag.id){
+
+        return $scope.deselectTag();
+
+    }
+
+    $scope.selectedTag = selectedTag;
+
+    if( !selectedTag ){
+        return;
+    }
+
+    var filters = buildFilters();
+    clusterer.filter(filters);
+    incidentsQuery();
+    clusterer.cluster(false);
+
+  }
+
+  /**
+  **/
+  $scope.tagClassOption = function( tag ){
+    if($scope.selectedTag.id == tag.id){
+        return "tag-selected";
+    }else{
+        return "tag-default";
+    }
+  }
+
+  /*
+
+  */
+  $scope.deselectTag = function() {
+    $scope.selectedTag = "";
+    var filters = buildFilters();
+    clusterer.filter(filters);
+    incidentsQuery();
+    clusterer.cluster(false);
+  }
+
+
+  /*
     Create filter array for modified AnyCluster query
+    TODO Anycluster and tagging not working any longer
   */
   buildFilters = function() {
 
@@ -181,9 +202,24 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         filters.push({'date':{"values": dateToString(enddate) , "operator":"<="}});
     }
 
+    if($scope.selectedTag){
+        tags_string = get_tags_string($scope.selectedTag)
+        filters.push({'tags_string' :{"values": tags_string, "operator": "contains"}});
+    }
+
     return filters;
+  }
 
+  function get_tags_string(tag){
 
+    tags_string = ""
+
+    if(tag.name)
+        tags_string += tag.name + ","
+    if(tag.name_fr)
+        tags_string += tag.name_fr
+
+    return tags_string
   }
 
   $scope.orderTypeChanged = function() {
@@ -235,7 +271,11 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         }
     }
 
-    console.log($scope.typeSelected);
+    if($scope.selectedTag){
+        queryUrl += "&tags_string=" + get_tags_string($scope.selectedTag);
+    }
+
+    //console.log($scope.typeSelected);
 
     if($scope.typeSelected && $scope.incidentTypes.indexOf($scope.typeSelected)!=-1){
         queryUrl += "&type="+ String($scope.typeSelected.name);
@@ -256,8 +296,8 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         $scope.orderIcon = "glyphicon glyphicon-sort-by-attributes-alt";
     }
 
-    console.log("inverting order");
-    console.log($scope.isAscendingOrder);
+    //console.log("inverting order");
+    //console.log($scope.isAscendingOrder);
 
   }
 
@@ -267,7 +307,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
     return someDate.format('YYYY-MM-DD');
   }
 
-  incidentService.get('/incident/api/')
+  /*incidentService.get('/incident/api/')
     .then(function(incidents) {
 
       $scope.incidents = incidents.results;
@@ -285,7 +325,49 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
       $scope.woundedCount = result.wounded__sum;
       $scope.deathsCount= result.deaths__sum;
       $scope.missingCount= result.missing__sum;
+    });*/
+
+  incidentsQuery = function() {
+
+    queryUrl = getQueryUrl();
+
+    url = '/incident/api?' + queryUrl;
+    //console.log('url: ' + url);
+
+    incidentService.get(url)
+    .then(function(incidents) {
+
+      $scope.incidents = incidents.results;
+      $scope.incidentCount = incidents.count;
+      $scope.pages = incidents;
+      $scope.pages.results = undefined;
+      //console.log($scope.incidents);
+      //console.log($scope.pages);
     });
+
+    url = '/incident/aggregate?' + queryUrl;
+    //console.log('url: ' + url);
+    incidentService.get(url)
+    .then(function(result) {
+      $scope.woundedCount = result.wounded__sum;
+      $scope.deathsCount= result.deaths__sum;
+      $scope.missingCount= result.missing__sum;
+    });
+
+    url = '/incident/tags_facet?' + queryUrl;
+    //console.log('url: ' + url);
+    incidentService.get(url)
+    .then(function(result) {
+      $scope.tags_facet = result;
+      //console.log(JSON.stringify($scope.tags_facet));
+    })
+/*    .then(function() {
+        clusterer.removeAllMarkers();
+    })*/
+
+  }
+
+  incidentsQuery();
 
   incidentService.get('/incident/api/type/')
     .then(function(types){
@@ -295,19 +377,23 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
     });
 
   $scope.gotoPage = function(pageUrl){
-    console.log("daterange: " + JSON.stringify($scope.datePicker));
-    console.log(typeof($scope.datePicker.date.startDate));
-    incidentService.get(pageUrl)
+    //console.log("daterange: " + JSON.stringify($scope.datePicker));
+    //console.log(typeof($scope.datePicker.date.startDate));
+
+    // Currently due to nginx proxy, django is returning 'localhost'
+    var url = new URL(pageUrl);
+
+    incidentService.get(url.pathname + url.search)
     .then(function(incidents) {
 
       $scope.incidents = incidents.results;
       $scope.pages = incidents;
       $scope.pages.results = undefined;
-      console.log($scope.incidents);
-      console.log($scope.pages);
+      //console.log($scope.incidents);
+      //console.log($scope.pages);
 
       // scroll to page top
-      console.log("anchor scrolling");
+      //console.log("anchor scrolling");
       $window.scrollTo(0, angular.element('#incident-filter').offsetTop);
 
     });
@@ -319,8 +405,8 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
     var data = $scope.incident;
     data.date = $filter('date')(data.date, 'yyyy-MM-dd');
 
-    console.log("submit function()");
-    console.log(data);
+    //console.log("submit function()");
+    //console.log(data);
 
     incidentService.post('/incident/api/', data)
       .then( function (res_data) {
@@ -332,8 +418,8 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
             $scope.incident = {};
           }
 
-          console.log($scope.response);
-          console.log($scope.error);
+          //console.log($scope.response);
+          //console.log($scope.error);
 
       });
     };
@@ -475,7 +561,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
             ids: ids
         };
 
-        console.log(marker);
+        //console.log(marker);
 
         clusterer.markerList.push(marker);
 
@@ -501,7 +587,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
             ids: ids
         };
 
-        console.log(marker);
+        //console.log(marker);
 
         clusterer.markerList.push(marker);
 
@@ -1036,6 +1122,7 @@ incidentApp.config(function($routeProvider) {
 //       controller : "IncidentController"
 //   })
    .otherwise({
+      //console.log(JSON.stringify(location));
       redirectTo: '/'
     });
 });

@@ -13,16 +13,39 @@
     </div>
 </section>
 
+<div class="container search-box">
+    <div class="row">
+        <div class="col-xs-10 col-md-8">
+            <form id="mySearch" class="input-group" action="/kthesis" method="get">
+              <input id="q" type="search" class="form-control" placeholder="Search for..."
+                name="q">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+              </span>
+            </form><!-- /input-group -->
+        </div>
+    </div>
+</div>
+
 {% if selected_author %}
 <div class="container">
-    <a href="/kthesis">Authors</a>»
+    <a href="/kthesis">All</a>»
     {{selected_author.last_name}} {{selected_author.first_name}}
+</div>
+{% endif %}
+
+{% if selected_year %}
+<div class="container">
+    <a href="/kthesis">All</a>»
+    {{selected_year}}
 </div>
 {% endif %}
 
 {% if selected_university %}
 <div class="container">
-    <a href="/kthesis">Universities</a>>>
+    <a href="/kthesis">All</a>>>
     {{selected_university.name}}
     {% if thesis.university.link%}
     <span>External <a href={{thesis.university.link}}" target="_blank">link</a></span>
@@ -30,96 +53,161 @@
 </div>
 {% endif %}
 
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-8">
 {% for thesis in theses %}
-    <div class="container thesis-block">
-        <div class="logo">
-            {% if thesis.university %}
-                <a href="/kthesis/university/{{thesis.university.id}}">
-                    <img src= "{{thesis.university.featured_image.url}}" alt=""/>
-                    </span>
-                </a>
-            {% endif %}
-        </div>
-        <div class="col-xs-8 col-md-8 thesis-content">
-            <div>
-                <span>
-                    <a href="/kthesis/scholar/{{thesis.author.slug}}">
-                        {{thesis.author.last_name}} {{thesis.author.first_name}}
-                    </a>
-                </span>:
-            </div>
-            <div class="thesis-title">{{thesis.title}}
-                {% if thesis.link %}
-                <span class="thesis-link">
-                    <a href="{{thesis.link}}" target="_blank">
-                        <i class="glyphicon glyphicon-link"></i>
-                    </a>
-                </span>
-                {% endif %}
-                <span class="thesis-date">{{thesis.date}}</span>
-            </div>
-
-            <p>{{thesis.abstract}}</p>
-
-            {% if thesis.supervisors.all %}
-                <div>
-                    Supervisors:
-                    {% for supervisor in thesis.supervisors.all %}
-                    <span class="thesis-supervisor">
-                        <a href="/kthesis/scholar/{{supervisor.slug}}">
-                            {{supervisor.last_name}} {{supervisor.first_name}}
-                        </a>,
-                    </span>
-                    {% endfor %}
+            <div class="thesis-block">
+                <div class="logo">
+                    {% if thesis.university %}
+                        <a href="/kthesis/university/{{thesis.university.id}}">
+                            <img src= "{{thesis.university.featured_image.url}}" alt=""/>
+                            </span>
+                        </a>
+                    {% endif %}
                 </div>
-            {% endif %}
-
-            {% if thesis.committee.all %}
-                <div>
-                    Committee:
-                    {% for jury in thesis.committee.all %}
-                        <span class="thesis-committee">
-                            <a href="/kthesis/scholar/{{jury.slug}}">
-                                {{jury.last_name}} {{jury.first_name}}
-                            </a>,
+                <div class="thesis-content">
+                    <div>
+                        <span>
+                            <a href="/kthesis/scholar/{{thesis.author.slug}}">
+                                {{thesis.author.last_name}} {{thesis.author.first_name}}
+                            </a>
+                        </span>&nbsp;
+                        <span class="thesis-date">{{thesis.year}}</span>
+                    </div>
+                    <div class="thesis-title">{{thesis.title}}
+                        {% if thesis.link %}
+                        <span class="thesis-link">
+                            <a href="{{thesis.link}}" target="_blank">
+                                <i class="glyphicon glyphicon-link"></i>
+                            </a>
                         </span>
-                    {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    {% if thesis.supervisors.all %}
+                        <div>
+                            Supervisors:
+                            {% for supervisor in thesis.supervisors.all %}
+                            <span class="thesis-supervisor">
+                                <a href="/kthesis/scholar/{{supervisor.slug}}">
+                                    {{supervisor.last_name}} {{supervisor.first_name}}
+                                </a>,
+                            </span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if thesis.committee.all %}
+                        <div>
+                            Committee:
+                            {% for jury in thesis.committee.all %}
+                                <span class="thesis-committee">
+                                    <a href="/kthesis/scholar/{{jury.slug}}">
+                                        {{jury.last_name}} {{jury.first_name}}
+                                    </a>,
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if thesis.faculty%}
+                    <div>
+                        Faculty: <span class="thesis-faculty">{{thesis.faculty}}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if thesis.department %}
+                    <div>
+                        <span class="thesis-department">Department: {{thesis.department}}</span>
+                    </div>
+                    {% endif %}
+
+                    {%if thesis.abstract%}
+                        <div class="thesis-abstract">
+                            <div class="abstract-header">Abstract</div>
+                            {%if selected_author %}
+                                <p>{{thesis.abstract}}</p>
+                            {%else%}
+                                <p>{{thesis.abstract|slice:"0:250"}}...</p>
+                            {%endif%}
+                        </div>
+                    {%endif%}
+                    <div>
+                        {%for tag in thesis.keywords_en.names%}
+                        <span class="thesis-department">{{tag}} </span>
+                        {%endfor%}
+                    </div>
+
                 </div>
-            {% endif %}
-
-            {% if thesis.faculty%}
-            <div>
-                Faculty: <span class="thesis-faculty">{{thesis.faculty}}</span>
             </div>
-            {% endif %}
-
-            {% if thesis.department %}
-            <div>
-                <span class="thesis-department">Department: {{thesis.department}}</span>
-            </div>
-            {% endif %}
-        </div>
-  </div>
 {% endfor %}
+        </div>
+        <div class="col-xs-8 col-md-3 facet">
+            <!--<div>facet categories</div>-->
+            {% if university_facet %}
+            <div class="item">
+                <div class="facet-header">
+                    <span class="text">Universities</span>
+                </div>
+                <div class="facet-body">
+                {% for univ in university_facet %}
+                        <div>
+                        {% if univ.name %}
+                            <a href="/kthesis/university/{{univ.id}}">
+                                {{univ.name}} ({{univ.num_thesis}})
+                            </a>
+                        {% elif univ.num_thesis %}
+                            Unknown {{univ.num_thesis}}
+                        {% endif %}
+                        </div>
+
+
+                {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% if year_facet %}
+            <div class="item">
+                <div class="facet-header"><span class="text">Year</span></div>
+                <div class="facet-body">
+                    {% for year in year_facet %}
+                        <div>
+                        {% if year.year %}
+                            <a href="/kthesis/year/{{year.year}}">
+                                {{year.year}} ({{year.total}})
+                            </a>
+                        {% elif year.total %}
+                            Unknown ({{year.total}})
+                        {% endif %}
+                        </div>
+
+                {% endfor %}
+                </div>
+            </div>
+            {%endif%}
+        </div>
+    </div>
+  </div>
 
 <div class="container">
 
     {% if theses.has_other_pages %}
       <ul class="pagination">
-        {% if users.has_previous %}
-          <li><a href="?page={{ users.previous_page_number }}">&laquo;</a></li>
+        {% if theses.has_previous %}
+          <li><a href="?page={{ theses.previous_page_number }}">&laquo;</a></li>
         {% else %}
           <li class="disabled"><span>&laquo;</span></li>
         {% endif %}
-        {% for i in users.paginator.page_range %}
-          {% if users.number == i %}
+        {% for i in theses.paginator.page_range %}
+          {% if theses.number == i %}
             <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
           {% else %}
             <li><a href="?page={{ i }}">{{ i }}</a></li>
           {% endif %}
         {% endfor %}
-        {% if users.has_next %}
-          <li><a href="?page={{ users.next_page_number }}">&raquo;</a></li>
+        {% if theses.has_next %}
+          <li><a href="?page={{ theses.next_page_number }}">&raquo;</a></li>
         {% else %}
           <li class="disabled"><span>&raquo;</span></li>
         {% endif %}
@@ -136,7 +224,14 @@
     <!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
     <!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>-->
 
-    <script src="{% static 'js/kthesis.js' %}"></script>
+    <!--<script src="{% static 'js/kthesis.js' %}"></script>-->
+    <!--<script type="text/javascript">-->
+        <!--document.getElementById('mySearch').onsubmit = function() {-->
+            <!--console.log("Boom");-->
+            <!--window.location = '/kthesis?q=' + document.getElementById('q').value;-->
+            <!--return false;-->
+        <!--}-->
+    <!--</script>-->
 {% endblock %}

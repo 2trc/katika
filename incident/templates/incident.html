@@ -14,9 +14,13 @@
     <div class="promotion">
         <div class="container">
             <span>Incident reporting and visualizing</span>
-            {%comment%}
-            <span class="add_item"><a href="/incident/add">REPORT NEW</a></span>
-            {%endcomment%}
+            {% comment %}
+            {%if user.is_authenticated%}
+            {% endcomment%}
+                <span class="add_item"><a href="/incident/add">REPORT NEW</a></span>
+            {% comment %}
+            {%endif%}
+            {% endcomment %}
 
         </div>
     </div>

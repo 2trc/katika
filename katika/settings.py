@@ -129,7 +129,15 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = False
 
-AUTHENTICATION_BACKENDS = ("mezzanine.core.auth_backends.MezzanineBackend",)
+AUTHENTICATION_BACKENDS = (
+    "mezzanine.core.auth_backends.MezzanineBackend",
+
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # The numeric mode to set newly-uploaded files to. The value should be
 # a mode you'd pass directly to os.chmod.
@@ -221,6 +229,9 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "mezzanine.conf.context_processors.settings",
                 "mezzanine.pages.context_processors.page",
+
+                "social_django.context_processors.backends",  # <--
+                "social_django.context_processors.login_redirect", # <--
             ],
             "builtins": [
                 "mezzanine.template.loader_tags",
@@ -257,6 +268,8 @@ INSTALLED_APPS = (
     "mezzanine.twitter",
     # "mezzanine.accounts",
     # "mezzanine.mobile",
+    "social_django",
+
     'person',
     'eseka',
     'incident',
@@ -269,6 +282,8 @@ INSTALLED_APPS = (
     'crispy_forms',
     'django.contrib.gis',
     'anycluster',
+    #'taggit',
+    'tagulous',
 )
 
 MAP_WIDGETS = {
@@ -299,6 +314,9 @@ REST_FRAMEWORK = {
 ANYCLUSTER_GEODJANGO_MODEL = "incident.Incident"
 ANYCLUSTER_COORDINATES_COLUMN = "location"
 
+LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+
 # List of middleware classes to use. Order is important; in the request phase,
 # these middleware classes will be applied in the order given, and in the
 # response phase the middleware will be applied in reverse order.
@@ -323,6 +341,8 @@ MIDDLEWARE_CLASSES = (
     "mezzanine.core.middleware.SitePermissionMiddleware",
     "mezzanine.pages.middleware.PageMiddleware",
     "mezzanine.core.middleware.FetchFromCacheMiddleware",
+
+    "social_django.middleware.SocialAuthExceptionMiddleware",
 )
 
 # Store these package names here as they may change in the future since

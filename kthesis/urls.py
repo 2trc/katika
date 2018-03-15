@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^$', views.kthesis_home),
     url(r'^scholar/(?P<slug>[-\w]+)', views.kthesis_author),
     url(r'^university/(?P<id>[\d]+)', views.kthesis_university),
+    url(r'^year/(?P<id>[\d]+)', views.kthesis_year),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

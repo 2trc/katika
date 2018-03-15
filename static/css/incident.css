@@ -72,3 +72,38 @@ input[type="month"] {
 .promotion p {
     font-size: 1.2em;
 }
+
+.tag-list {
+    border-bottom: 2px solid #f0f2f4;
+    margin: 15px 0px;
+    padding-bottom: 15px;
+}
+
+.tags {
+    margin: 15px 0px 0px;
+}
+
+@media (max-width: 767px) {
+    .tags {
+        margin: 15px 0px;
+    }
+}
+
+.tag {
+    border-radius: 3px;
+    margin: 2px;
+    padding: 5px 10px;
+    display: inline-block;
+}
+
+.tag-default {
+    background-color: #F0F0F0;
+}
+
+.tag-selected, .tag:hover {
+    background-color: #fcff81;
+}
+
+.tag-selected:hover {
+    background-color: #fd4e4e;
+}

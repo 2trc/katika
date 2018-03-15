@@ -7,11 +7,16 @@ from mezzanine.core.fields import RichTextField
 from mezzanine.utils.models import upload_to
 from mezzanine.core.fields import FileField
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
+from mezzanine.generic.fields import KeywordsField
 
 from mezzanine.utils.urls import unique_slug
 from django.utils.text import slugify
 
 from kthesis.models import unique_slug_max_length
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Div, ButtonHolder, Submit
 
 import uuid
 
@@ -37,6 +42,15 @@ admin.site.register(Personnage)
 class Event(models.Model):
 
     date = models.DateField('date')
+    importance = models.IntegerField(choices=((1, _("LOW")),
+                                              (2, _("MEDIUM")),
+                                              (3, _("HIGH"))),
+                                     default=1)
+    accuracy = models.IntegerField(choices=((1, _("DAY")),
+                                            (2, _("MONTH")),
+                                            (3, _("YEAR"))),
+                                   default=1)
+
     title = models.TextField()
     content = RichTextField(blank=True, null=True)
     personnages = models.ManyToManyField(Personnage, blank=True, related_name='personnages')
@@ -51,7 +65,10 @@ class Event(models.Model):
     source = models.URLField(blank=True, null=True)
     slug = models.SlugField(max_length=255, blank=True, null=True)
 
-    # Keywords?
+    reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+    tags = KeywordsField()
+
+
 
     def save(self, *args, **kwargs):
 
@@ -90,9 +107,24 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-admin.site.register(Event)
-
 class EventForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'History event',
+                Div('date', 'importance'),
+                'title',
+                'content',
+                Div('image_url', 'image_credits', 'image_caption'),
+                'source'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='button white')
+            )
+        )
+        super(EventForm, self).__init__(*args, **kwargs)
 
     date = forms.DateField(
         widget=forms.TextInput(
@@ -102,9 +134,15 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        #fields = '__all__'
-        exclude = ('personnage', 'featured_image',)
+        exclude = ('personnage', 'featured_image', 'tags', 'reported_by', 'slug')
 
+
+# class EventAdmin(admin.ModelAdmin):
+#     class Meta:
+#         form = EventForm
+
+#admin.site.register(Event, EventAdmin)
+admin.site.register(Event)
 
 class PersonnageForm(forms.ModelForm):
 

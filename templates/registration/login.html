@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% load crispy_forms_tags %}
+{% crispy form %}
+
+{% block content %}
+<div class="container" style="padding-top:20px">
+  <h2 class="form-signin-heading">Please log in</h2>
+  <form method="post" style="max-width:300px">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-lg btn-regular" type="submit">Login</button>
+  </form>
+  <p><strong>-- OR --</strong></p>
+  <a href="{% url 'social:begin' 'twitter' %}">Login with Twitter</a><br>
+  <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a>
+</div>
+{% endblock %}
