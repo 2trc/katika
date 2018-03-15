@@ -27,9 +27,18 @@ class EventViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = EventSerializer
-    queryset = Event.objects.all()
-
     pagination_class = NotPaginatedSetPagination
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned purchases to a given user,
+        by filtering against a `username` query parameter in the URL.
+        """
+        queryset = Event.objects.all()
+        # 1 - ALL
+        importance = self.request.query_params.get('importance', 1)
+
+        return queryset.filter(importance__gte=importance)
 
 
 class PersonnageViewSet(viewsets.ModelViewSet):
@@ -45,7 +54,13 @@ def add_event(request):
     form = EventForm(data=request.POST or None, label_suffix='')
 
     if request.method == 'POST' and form.is_valid():
-        form.save()
+        event = form.save(commit=False)
+
+        if not request.user.is_anonymous:
+            event.reported_by = request.user
+
+        event.save()
+
         return HttpResponseRedirect('/khistory')
 
     return render(request, 'add_event.html', {'form': form})

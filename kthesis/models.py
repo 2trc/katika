@@ -7,14 +7,21 @@ from mezzanine.utils.models import upload_to
 from django.utils.translation import ugettext_lazy as _
 
 from mezzanine.utils.urls import unique_slug
+
 from django.utils.text import slugify
 
+#customizing admin list forms
+#https://djangobook.com/customizing-change-lists-forms/
+################################################################
+#
+#   fields are by default in English, if French is also available
+#   then _fr carries the French version
+#
+################################################################
 
 class Scholar(Person):
 
     slug = models.SlugField(blank=True, null=True)
-
-    # Keywords?
 
     def save(self, *args, **kwargs):
 
@@ -37,16 +44,21 @@ class Scholar(Person):
 class ScholarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scholar
-        #fields = '__all__'
         exclude = ('id',)
 
 
-admin.site.register(Scholar)
+class ScholarAdmin(admin.ModelAdmin):
+    list_display = ('last_name', 'first_name', 'sex')
+    search_fields = ('last_name', 'first_name')
+
+admin.site.register(Scholar, ScholarAdmin)
 
 
 class Degree(models.Model):
     name = models.CharField(max_length=50)
+    name_fr = models.CharField(max_length=50, blank=True)
     abbreviation = models.CharField(null=True, max_length=10)
+    abbreviation_fr = models.CharField(null=True, max_length=10)
 
     def __str__(self):
         return "{}".format(self.abbreviation)
@@ -63,6 +75,7 @@ admin.site.register(Degree)
 
 class University(models.Model):
     name = models.CharField(max_length=255)
+    name_fr = models.CharField(max_length=255, blank=True)
     city = models.CharField(null=True, max_length=30)
     country = models.CharField(null=True, default="Cameroon", max_length=30)
     address = models.CharField(blank=True, null=True, max_length=30)
@@ -87,9 +100,38 @@ class UniversitySerializer(serializers.ModelSerializer):
 admin.site.register(University)
 
 
+class KeywordEn(models.Model):
+
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Keywords (English)'
+        ordering = ['name']
+
+
+class KeywordFr(models.Model):
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Keywords (French)'
+        ordering = ['name']
+
+
+admin.site.register(KeywordEn)
+admin.site.register(KeywordFr)
+
+
 class Thesis(models.Model):
     title = models.TextField()
+    title_fr = models.TextField(blank=True, null=True)
     abstract = models.TextField(blank=True, null=True)
+    abstract_fr = models.TextField(blank=True, null=True)
     author = models.ForeignKey(Scholar, blank=True, null=True, on_delete=models.SET_NULL)
     degree = models.ForeignKey(Degree, blank=True, null=True, on_delete=models.SET_NULL)
     supervisors = models.ManyToManyField(Scholar, blank=True, related_name='supervisors')
@@ -98,9 +140,11 @@ class Thesis(models.Model):
     university = models.ForeignKey(University, blank=True, null=True, on_delete=models.SET_NULL)
     faculty = models.CharField(blank=True, null=True, max_length=255)
     department = models.CharField(blank=True, null=True, max_length=255)
-    date = models.PositiveSmallIntegerField(blank=True, null=True)
+    year = models.PositiveSmallIntegerField(blank=True, null=True)
     slug = models.SlugField(blank=True, null=True)
-    # Keywords?
+
+    keywords = models.ManyToManyField(KeywordEn, blank=True)
+    keywords_fr = models.ManyToManyField(KeywordFr, blank=True)
 
     def save(self, *args, **kwargs):
 
@@ -115,13 +159,13 @@ class Thesis(models.Model):
 
     def __str__(self):
         if self.author:
-            return "{}, {}, {}".format(self.author.last_name, self.title, self.date)
+            return "{}, {}, {}".format(self.author.last_name, self.title, self.year)
         else:
-            return "{}, {}".format(self.title, self.date)
+            return "{}, {}".format(self.title, self.year)
 
     class Meta:
         verbose_name_plural = 'Theses'  # ?
-        ordering = ['-date']
+        ordering = ['-year']
 
 
 def unique_slug_max_length(queryset, slug_field, slug, max_length):
@@ -172,4 +216,13 @@ class ThesisSerializer(serializers.ModelSerializer):
         exclude = ('id',)
 
 
-admin.site.register(Thesis)
+class ThesisAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'year', 'university')
+    search_fields = ('title', 'author')
+    list_filter = ('university', 'year')
+    filter_horizontal = ('supervisors', 'committee')
+    raw_id_fields = ('author',)
+
+
+admin.site.register(Thesis, ThesisAdmin)
+#tagulous.admin.register(Thesis)

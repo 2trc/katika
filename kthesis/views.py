@@ -2,9 +2,16 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
 from .models import ThesisSerializer, Thesis, ScholarSerializer, Scholar,\
     University, UniversitySerializer
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+# Full-text search stuff
+# http://blog.lotech.org/postgres-full-text-search-with-django.html
+from django.db.models.functions import Concat
+from django.db.models import TextField, Value as V
+from django.contrib.postgres.aggregates import StringAgg
+from django.contrib.postgres.search import SearchVector
 
 
 #https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html
@@ -12,6 +19,13 @@ def kthesis_home(request):
 
     thesis_set = Thesis.objects.all()
     page = request.GET.get('page', 1)
+
+    print(request.GET)
+
+    query_str = request.GET.get('q')
+
+    if(query_str):
+        thesis_set = perform_thesis_search(thesis_set, query_str)
 
     paginator = Paginator(thesis_set, 10)
     try:
@@ -21,7 +35,24 @@ def kthesis_home(request):
     except EmptyPage:
         theses = paginator.page(paginator.num_pages)
 
-    return render(request, 'kthesis.html', context={'theses': theses})
+    return render(request, 'kthesis.html', context= build_context_from_thesis_set(theses))
+
+
+def perform_thesis_search(thesis_set, query_str):
+    vector = SearchVector('title', weight='A') + \
+             SearchVector('title_fr', weight='A') + \
+             SearchVector('abstract', weight='C') + \
+             SearchVector('abstract_fr', weight='C') + \
+             SearchVector('author__last_name', weight='C') + \
+             SearchVector('author__first_name', weight='C') + \
+             SearchVector(StringAgg('supervisors__last_name', delimiter=' '), weight='C') + \
+             SearchVector(StringAgg('supervisors__first_name', delimiter=' '), weight='C') + \
+             SearchVector(StringAgg('committee__last_name', delimiter=' '), weight='C') + \
+             SearchVector(StringAgg('committee__first_name', delimiter=' '), weight='C') + \
+             SearchVector(StringAgg('keywords__name', delimiter=' '), weight='B') + \
+             SearchVector(StringAgg('keywords_fr__name', delimiter=' '), weight='B')
+
+    return thesis_set.annotate(document=vector).filter(document=query_str)
 
 
 def kthesis_author(request, slug):
@@ -49,6 +80,31 @@ def kthesis_university(request, id):
 
     return render(request, 'kthesis.html', context={'theses': theses,
                                                     'selected_university': university})
+
+def kthesis_year(request, id):
+
+    theses = Thesis.objects.all().filter(year=id)
+
+    return render(request, 'kthesis.html', context={'theses': theses,
+                                                    'selected_year': id})
+
+def build_context_from_thesis_set(thesis_set):
+    ''' from thesis query set return context including
+    1. thesis list
+    2. facet for university
+    3. facet for year
+    '''
+    ##TODO consider query filtering...
+
+    university_facet = University.objects.annotate(num_thesis=Count('thesis')).order_by('-num_thesis')
+    year_facet = Thesis.objects.all().values('year').annotate(total=Count('year'))
+
+    print(year_facet)
+
+    return {'theses': thesis_set, 'university_facet': university_facet,
+            'year_facet': year_facet}
+
+
 
 class ThesisViewSet(viewsets.ModelViewSet):
     """

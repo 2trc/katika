@@ -11,7 +11,7 @@ from . import views
 
 router = routers.DefaultRouter()
 #router.register(r'api/type', IncidentTypeViewSet)
-router.register(r'api/event', views.EventViewSet)
+router.register(r'api/event', views.EventViewSet, base_name="Event")
 router.register(r'api/personnage', views.PersonnageViewSet)
 #router.register(r'api/university', UniversityViewSet)
 

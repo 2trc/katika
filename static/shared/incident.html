@@ -61,9 +61,16 @@
 </div>
 <div class="container">
 
-    <div ng-repeat="incident in incidents">
-        <div class="incident row">
-            <div class="col-xs-12 col-md-10">
+    <!--<div ng-show="selectedTag" class="tag-list">
+        Selected tag:
+        <span class="tag tag-selected" ng-click="deselectTag()">
+            {{selectedTag.name}}
+        </span>
+    </div>-->
+
+    <div class="col-xs-12 col-md-10">
+        <div ng-repeat="incident in incidents">
+            <div class="incident row">
                 <div class="info col-xs-12 col-md-8">
                     <span class="title">{{incident.type.name}} </span>
                     <span class="address">{{incident.address}} </span>
@@ -75,6 +82,12 @@
                         </a>
                     </span>
                     <p>{{incident.description}}</p>
+                    <div class="tags" ng-show="incident.tags">
+                        <span class="tag {{tagClassOption(tag)}}" ng-repeat="tag in incident.tags"
+                              ng-click="filterByTag(tag)">
+                            {{tag.name}}
+                        </span>
+                    </div>
                 </div>
                 <div class="col-xs-4 col-md-1 casualties deaths" ng-switch="incident.deaths">
                     <h5>Deaths</h5>
@@ -95,6 +108,16 @@
           </div>
         </div>
     </div>
+    <div class="col-xs-12 col-md-2">
+        <div class="tags" ng-show="tags_facet">
+            <h2>Tags </h2>
+            <span class="tag {{tagClassOption(tag)}}" ng-repeat="tag in tags_facet"
+                  ng-click="filterByTag(tag)">
+                {{tag.name}}
+            </span>
+        </div>
+    </div>
+</div>
 <div class="container">
       <ul class="pagination" ng-show="pages.next || pages.previous ">
 
