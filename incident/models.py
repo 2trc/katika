@@ -10,6 +10,7 @@ from rest_framework import serializers
 from mapwidgets.widgets import GooglePointFieldWidget, GoogleStaticOverlayMapWidget
 
 from geopy.geocoders import Nominatim
+import datetime
 
 #from mezzanine.generic.fields import KeywordsField
 #from mezzanine.generic.forms import KeywordsWidget, Keyword
@@ -75,7 +76,8 @@ class Incident(models.Model):
     location = geo_models.PointField()
     address = models.TextField(null=True)
     date = models.DateField('date')
-    registration_date = models.DateField(verbose_name='registration date', auto_now=True)
+    last_modified = models.DateField(verbose_name='last modified', auto_now=True)
+    registration_date = models.DateField(verbose_name='registration date')
     description = models.TextField()
     source = models.URLField()
     deaths = models.PositiveIntegerField(blank=True, null=True)
@@ -85,7 +87,7 @@ class Incident(models.Model):
 
     tags = models.ManyToManyField(Tag, blank=True)
 
-    tags_string = models.TextField(default="", blank=True)
+    tag_ids = models.TextField(default="", blank=True)
 
     def __str__(self):
         return "{}: {}, {}".format(self.type, self.date, self.address)
@@ -136,48 +138,43 @@ class Incident(models.Model):
         except:
             pass
 
-        # For some reasons the many2many are not being picked up
-        # Needs to have a value for field before this many-to-many relationship can be used
-        #super(Incident, self).save(*args, **kwargs)
+        self.get_tag_ids()
 
-        # self.tags_string = ""
-        #
-        # if hasattr(self, "tags") and self.tags:
-        #     print("has tags: ".format(self.tags))
-        #     for tag in self.tags.all():
-        #         if tag.name:
-        #             self.tags_string += tag.name + ","
-        #         if tag.name_fr:
-        #             self.tags_string += tag.name_fr
-        # else:
-        #     print("doesn't have tag or empty")
+        if not self.registration_date:
+            self.registration_date = datetime.datetime.now()
 
         super(Incident, self).save(*args, **kwargs)
 
+    def get_tag_ids(self):
+
+        self.tag_ids = ""
+
+        if self.tags:
+
+            ids = []
+
+            for tag in self.tags.all():
+                ids.append(str(tag.pk))
+
+            self.tag_ids = ",".join(ids)
 
 # https://stackoverflow.com/questions/23795811/django-accessing-manytomany-fields-from-post-save-signal
 #https://stackoverflow.com/questions/26493254/using-djangos-m2m-changed-to-modify-what-is-being-saved-pre-add
 #https://docs.djangoproject.com/en/dev/ref/signals/#m2m-changed
 @receiver(m2m_changed, sender=Incident.tags.through)
-def save_tags_string(sender, **kwargs):
+def save_tag_ids(sender, **kwargs):
 
     instance = kwargs.pop('instance', None)
     action = kwargs.pop('action', None)
 
     if action == 'post_add':
-        instance.tags_string = ""
+        instance.get_tag_ids()
 
-        for tag in instance.tags.all():
-            if tag.name:
-                instance.tags_string += tag.name + ","
-            if tag.name_fr:
-                instance.tags_string += tag.name_fr + ","
-
-        if instance.tags_string:
-            print("tags_string worked: " + instance.tags_string)
+        if instance.tag_ids:
+            #print("tags_string worked: " + instance.tag_ids)
             instance.save()
-        else:
-            print("no tags_string")
+        # else:
+        #     print("no tags_string")
 
 
 
@@ -192,7 +189,7 @@ class IncidentAdmin(admin.ModelAdmin):
 
     }
 
-    list_display = ('date', 'registration_date', 'type', 'reported_by', 'deaths',
+    list_display = ('date', 'last_modified', 'registration_date','type', 'reported_by', 'deaths',
                     'wounded', 'missing', 'address')
     search_fields = ('description',)
     list_filter = ('type', 'date')

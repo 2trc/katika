@@ -5,6 +5,15 @@ var incidentApp = angular.module('incidentApp', ["ngRoute"
     , 'ngMap'
 ]);
 
+http://creative-punch.net/2014/04/preserve-html-text-output-angularjs/
+//Allow popup content to show HTML tags/divs...
+incidentApp.filter('unsafe', function($sce) {
+    return function(val) {
+        return $sce.trustAsHtml(val);
+    };
+});
+
+
 //https://stackoverflow.com/questions/41211875/angularjs-1-6-0-latest-now-routes-not-working
 incidentApp.config(['$locationProvider', '$httpProvider', function($locationProvider,$httpProvider) {
     $locationProvider.hashPrefix('');
@@ -68,7 +77,7 @@ function incidentService($http) {
 // })
 
 
-function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
+function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, NgMap) {
 
   initializeOrderDirection = function() {
      $scope.isAscendingOrder = false;
@@ -87,7 +96,14 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   $scope.incidents = [];
   $scope.pages = {};
   $scope.orderType ="";
-  $scope.selectedTag = "";
+
+  if(typeof($routeParams.tags) == "undefined"){
+    $scope.selectedTag = "";
+  }else{
+    $scope.selectedTag = {"id": $routeParams.tags};
+  }
+
+  ;
   $scope.prevOrderType="";
   $scope.orderIcon ="";
   $scope.isAscendingOrder = false;
@@ -101,16 +117,17 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
   $scope.datePicker = { 'date': {startDate: null, endDate: null} };
 
+  console.log($scope.selectedTag);
 
 
-
+  var self = this;
   $scope.applyDateRange = function(ev, picker) {
     /*console.log('date range applied');
     console.log(ev);
     console.log(picker);
     console.log("daterange: " + JSON.stringify($scope.datePicker));*/
 
-    var filters = buildFilters();
+    var filters = self.buildFilters();
     //console.log("filters"); console.log(filters);
     clusterer.filter(filters);
 
@@ -123,7 +140,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   $scope.applyIncidentType = function() {
 
     if($scope.typeSelected && $scope.incidentTypes.indexOf($scope.typeSelected)!=-1){
-        var filters = buildFilters();
+        var filters = self.buildFilters();
         //console.log("filters"); console.log(filters);
         clusterer.filter(filters);
     }
@@ -136,6 +153,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   /*
   * Choose 'tag' filter
   */
+  var self = this;
   $scope.filterByTag = function( selectedTag ) {
 
     if($scope.selectedTag.id === selectedTag.id){
@@ -150,7 +168,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         return;
     }
 
-    var filters = buildFilters();
+    var filters = self.buildFilters();
     clusterer.filter(filters);
     incidentsQuery();
     clusterer.cluster(false);
@@ -170,9 +188,10 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
   /*
 
   */
+  var self = this;
   $scope.deselectTag = function() {
     $scope.selectedTag = "";
-    var filters = buildFilters();
+    var filters = self.buildFilters();
     clusterer.filter(filters);
     incidentsQuery();
     clusterer.cluster(false);
@@ -183,7 +202,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
     Create filter array for modified AnyCluster query
     TODO Anycluster and tagging not working any longer
   */
-  buildFilters = function() {
+  this.buildFilters = function() {
 
     var filters = [];
 
@@ -202,9 +221,9 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         filters.push({'date':{"values": dateToString(enddate) , "operator":"<="}});
     }
 
-    if($scope.selectedTag){
-        tags_string = get_tags_string($scope.selectedTag)
-        filters.push({'tags_string' :{"values": tags_string, "operator": "contains"}});
+    if( typeof($scope.selectedTag.id) != "undefined"){
+        //tag_ids = get_tags_string($scope.selectedTag)
+        filters.push({'tag_ids' :{"values": String($scope.selectedTag.id), "operator": "contains"}});
     }
 
     return filters;
@@ -214,8 +233,22 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
     tags_string = ""
 
+    if( typeof(tag.name) == "undefined" && typeof(tag.name_fr) == "undefined"){
+
+        // doesn't work just at beginning/initialization
+        for(ii=0; ii<length(tags_facet); ii++){
+
+            if( tag.id == tags_facet[ii].id){
+                tag = tags_facet[ii];
+                break;
+            }
+
+        }
+
+    }
+
     if(tag.name)
-        tags_string += tag.name + ","
+            tags_string += tag.name + ","
     if(tag.name_fr)
         tags_string += tag.name_fr
 
@@ -272,7 +305,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
     }
 
     if($scope.selectedTag){
-        queryUrl += "&tags_string=" + get_tags_string($scope.selectedTag);
+        queryUrl += "&tags=" + $scope.selectedTag.id;
     }
 
     //console.log($scope.typeSelected);
@@ -426,7 +459,10 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
 
 /* AnyCluster addition*/
+
+
     var clusterer = this;
+
     clusterer.finalMarkerHtmlContent = "regard social";
 
     //very risky scoping
@@ -436,7 +472,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
       mapType : "google", // "google" or "osm"
       //zoom: 6,
       //center: [6.9182, 13.8516],
-      gridSize: 256, //integer
+      gridSize: 768, //integer
       //gridSize: 512, //integer
       //zoom: 5, //initial zoom
       //autostart: true,
@@ -453,7 +489,8 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         'flower':'/static/anycluster/pin_flower.png'
       },
       onFinalClick : function(entries){
-        openPopup(entries);
+        $scope.popupContent = entries;
+        $scope.$apply();
       }
 
     }
@@ -462,7 +499,12 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
         var firstLoad = true;
 
         // To remove temptation
-        clusterer.cluster(false);
+        //clusterer.cluster(false);
+/*        if( typeof($scope.selectedTag["id"]) != "undefined" )
+    {*/
+        var filters = this.buildFilters();
+        clusterer.filter(filters);
+  /*  }*/
 
         google.maps.event.addListener(clusterer.gmap, 'idle', function() {
 
@@ -587,8 +629,6 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
             ids: ids
         };
 
-        //console.log(marker);
-
         clusterer.markerList.push(marker);
 
     }
@@ -610,12 +650,10 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, NgMap) {
 
         if (clusterer.zoom >= 13 || marker.count <= 3) {
 
-            popupWindow = angular.element(( document.querySelector("#clustererPopup")))[0];
-
-            popupWindow.style.left = String(event.pixel.x) + "px";
-            popupWindow.style.top = String(event.pixel.y) + "px";
-
             clusterer.markerFinalClickFunction(marker);
+
+            id = String(marker.latitude) + "" + String(marker.longitude);
+            clusterer.gmap.showInfoWindow('popup', id);
         }
         else {
             clusterer.markerClickFunction(marker);
