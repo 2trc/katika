@@ -1,6 +1,19 @@
 {% extends "base.html" %}
 
 {%load static%}
+
+{% block title %}
+    Khistory | Kamerun History | Katika
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Kamerun History">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, History, Cameroun">
+{%endblock%}
+
+
 {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'css/khistory.css' %}">

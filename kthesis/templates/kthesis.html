@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
 {%load static%}
+
+{% block title %}
+    {% if selected_author %}
+        {{selected_author.last_name}} {{selected_author.first_name}}
+    {% elif selected_university %}
+        {{selected_university.name}}
+    {% else %}
+        Kamerun Thesis Database | Katika
+    {% endif %}
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Kamerun Thesis Database">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Thesis, Cameroun">
+{%endblock%}
+
+
 {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'css/kthesis.css' %}">

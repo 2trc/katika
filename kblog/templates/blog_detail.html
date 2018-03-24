@@ -2,6 +2,17 @@
 
 {%load static kblog_tags%}
 
+{% block title %}
+    {{ blog_post.title }}
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Blogs Dataviz and Infographics">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Blog, Cameroun, Infographics, Dataviz">
+{%endblock%}
+
 {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}">
