@@ -20,12 +20,15 @@
 
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="description" content="Data Visualization, Data Project and Infographics for waking
-            consciences in Cameroon. Increase Transparency and fighting Corruption">
-        <meta name="keywords" content="Cameroon, Katika, Corruption, Data, Transparency,
-            Visualization, Cameroun">
+        {% block meta_description %}
+
+        {% endblock %}
+        {% block meta_keywords %}
+
+        {% endblock %}
         <title>
-            {%comment%}
+
+
             {% block title %}
                 {% if self.seo_title %}{{ self.seo_title }}{% else %}{{ self.title }}{% endif %}
             {% endblock %}
@@ -34,7 +37,7 @@
                     {% if site_name %}- {{ site_name }}{% endif %}
                 {% endwith %}
             {% endblock %}
-            {%endcomment%}
+
         </title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,11 +45,7 @@
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'css/katika.css' %}">
-
-        <!--<link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}">-->
-        <!--<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">-->
-        <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
-        <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
 
 
         {% block extra_css %}
