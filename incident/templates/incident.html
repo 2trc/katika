@@ -2,6 +2,10 @@
 
 {%load static%}
 
+{%block title%}
+    Incident Visualization | Katika
+{%endblock%}
+
 {% block extra_css %}
     {# Override this in templates to add extra stylesheets #}
     <link rel="stylesheet" type="text/css" href="{% static 'css/incident.css' %}">
@@ -98,7 +102,7 @@
     <script type="text/javascript" src="{% static 'anycluster/django_ajax_csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'anycluster/anycluster_marker.js' %}"></script>
     <script type="text/javascript">
-    var anyclusterSettings = {
+    /*var anyclusterSettings = {
       mapType : "google", // "google" or "osm"
       //zoom: 6,
       center: [6.9182, 13.8516],
@@ -135,7 +139,7 @@
 
     }
 
-    /*window.onload = function(){
+    window.onload = function(){
       // do not use both maps simultaneously as this will confuse the cache
       anycluster = new Anycluster("gmap", anyclusterSettings);
       //var osmap = new Anycluster("osmap", anyclusterSettings_osm);
@@ -168,18 +172,6 @@
     /*}*/
   </script>
 
-  <script type="text/javascript">
-    //simple popup script
-
-    function openPopup(html){
-      var content = document.getElementById('clusterContentPopup');
-      content.innerHTML = html;
-      document.getElementById('clustererPopup').style.display = "";
-    }
-    function closePopup(){
-      document.getElementById('clustererPopup').style.display = "none";
-    }
-  </script>
 
   <script type="text/javascript">
     //example script for getting viewport markers

@@ -83,10 +83,10 @@ def incident_aggregation(request):
     startdate = request.GET.get('startdate')
     enddate = request.GET.get('enddate')
     type = request.GET.get('type')
-    tags_string = request.GET.get('tags')
+    tag_ids = request.GET.get('tags')
 
     queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate,
-                                type=type, tags_string=tags_string)
+                                type=type, tag_ids=tag_ids)
 
     return HttpResponse(JsonResponse(queryset.aggregate(Sum('wounded'),
                                                         Sum('deaths'),
@@ -98,7 +98,7 @@ def tags_facet(request):
     startdate_str = request.GET.get('startdate')
     enddate_str = request.GET.get('enddate')
     type = request.GET.get('type')
-    tags_string = request.GET.get('tags_string')
+    tag_ids = request.GET.get('tags')
 
     queryset = Tag.objects.all()
 
@@ -121,9 +121,10 @@ def tags_facet(request):
         q = q & Q(incident__type__name=type)
 
 
-    if tags_string is not None:
+    if tag_ids is not None:
         #queryset = queryset.filter(incident__tags_string__contains=tags_string)
-        q = q & Q(incident__tags_string__contains=tags_string)
+        tag_list = tag_ids.split(",")
+        q = q & Q(incident__tags__pk__in=tag_list)
 
     # TODO check if there isn't a better way than safe=False
     # Don't understand why the distinct is necessary
@@ -158,7 +159,7 @@ class IncidentTypeViewSet(viewsets.ModelViewSet):
 
 
 
-def filter_query_set(queryset,startdate_str, enddate_str, type, tags_string ):
+def filter_query_set(queryset, startdate_str, enddate_str, type, tag_ids):
 
     # print("startdate: {}, endate: {}, type: {}".format(startdate_str, enddate_str, type))
 
@@ -173,8 +174,9 @@ def filter_query_set(queryset,startdate_str, enddate_str, type, tags_string ):
     if type is not None:
         queryset = queryset.filter(type__name=type)
 
-    if tags_string is not None:
-        queryset = queryset.filter(tags_string__contains=tags_string)
+    if tag_ids is not None:
+        tag_list = tag_ids.split(",")
+        queryset = queryset.filter(tags__pk__in=tag_list)
 
     return queryset
 
@@ -194,10 +196,10 @@ class IncidentViewSet(viewsets.ModelViewSet):
         startdate = self.request.query_params.get('startdate', None)
         enddate = self.request.query_params.get('enddate', None)
         type = self.request.query_params.get('type', None)
-        tags_string = self.request.query_params.get('tags_string', None)
+        tag_ids = self.request.query_params.get('tags', None)
 
         queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate,
-                                    type=type, tags_string=tags_string)
+                                    type=type, tag_ids=tag_ids)
 
         orderby = self.request.query_params.get('orderby', None)
         order = self.request.query_params.get('order', None)
