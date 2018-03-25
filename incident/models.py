@@ -138,7 +138,11 @@ class Incident(models.Model):
         except:
             pass
 
-        self.get_tag_ids()
+        #avoid saving before many2many relationship already created
+        try:
+            self.get_tag_ids()
+        except:
+            pass
 
         if not self.registration_date:
             self.registration_date = datetime.datetime.now()
