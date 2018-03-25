@@ -118,7 +118,7 @@ def tags_facet(request):
 
     if type is not None:
         #queryset = queryset.filter(incident__type__name=type)
-        q = q & Q(incident__type__name=type)
+        q = q & Q(incident__type__pk=type)
 
 
     if tag_ids is not None:
@@ -172,7 +172,7 @@ def filter_query_set(queryset, startdate_str, enddate_str, type, tag_ids):
         queryset = queryset.filter(date__lte=enddate)
 
     if type is not None:
-        queryset = queryset.filter(type__name=type)
+        queryset = queryset.filter(type__pk=type)
 
     if tag_ids is not None:
         tag_list = tag_ids.split(",")

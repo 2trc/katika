@@ -103,7 +103,12 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
     $scope.selectedTag = {"id": $routeParams.tags};
   }
 
-  ;
+  if(typeof($routeParams.type) != "undefined"){
+    $scope.typeSelected = {"id": $routeParams.type};
+  }
+
+  //console.log("Selected Type: " + JSON.stringify($scope.typeSelected));
+
   $scope.prevOrderType="";
   $scope.orderIcon ="";
   $scope.isAscendingOrder = false;
@@ -206,7 +211,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 
     var filters = [];
 
-    if($scope.typeSelected && $scope.incidentTypes.indexOf($scope.typeSelected)!=-1){
+    if($scope.typeSelected){
 
         filters.push({'type_id':{"values": String($scope.typeSelected.id) , "operator":"="}});
 
@@ -310,8 +315,8 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 
     //console.log($scope.typeSelected);
 
-    if($scope.typeSelected && $scope.incidentTypes.indexOf($scope.typeSelected)!=-1){
-        queryUrl += "&type="+ String($scope.typeSelected.name);
+    if($scope.typeSelected ){
+        queryUrl += "&type="+ String($scope.typeSelected.id);
     }
 
     return queryUrl;
