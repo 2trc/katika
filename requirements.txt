@@ -12,7 +12,7 @@ django-map-widgets==0.1.9
 djangorestframework==3.6.3
 filebrowser-safe==0.4.7
 future==0.16.0
-geopy==1.11.0
+geopy==1.12.0
 grappelli-safe==0.4.6
 html5lib==0.999999999
 idna==2.5
@@ -26,7 +26,6 @@ parso==0.1.0
 pexpect==4.2.1
 pickleshare==0.7.4
 Pillow==4.1.1
-pkg-resources==0.0.0
 prompt-toolkit==1.0.15
 psycopg2==2.7.1
 ptyprocess==0.5.2
