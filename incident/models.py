@@ -96,47 +96,53 @@ class Incident(models.Model):
         verbose_name_plural = 'Incidents' #?
         ordering = ['-date']
 
-
     def get_address(self):
+
         geolocator = Nominatim()
         e = geolocator.reverse((self.location.y, self.location.x))
 
-        prefix = None
-        state = None
-
         address = e.raw['address']
 
-        if 'state' in address:
-            state = address['state']
+        display_list = []
 
-        if 'building' in address :
-            prefix = address['building']
-        elif 'village' in address :
-            prefix = address['village']
-        elif 'suburb' in address :
-            prefix = address['suburb']
-        elif 'town' in address :
-            prefix = address['town']
+        if 'building' in address:
+            display_list.append(address['building'])
+        elif 'residential' in address:
+            display_list.append(address['residential'])
+        elif 'village' in address:
+            display_list.append(address['village'])
+        elif 'suburb' in address:
+            display_list.append(address['suburb'])
+        elif 'town' in address:
+            display_list.append(address['town'])
         elif 'city' in address:
-            prefix = address['city']
+            display_list.append(address['city'])
 
-        if not prefix or not state:
+        if 'county' in address:
+            display_list.append(address['county'])
+
+        if 'state' in address:
+            display_list.append(address['state'])
+
+        if len(display_list) == 0:
             self.address = e.address
         else:
-            self.address = "{}, {}".format(prefix, state)
-
-        # print("Address: {}".format(self.address))
-
+            self.address = ", ".join(display_list)
 
     def save(self, *args, **kwargs):
         #TODO is one instance efficient?
         # print("saving, location {}".format(self.location))
         # print(*args)
         # print(**kwargs)
-        try:
-            self.get_address()
-        except:
-            pass
+        #Avoid reverse querying if address already exists
+        if not self.address:
+            try:
+                #https://github.com/geopy/geopy/issues/262
+                #fixed with geopy v-1.12.0
+                self.get_address()
+            except Exception as e:
+                print(e)
+                #pass
 
         #avoid saving before many2many relationship already created
         try:
