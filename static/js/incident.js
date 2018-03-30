@@ -581,8 +581,9 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
         var count = cluster['count'];
         var pinimg = cluster['pinimg'];
         var ids = cluster["ids"];
+        var type = cluster["type"];
 
-        var piniconObj = clusterer.selectPinIcon(count,pinimg);
+        var piniconObj = clusterer.selectPinIcon(count, pinimg, type);
 
         var pinicon = piniconObj.url;
 
@@ -988,13 +989,13 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 
 	},
 
-	this.selectPinIcon = function(count, pinimg) {
+	this.selectPinIcon = function(count, pinimg, type) {
 
 		if (count == 1) {
 
 			var singlePinURL = "/static/anycluster/images/pin_unknown.png";
 
-			if( typeof(this.singlePinImages) == "function"){
+			/*if( typeof(this.singlePinImages) == "function"){
 				singlePinURL = this.singlePinImages(pinimg);
 			}
 			else {
@@ -1002,6 +1003,11 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 				if (this.singlePinImages.hasOwnProperty(pinimg)){
 					singlePinURL = this.singlePinImages[pinimg];
 				}
+			}*/
+		    if( type ) {
+			    //console.log("type: " + type);
+			    type = type.replace(" ", "_").toLowerCase();
+			    singlePinURL = "/static/anycluster/images/pin_" + type + ".png"
 			}
 
 	    }
