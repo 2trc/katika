@@ -19,7 +19,7 @@ class Person(models.Model):
                                format="Image", max_length=255, null=True, blank=True)
 
     def get_full_name(self):
-        return "{} {}".format(self.first_name, self.last_name)
+        return "{} {}".format(self.first_name, self.last_name.upper())
 
     def __str__(self):
         return self.get_full_name()
