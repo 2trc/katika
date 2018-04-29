@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets
+from django.http import HttpResponseRedirect
 from .models import ThesisSerializer, Thesis, ScholarSerializer, Scholar,\
-    University, UniversitySerializer
+    University, UniversitySerializer, ScholarForm, ThesisForm
 from django.db.models import Q, Count
+from django.contrib.auth.decorators import login_required
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -71,6 +73,58 @@ def kthesis_author(request, slug):
 
     return render(request, 'kthesis.html', context={'theses': theses,
                                                     'selected_author': author})
+
+@login_required
+def add_author(request):
+
+    form = ScholarForm(data=request.POST or None, label_suffix='')
+
+    if request.method == 'POST' and form.is_valid():
+        scholar = form.save(commit=False)
+
+        scholar.save()
+
+        # for Many2Many Relationship
+        # https://docs.djangoproject.com/en/2.0/topics/forms/modelforms/
+        # http://www.joshuakehn.com/2013/6/23/django-m2m-modelform.html
+        form.save_m2m()
+
+        scholar = form.instance
+
+        scholar.reported_by = request.user
+
+        scholar.save()
+
+        return HttpResponseRedirect('/kthesis')
+
+    return render(request, 'add_scholar.html', {'form': form})
+
+
+@login_required
+def add_thesis(request):
+
+    form = ThesisForm(data=request.POST or None, label_suffix='')
+
+    if request.method == 'POST' and form.is_valid():
+        thesis = form.save(commit=False)
+
+        thesis.save()
+
+        # for Many2Many Relationship
+        # https://docs.djangoproject.com/en/2.0/topics/forms/modelforms/
+        # http://www.joshuakehn.com/2013/6/23/django-m2m-modelform.html
+        form.save_m2m()
+
+        thesis = form.instance
+
+        thesis.reported_by = request.user
+
+        thesis.save()
+
+        return HttpResponseRedirect('/kthesis')
+
+    return render(request, 'add_thesis.html', {'form': form})
+
 
 def kthesis_university(request, id):
 
