@@ -50,15 +50,6 @@
     font-size: 0.85em;
 }
 
-.submission-form {
-    /*margin: 0px 0px 50px 0px;*/
-    padding-bottom: 10px;
-    /*background-color: #F0F0F0;
-    border-top: 1px solid #E0E0E0;
-    border-bottom: 1px solid #E0E0E0;*/
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
 
 input[type="date"],
 input[type="time"],
