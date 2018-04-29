@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib import admin
 from rest_framework import serializers
+from django import forms
 from person.models import Person
 from mezzanine.core.fields import FileField
 from mezzanine.utils.models import upload_to
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from mezzanine.utils.urls import unique_slug
 
@@ -22,6 +24,7 @@ from django.utils.text import slugify
 class Scholar(Person):
 
     slug = models.SlugField(blank=True, null=True)
+    reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     def save(self, *args, **kwargs):
 
@@ -128,7 +131,7 @@ admin.site.register(KeywordFr)
 
 
 class Thesis(models.Model):
-    title = models.TextField()
+    title = models.TextField(blank=True, null=True)
     title_fr = models.TextField(blank=True, null=True)
     abstract = models.TextField(blank=True, null=True)
     abstract_fr = models.TextField(blank=True, null=True)
@@ -146,26 +149,67 @@ class Thesis(models.Model):
     keywords = models.ManyToManyField(KeywordEn, blank=True)
     keywords_fr = models.ManyToManyField(KeywordFr, blank=True)
 
+    reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
+
     def save(self, *args, **kwargs):
 
         print("Slug: {}".format(self.slug))
 
         if not self.slug:
             print("Generating slug field")
-            slug = slugify(self.title)
+            slug = slugify(self.title + self.title_fr + str(self.author))
             self.slug = unique_slug_max_length(Thesis.objects.all(), 'slug', slug, 50)
 
         super(Thesis, self).save(*args, **kwargs)
 
     def __str__(self):
+
+        output_list = []
+
         if self.author:
-            return "{}, {}, {}".format(self.author.last_name, self.title, self.year)
-        else:
-            return "{}, {}".format(self.title, self.year)
+            output_list.append(self.author.last_name)
+
+        if self.title:
+            output_list.append(self.title)
+        elif self.title_fr:
+            output_list.append(self.title_fr)
+
+        if self.year:
+            output_list.append(str(self.year))
+
+        if len(output_list) == 0:
+            output_list.append(str(self.pk))
+
+        return ",".join(output_list)
 
     class Meta:
         verbose_name_plural = 'Theses'  # ?
         ordering = ['-year']
+
+
+class ScholarForm(forms.ModelForm):
+
+    class Meta:
+        model = Scholar
+        exclude = ('featured_image', 'slug', 'reported_by', )
+
+
+class ThesisForm(forms.ModelForm):
+
+    class Meta:
+        model = Thesis
+        exclude = ('slug', 'reported_by', )
+        labels = {
+            'title' : 'Title (in English)',
+            'title_fr': 'Titre (en Français)',
+            'year': 'Year (Année de soutenance)',
+            'abstract_fr': 'Résumé',
+            'keywords_fr': 'Mots clés',
+        }
+        widgets = {
+            'title': forms.Textarea(attrs={'rows':1}),
+            'title_fr': forms.Textarea(attrs={'rows': 1}),
+        }
 
 
 def unique_slug_max_length(queryset, slug_field, slug, max_length):
@@ -217,7 +261,7 @@ class ThesisSerializer(serializers.ModelSerializer):
 
 
 class ThesisAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'year', 'university')
+    list_display = ('id', 'title', 'author', 'year', 'university')
     search_fields = ('title', 'author')
     list_filter = ('university', 'year')
     filter_horizontal = ('supervisors', 'committee')
