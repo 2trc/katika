@@ -364,3 +364,14 @@ fieldset[disabled] .btn-regular.active {
     text-decoration: none;
     border-bottom: 3px solid #e0e0e0;
 }
+
+
+.submission-form {
+    /*margin: 0px 0px 50px 0px;*/
+    padding-bottom: 10px;
+    /*background-color: #F0F0F0;
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;*/
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
