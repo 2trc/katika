@@ -22,6 +22,8 @@ router.register(r'api/university', views.UniversityViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^$', views.kthesis_home),
+    url(r'^add-thesis', views.add_thesis),
+    url(r'^add-scholar', views.add_author),
     url(r'^scholar/(?P<slug>[-\w]+)', views.kthesis_author),
     url(r'^university/(?P<id>[\d]+)', views.kthesis_university),
     url(r'^year/(?P<id>[\d]+)', views.kthesis_year),
