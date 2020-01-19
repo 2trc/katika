@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 
 from django.contrib import admin
 from django import forms
@@ -83,6 +83,17 @@ class Incident(models.Model):
     deaths = models.PositiveIntegerField(blank=True, null=True)
     wounded = models.PositiveIntegerField(blank=True, null=True)
     missing = models.PositiveIntegerField(blank=True, null=True)
+
+    # security forces
+    deaths_security_forces = models.PositiveIntegerField(blank=True, null=True)
+    wounded_security_forces = models.PositiveIntegerField(blank=True, null=True)
+    missing_security_forces = models.PositiveIntegerField(blank=True, null=True)
+
+    # perpetrators
+    deaths_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+    wounded_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+    missing_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+
     reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     tags = models.ManyToManyField(Tag, blank=True)
@@ -235,7 +246,9 @@ class IncidentForm(forms.ModelForm):
         model = Incident
         fields = ('type', 'location', 'date', 'description',
                   'tags',
-                    'source', 'deaths', 'wounded', 'missing')
+                    'source', 'deaths', 'wounded', 'missing',
+                    'deaths_security_forces','wounded_security_forces','missing_security_forces',
+                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator')
 
         widgets = {'location': GooglePointFieldWidget}
 
