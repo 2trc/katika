@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/khistory.css' %}">
+{% endblock %}
+
+{% block extra_js_in_head %}
+    {# Override this in templates to add extra js in header #}
+    {{ form.media }}
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+        <div class="jumbotron">
+            <h1 class="display-4">404!</h1>
+            <p class="lead">Ooooooooops :'|</p>
+            <hr class="my-4">
+            <p>The page you requested does not exit</p>
+        </div>
+        
+    </div>
+    
+
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+{% endblock %}
