@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from django.db.models import Sum, Count
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 
 from rest_framework import viewsets
 
@@ -37,6 +37,7 @@ def incident_home(request):
 
 
 @login_required
+@permission_required('incident.add_incident', raise_exception=True)
 def incident_add(request):
     form = IncidentForm(data=request.POST or None, label_suffix='')
 
