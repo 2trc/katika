@@ -1,10 +1,12 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
 from django.db.models import Sum, Count
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import Http404
 
 from rest_framework import viewsets
 
@@ -74,6 +76,44 @@ def incident_add(request):
 
     #return render(request, 'portal_pages/blog_page_add.html', context)
     return render(request, 'add_incident.html', {'form': form})
+
+
+@login_required
+@permission_required('incident.change_incident', raise_exception=True)
+def incident_edit(request):
+    
+    if request.method == 'GET':
+
+        pk = request.GET.get("id")        
+
+        try:
+            #incident = get_object_or_404(Incident, pk)
+            #not enough values to unpack (expected 2, got 1)
+            incident = Incident.objects.get(pk=pk)
+            print(incident)
+        except Exception as e:
+            print(e)
+            raise Http404("Incident doesn't exist")
+
+        form = IncidentForm(instance=incident)
+
+        return render(request, 'add_incident.html', {'form': form})    
+
+    elif request.method == 'POST':
+
+        pk = request.GET.get("id")
+        
+        instance = Incident.objects.get(pk=pk)
+        
+        form = IncidentForm(request.POST, instance=instance)
+
+        if not form.is_valid():
+
+            return render(request, 'add_incident.html', {'form': form})    
+
+        form.save()
+
+    return HttpResponseRedirect('/incident')
 
 
 # Use Q for query filtering

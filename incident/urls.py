@@ -2,8 +2,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from .views import incident_home, incident_geo_serialize,IncidentViewSet, \
-    IncidentTypeViewSet, incident_add, incident_aggregation, anycluster, \
-    tags_facet
+    IncidentTypeViewSet, incident_add, incident_edit, incident_aggregation, \
+    anycluster, tags_facet
 
 
 
@@ -22,6 +22,8 @@ router.register(r'api', IncidentViewSet, base_name="Incident")
 urlpatterns = [
     url(r'^$', incident_home),
     url(r'^add', incident_add),
+    #url(r'edit/<uuid:pk>/', incident_edit),
+    url(r'^edit', incident_edit),
     url(r'^aggregate', incident_aggregation),
     url(r'^tags_facet', tags_facet),
     url(r'^', include(router.urls)),
