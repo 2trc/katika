@@ -73,6 +73,11 @@
                             <i class="glyphicon glyphicon-link"></i>
                         </a>
                     </span>
+                    <span>
+                        <a href="edit?id={{incident.id}}" title="edit">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </a>
+                    </span>
                     <p>{{incident.description}}</p>
                     <div class="tags" ng-show="incident.tags">
                         <span class="tag {{tagClassOption(tag)}}" ng-repeat="tag in incident.tags"
