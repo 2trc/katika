@@ -81,7 +81,7 @@ def incident_add(request):
 @login_required
 @permission_required('incident.change_incident', raise_exception=True)
 def incident_edit(request):
-    
+
     if request.method == 'GET':
 
         pk = request.GET.get("id")        
@@ -97,14 +97,14 @@ def incident_edit(request):
 
         form = IncidentForm(instance=incident)
 
-        return render(request, 'add_incident.html', {'form': form})    
+        return render(request, 'add_incident.html', {'form': form})
 
     elif request.method == 'POST':
 
         pk = request.GET.get("id")
-        
+
         instance = Incident.objects.get(pk=pk)
-        
+
         form = IncidentForm(request.POST, instance=instance)
 
         if not form.is_valid():
