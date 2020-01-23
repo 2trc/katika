@@ -122,8 +122,6 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 
   $scope.datePicker = { 'date': {startDate: null, endDate: null} };
 
-  console.log($scope.selectedTag);
-
 
   var self = this;
   $scope.applyDateRange = function(ev, picker) {
