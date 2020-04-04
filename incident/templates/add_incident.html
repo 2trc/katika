@@ -36,7 +36,8 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
                 <div class="col-xs-9 col-md-9">
                 {% csrf_token %}
                     <div class="form-actions">
-                    {{form|crispy}}
+                        <input class="btn btn-lg btn-regular" type="submit" value="Submit">
+                        {{form|crispy}}
 						{%comment%}{{ form.as_p}}{%endcomment%}
                         <input class="btn btn-lg btn-regular" type="submit" value="Submit">
                     </div>
