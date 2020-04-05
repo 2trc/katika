@@ -146,14 +146,16 @@ class Incident(models.Model):
         # print(*args)
         # print(**kwargs)
         #Avoid reverse querying if address already exists
-        if not self.address:
-            try:
-                #https://github.com/geopy/geopy/issues/262
-                #fixed with geopy v-1.12.0
-                self.get_address()
-            except Exception as e:
-                print(e)
-                #pass
+        # if not self.address:
+        #     try:
+        #         #https://github.com/geopy/geopy/issues/262
+        #         #fixed with geopy v-1.12.0
+        #         self.get_address()
+        #     except Exception as e:
+        #         print(e)
+        #         #pass
+
+        self.get_address()
 
         #avoid saving before many2many relationship already created
         try:
@@ -250,7 +252,11 @@ class IncidentForm(forms.ModelForm):
                     'deaths_security_forces','wounded_security_forces','missing_security_forces',
                     'deaths_perpetrator','wounded_perpetrator','missing_perpetrator')
 
-        widgets = {'location': GooglePointFieldWidget}
+        widgets = {
+            'location': GooglePointFieldWidget,
+            'description': forms.Textarea(attrs={'rows': 8}),
+            'tags': forms.SelectMultiple(attrs={'size': 8})
+        }
 
 
 class IncidentTypeSerializer(serializers.ModelSerializer):
