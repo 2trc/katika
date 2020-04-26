@@ -1,35 +1,6 @@
-{% extends "base.html" %}
+{% extends "base_error.html" %}
 
-{% load static %}
-
-{% block extra_css %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/khistory.css' %}">
-{% endblock %}
-
-{% block extra_js_in_head %}
-    {# Override this in templates to add extra js in header #}
-    {{ form.media }}
-{% endblock %}
-
-
-{% block content %}
-
-    <div class="container">
-
-        <div class="jumbotron">
-            <h1 class="display-4">403!</h1>
-            <p class="lead">Insuccifient permission.</p>
-            <hr class="my-4">
-            <p>Please contact site admin (tassingremi<at>gmail.com, or @tassingremi)</p>
-        </div>
-        
-    </div>
-    
-
-
-{% endblock %}
-
-
-{% block extra_js %}
-
+{% block error_message %}
+    <p>Not sure what you were looking for...</p>
+    <p>but I can't allow</p>
 {% endblock %}
