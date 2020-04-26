@@ -375,3 +375,14 @@ fieldset[disabled] .btn-regular.active {
     margin-bottom: 10px;
     margin-top: 10px;
 }
+
+.sub-section {
+    margin-top: 30px;
+}
+
+.copyright {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 400;
+    font-family: 'Lato', 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+}
