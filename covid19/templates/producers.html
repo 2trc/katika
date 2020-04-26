@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+        COVID-19 Resources with focus on Cameroon | Katika
+{% endblock %}
+
+{%block meta_description%}
+<meta name="description" content="COVID-19 crowdsourced resources for Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="COVID-19, COVID19, COVID, Corona, Katika, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/covid19.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p><a href="/covid19">COVID-19</a> | Resources with focus on Cameroon
+            {% if user.is_authenticated %}
+                        | <a href="add/">Add</a> Maker</p>
+            {% endif %}
+
+    </div>
+</section>
+
+
+<div class="container">
+    <div class="row listing">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Phone</th>
+<!--                        <th scope="col">Price</th>-->
+
+                        <th scope="col">Description</th>
+                        <th scope="col">Website</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Region</th>
+                        {% if user.is_authenticated %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producer in producers %}
+                    <tr href="#" data-toggle="tooltip" title="{{producer.more_info}}">
+                        <td class="text-nowrap">{{producer.type}}</td>
+                        <td class="text-nowrap">{{producer.contact_person|default:""}}</td>
+                        <td class="text-nowrap">{{producer.phone|default:""}}</td>
+<!--                        <td>{{producer.price|default:""}}</td>-->
+
+                        <td>{{producer.description|truncatechars:200}}</td>
+                        <td>
+                        {% if producer.website %}
+                            <a href="{{producer.website|default:''}}"> Website</a>
+                        {% endif %}
+                        </td>
+                        <td class="text-nowrap">{{producer.address|default:""}}</td>
+                        <td>{{producer.region|default:""}}</td>
+                        {% if user.is_authenticated %}
+                        <th><a href="producers/{{producer.id}}/edit/">edit</a></th>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <div class="row">
+        <ul class="pagination">
+            {% if page_obj.previous_page_number > 1 %}
+            <li>
+                <a href="?page=1">First</a>
+            </li>
+            {% endif %}
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{page_obj.previous_page_number}}">&laquo;</a>
+                {% else %}
+            <li class="disabled">
+                <a>&laquo;</a>
+                {% endif %}
+            </li>
+            <li>
+                <a>{{page_obj.number}}</a>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{page_obj.next_page_number}}">&raquo;</a>
+            </li>
+            {% else %}
+            <li class="disabled">
+                <a>&raquo;</a>
+            </li>
+            {% endif %}
+            {% if page_obj.next_page_number < paginator.num_pages %}
+            <li>
+                <a href="?page={{paginator.num_pages}}">Last</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    <div class="row">
+        {{paginator.count}} records for {{paginator.num_pages}} page(s)
+    </div>
+    <br />
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}

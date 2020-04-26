@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+        COVID-19 Resources with focus on Cameroon | Katika
+{% endblock %}
+
+{%block meta_description%}
+<meta name="description" content="COVID-19 crowdsourced resources for Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="COVID-19, COVID19, COVID, Corona, Katika, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/covid19.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p><a href="/covid19">COVID-19</a> | Fund Raising Campaign with focus on Cameroon
+            {% if user.is_authenticated %}
+                        | <a href="add/">Add</a> Fund</p>
+            {% endif %}
+
+    </div>
+</section>
+
+
+<div class="container">
+    <div class="row listing">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Initiator</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Website</th>
+                        <th scope="col">Start Date</th>
+                        <th scope="col">End Date</th>
+                        <th scope="col">Goal (FCFA)</th>
+                        {% if user.is_authenticated %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fund in funds %}
+                    <tr href="#" data-toggle="tooltip" title="{{fund.more_info}}">
+                        <td class="text-nowrap">{{fund.name|default:""}}</td>
+                        <td class="text-nowrap">{{fund.initiator|default:""}}</td>
+                        <td>{{fund.contact|default:""}}</td>
+                        <td>{{fund.description|truncatechars:200}}</td>
+                        <td>
+                        {% if fund.website %}
+                            <a href="{{fund.website|default:''}}"> Website</a>
+                        {% endif %}
+                        </td>
+
+                        <td class="text-nowrap">{{fund.start_date|default:""}}</td>
+                        <td class="text-nowrap">{{fund.end_date|default:""}}</td>
+                        <td>{{fund.target|default:""}}</td>
+                        {% if user.is_authenticated %}
+                        <th><a href="funds/{{fund.id}}/edit/">edit</a></th>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <div class="row">
+        <ul class="pagination">
+            {% if page_obj.previous_page_number > 1 %}
+            <li>
+                <a href="?page=1">First</a>
+            </li>
+            {% endif %}
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{page_obj.previous_page_number}}">&laquo;</a>
+                {% else %}
+            <li class="disabled">
+                <a>&laquo;</a>
+                {% endif %}
+            </li>
+            <li>
+                <a>{{page_obj.number}}</a>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{page_obj.next_page_number}}">&raquo;</a>
+            </li>
+            {% else %}
+            <li class="disabled">
+                <a>&raquo;</a>
+            </li>
+            {% endif %}
+            {% if page_obj.next_page_number < paginator.num_pages %}
+            <li>
+                <a href="?page={{paginator.num_pages}}">Last</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    <div class="row">
+        {{paginator.count}} records for {{paginator.num_pages}} page(s)
+    </div>
+    <br />
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}

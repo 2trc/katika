@@ -46,6 +46,14 @@
     </section>
     <section id="projects">
 
+        <div class="project-item project">
+            <div class="container">
+                <h3><a href="/covid19/">Covid-19 in Cameroon</a></h3><br>
+                <h4>Mask Producers, Initiaves, Fund Raising Campaigns</h4>
+                <p>Attempt to aggregate uncoordinated and scattered efforts</p>
+            </div>
+        </div>
+
         <div class="project-item project-alt">
             <div class="container">
                 <h3><a href="/incident">Incident Visualization</a></h3><br>
@@ -102,11 +110,13 @@
                             <a href="https://twitter.com/tassingremi" target="_blank">@tassingremi</a>
                          or by mail with <i>tassingremi</i> at gmail.
                         </p>
+                        {% comment %}
                         <p>
                             Preferably post your comments and feedback on the
                             <a href="https://mpodol.com" target="_blank">mpodol.com</a> forum.
                              It's an amazing discussion platform launched solely for Cameroonians (topics)
                         </p>
+                        {% endcomment %}
                     </div>
                 </div>
             </div>
@@ -116,5 +126,14 @@
 
 {% endblock %}
 {% block extra_js %}
+
+<script type="text/javascript">
+    //https://coderwall.com/p/u3z_kq/facebook-appending-_-_-to-urls-after-authentication
+    if (window.location.hash == '#_=_') {
+        window.location.hash = ''; // for older browsers, leaves a # behind
+        history.pushState('', document.title, window.location.pathname); // nice and clean
+        e.preventDefault(); // no page reload
+    }
+</script>
 
 {% endblock %}

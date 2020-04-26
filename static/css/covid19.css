@@ -1,0 +1,83 @@
+.centering .col-lg-4 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+.centering h2 {
+  font-weight: normal;
+}
+.centering .col-lg-4 p {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.listing {
+    margin-top: 10px;
+}
+
+.listing td {
+    font-size: 12px;
+}
+
+.listing th {
+    white-space: nowrap;
+}
+
+.fix-cell {
+    width: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.info-cat {
+    background-color: #eee;
+    min-height: 250px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.info-cat-alt {
+    background-color: #ffffff;
+    min-height: 250px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+h1.headline {
+
+    padding: 8px 30px 8px 15px;
+    border-bottom: 3px dashed rgb(0,0,0, 0.1);
+    margin-bottom: 30px;
+}
+
+.show-card {
+
+    width: 80%;
+    height: 250px;
+    border-bottom: 0px solid rgb(0,0,0, 0.1);
+    margin: 5px 0px;
+    padding: 5px;
+    box-shadow: 1px 1px 10px rgb(0,0,0, 0.1);
+
+}
+
+.show-card img {
+    width: 100%;
+    height: auto;
+    margin-top: 10px;
+    box-shadow: 1px 1px 10px rgb(0,0,0, 0.1);
+}
+
+.show-card:hover {
+
+    box-shadow: 1px 1px 30px rgb(198, 61, 15, 0.3);
+
+}
+
+.made-by {
+    font-size: 10px;
+    color: rgb(255,255,255);
+    border-radius: 3px;
+    background-color: #c63d0f;
+    white-space: nowrap;
+    padding: 1px 3px;
+}

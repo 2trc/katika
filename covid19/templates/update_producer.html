@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+        COVID-19 Resources with focus on Cameroon | Katika
+{% endblock %}
+
+{% load crispy_forms_tags %}
+{% crispy form %}
+
+{%block meta_description%}
+<meta name="description" content="COVID-19 crowdsourced resources for Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="COVID-19, COVID19, COVID, Corona, Katika, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/covid19.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p><a href="/covid19">COVID-19</a> | Add or Update Maker</p>
+    </div>
+</section>
+
+
+<div class="container">
+    <form method="post">{% csrf_token %}
+        {{ form | crispy }}
+        <input type="submit" value="Save">
+    </form>
+    <br />
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}
