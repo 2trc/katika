@@ -110,6 +110,9 @@ class Incident(models.Model):
     def get_address(self):
 
         geolocator = Nominatim()
+        # set Nomatim timeout to 10sec as it might happen that the service is slow
+        # default is 1s and that speed is not needed for our service
+        geolocator.timeout = 10
         e = geolocator.reverse((self.location.y, self.location.x))
 
         address = e.raw['address']
@@ -282,3 +285,13 @@ class IncidentSerializer(serializers.ModelSerializer):
 
         model = Incident
         fields = '__all__'
+
+"""
+from django.db.models import Sum, Count
+from incident.models import Incident
+from django.db.models.functions import ExtractMonth, Extractyear
+
+c = Incident.objects.annotate(month=ExtractMonth('date')).annotate(year=ExtractMonth('date')).values('month').annotate(count=Sum('deaths')).
+   ...: annotate(year=ExtractYear('date')).values('year', 'month','count')
+
+"""
