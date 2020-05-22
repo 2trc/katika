@@ -7,6 +7,8 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
+from django.contrib.postgres.search import SearchVector
 
 from rest_framework import viewsets
 
@@ -15,7 +17,9 @@ from .models import IncidentType, Incident, IncidentSerializer, \
 
 from django.db.models import Q
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from datetime import date
+import calendar
 
 from anycluster.MapClusterer import MapClusterer
 
@@ -112,8 +116,19 @@ def incident_edit(request):
             return render(request, 'add_incident.html', {'form': form})    
 
         form.save()
+        incident = form.instance
+        incident.get_tag_ids()
+        incident.save()
 
     return HttpResponseRedirect('/incident')
+
+
+def unpack_parameters(request):
+
+    return request.GET.get('startdate'), \
+           request.GET.get('enddate'), \
+           request.GET.get('type'), \
+           request.GET.get('tags')
 
 
 # Use Q for query filtering
@@ -121,10 +136,7 @@ def incident_aggregation(request):
 
     queryset = Incident.objects.all()
 
-    startdate = request.GET.get('startdate')
-    enddate = request.GET.get('enddate')
-    type = request.GET.get('type')
-    tag_ids = request.GET.get('tags')
+    startdate, enddate, type, tag_ids = unpack_parameters(request)
 
     queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate,
                                 type=type, tag_ids=tag_ids)
@@ -134,12 +146,110 @@ def incident_aggregation(request):
                                                         Sum('missing'))))
 
 
+def get_start_end_date_str(request_dict):
+
+    year = request_dict.get('year')
+    month_present = request_dict.get('month')
+    month = request_dict.get('month', '01')
+
+    startdate_str = None
+
+    if year:
+        startdate_str = "{}-{}-01".format(year, month)
+        startdate = date(int(year), int(month), 1)
+
+    enddate_str = None
+
+    if startdate_str:
+
+        if month_present:
+            days_in_month = calendar.monthrange(startdate.year, startdate.month)[1]
+            enddate = startdate + timedelta(days_in_month-1)
+        elif year:
+            enddate = startdate + timedelta(364)
+
+        if enddate:
+            enddate_str = enddate.strftime("%Y-%m-%d")
+
+    return startdate_str, enddate_str
+
+
+def str_to_date(date_str):
+
+    return datetime.strptime(date_str, "%Y-%m-%d") if date_str else datetime.now()
+
+
+def pick_granularity(startdate_str, enddate_str):
+
+    granulatiry = 'day'
+
+    startdate = str_to_date(startdate_str)
+    enddate = str_to_date(enddate_str)
+
+    if not (startdate_str and enddate_str):
+        return 'year'
+
+    time_diff = enddate - startdate
+
+    if time_diff >= timedelta(365*2):
+        return 'year'
+
+    if time_diff > timedelta(45):
+        return 'month'
+
+    return granulatiry
+
+
+def incident_stats(request):
+
+    queryset = Incident.objects
+
+    # startdate_str, enddate_str = get_start_end_date_str(request.GET)
+    #
+    # print("start date: {}, end date: {}".format(startdate_str, enddate_str))
+    #
+    # incident_type = request.GET.get('type')
+    # tag_ids = request.GET.get('tags')
+
+    startdate_str, enddate_str, incident_type, tag_ids = unpack_parameters(request)
+
+    queryset = filter_query_set(queryset, startdate_str=startdate_str, enddate_str=enddate_str,
+                                type=incident_type, tag_ids=tag_ids)
+
+    granularity = pick_granularity(startdate_str, enddate_str)
+
+    if granularity == 'year':
+        stats = queryset.annotate(year=ExtractYear('date')) \
+            .values('year')
+    elif granularity == 'day':
+        stats = queryset.annotate(day=ExtractDay('date')) \
+            .values('day') \
+            .annotate(year=ExtractYear('date')) \
+            .annotate(month=ExtractMonth('date'))
+    else:
+        stats = queryset.annotate(month=ExtractMonth('date')) \
+            .values('month') \
+            .annotate(year=ExtractYear('date'))
+
+    stats = stats.order_by('date')\
+        .annotate(deaths=Sum('deaths')).annotate(wounded=Sum('wounded')).annotate(missing=Sum('missing'))\
+        .annotate(deaths_security_forces=Sum('deaths_security_forces'))\
+        .annotate(wounded_security_forces=Sum('wounded_security_forces'))\
+        .annotate(missing_security_forces=Sum('missing_security_forces'))\
+        .annotate(deaths_perpetrator=Sum('deaths_perpetrator'))\
+        .annotate(wounded_perpetrator=Sum('wounded_perpetrator'))\
+        .annotate(missing_perpetrator=Sum('missing_perpetrator')) \
+        .annotate(count=Count('id'))\
+        .order_by('year')
+
+    stats = list(stats)
+
+    return JsonResponse(stats, safe=False)
+
+
 def tags_facet(request):
 
-    startdate_str = request.GET.get('startdate')
-    enddate_str = request.GET.get('enddate')
-    type = request.GET.get('type')
-    tag_ids = request.GET.get('tags')
+    startdate_str, enddate_str, type, tag_ids = unpack_parameters(request)
 
     queryset = Tag.objects.all()
 
@@ -233,11 +343,19 @@ class IncidentViewSet(viewsets.ModelViewSet):
         Optionally restricts the returned purchases to a given user,
         by filtering against a `username` query parameter in the URL.
         """
-        queryset = Incident.objects.all()  # .order_by('-date_joined')
+
         startdate = self.request.query_params.get('startdate', None)
         enddate = self.request.query_params.get('enddate', None)
         type = self.request.query_params.get('type', None)
         tag_ids = self.request.query_params.get('tags', None)
+        q_str = self.request.query_params.get('q', None)
+
+        if q_str:
+            queryset = Incident.objects.annotate(
+                search = SearchVector('description'),
+                ).filter(search=q_str)
+        else:
+            queryset = Incident.objects.all()  # .order_by('-date_joined')
 
         queryset = filter_query_set(queryset, startdate_str=startdate, enddate_str=enddate,
                                     type=type, tag_ids=tag_ids)
