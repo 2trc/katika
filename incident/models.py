@@ -161,28 +161,68 @@ class Incident(models.Model):
         self.get_address()
 
         #avoid saving before many2many relationship already created
-        try:
-            self.get_tag_ids()
-        except:
-            pass
+
+        print("while saving: self: {}, tags: {}".format(self, self.tags.all()))
+
+        # try:
+        #     self.get_tag_ids()
+        # except:
+        #     pass
+
+        print("tag_ids when saving: {}".format(self.tag_ids))
 
         if not self.registration_date:
             self.registration_date = datetime.datetime.now()
 
         super(Incident, self).save(*args, **kwargs)
 
-    def get_tag_ids(self):
+    def get_tag_ids(self, params=None):
 
         self.tag_ids = ""
 
-        if self.tags:
+        ids = []
 
-            ids = []
+        tags = params if params else self.tags.all() if self.tags else []
 
-            for tag in self.tags.all():
-                ids.append(str(tag.pk))
+        for tag in tags:
+            ids.append(str(tag.pk))
 
-            self.tag_ids = ",".join(ids)
+        self.tag_ids = ",".join(ids)
+
+        print("inside get_tag_ids: {}".format(self.tag_ids))
+
+
+def find_miss_matching_tags():
+    '''
+    Return a list of incidents where the tags m2m doesn't match
+    with the tag_ids list. For cleaning up bug where tag_ids
+    weren't getting updated when incident was edited
+    '''
+
+    incidents = []
+
+    for incident in Incident.objects.all().iterator():
+
+        if not incident.tags:
+            continue
+
+        first_set = set()
+        for tag in incident.tags.all():
+            first_set.add(str(tag.id))
+
+        if incident.tag_ids:
+            second_set = set(incident.tag_ids.split(','))
+        else:
+            second_set = set()
+
+        if first_set != second_set:
+            print("there is a difference")
+            print('1st set: {}'.format(first_set))
+            print('2nd set: {}'.format(second_set))
+            incidents.append(incident)
+
+    return incidents
+
 
 # https://stackoverflow.com/questions/23795811/django-accessing-manytomany-fields-from-post-save-signal
 #https://stackoverflow.com/questions/26493254/using-djangos-m2m-changed-to-modify-what-is-being-saved-pre-add
@@ -190,14 +230,17 @@ class Incident(models.Model):
 @receiver(m2m_changed, sender=Incident.tags.through)
 def save_tag_ids(sender, **kwargs):
 
+
     instance = kwargs.pop('instance', None)
     action = kwargs.pop('action', None)
+
+    #print("inside m2m save_tag_ids, with action:".format(action))
 
     if action == 'post_add':
         instance.get_tag_ids()
 
         if instance.tag_ids:
-            #print("tags_string worked: " + instance.tag_ids)
+            print("tags_string worked: " + instance.tag_ids)
             instance.save()
         # else:
         #     print("no tags_string")
