@@ -160,10 +160,6 @@ class Incident(models.Model):
 
         self.get_address()
 
-        #avoid saving before many2many relationship already created
-
-        print("while saving: self: {}, tags: {}".format(self, self.tags.all()))
-
         # try:
         #     self.get_tag_ids()
         # except:
