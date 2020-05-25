@@ -11,6 +11,7 @@ from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
 from django.contrib.postgres.search import SearchVector
 
 from rest_framework import viewsets
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from .models import IncidentType, Incident, IncidentSerializer, \
     IncidentTypeSerializer, IncidentForm, Tag
@@ -301,13 +302,25 @@ def anycluster(request):
 
     return render(request, 'anybase.html', {})
 
+
+class ReadOnlyOrAdmin(BasePermission):
+    '''
+    #https://www.django-rest-framework.org/api-guide/permissions/
+    '''
+
+    def has_permission(self, request, view):
+        return (request.method in SAFE_METHODS) or (request.user and request.user.is_staff)
+
+
 class IncidentTypeViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
     serializer_class = IncidentTypeSerializer
-    queryset = IncidentType.objects.all()
+    # TODO align access-right with django-admin?
+    permission_classes = [ReadOnlyOrAdmin] #https://code.djangoproject.com/ticket/27154
 
+    queryset = IncidentType.objects.all()
 
 
 def filter_query_set(queryset, startdate_str, enddate_str, type, tag_ids):
@@ -337,6 +350,9 @@ class IncidentViewSet(viewsets.ModelViewSet):
     API endpoint that allows groups to be viewed or edited.
     """
     serializer_class = IncidentSerializer
+
+    #TODO align access-right with django-admin?
+    permission_classes = [ReadOnlyOrAdmin]
 
     def get_queryset(self):
         """
