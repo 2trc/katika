@@ -386,3 +386,10 @@ fieldset[disabled] .btn-regular.active {
     font-weight: 400;
     font-family: 'Lato', 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
 }
+
+thead th.asc a:after {
+    content: url('../img/icons/icon-th-ascending.png');
+}
+thead th.dsc a:after {
+    content: url('../img/icons/icon-th-descending.png');
+}
