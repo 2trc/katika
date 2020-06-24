@@ -5,6 +5,8 @@ from .models import EventSerializer, Event, PersonnageSerializer, Personnage \
     , EventForm, PersonnageForm
 from django.http import HttpResponseRedirect
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth.decorators import login_required, permission_required
+from katika.models import ReadOnlyOrAdmin
 # Create your views here.
 
 def khistory_home(request):
@@ -29,6 +31,10 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     pagination_class = NotPaginatedSetPagination
 
+    # TODO align access-right with django-admin?
+    permission_classes = [ReadOnlyOrAdmin]  # https://code.djangoproject.com/ticket/27154
+
+
     def get_queryset(self):
         """
         Optionally restricts the returned purchases to a given user,
@@ -47,8 +53,12 @@ class PersonnageViewSet(viewsets.ModelViewSet):
     """
     serializer_class = PersonnageSerializer
     queryset = Personnage.objects.all()
+    # TODO align access-right with django-admin?
+    permission_classes = [ReadOnlyOrAdmin]  # https://code.djangoproject.com/ticket/27154
 
 
+@login_required
+@permission_required('khistory.add_event', raise_exception=True)
 def add_event(request):
 
     form = EventForm(data=request.POST or None, label_suffix='')
@@ -65,6 +75,9 @@ def add_event(request):
 
     return render(request, 'add_event.html', {'form': form})
 
+
+@login_required
+@permission_required('khistory.add_event', raise_exception=True)
 def add_personnage(request):
 
     form = PersonnageForm(data=request.POST or None, label_suffix='')
