@@ -113,9 +113,17 @@ class Incident(models.Model):
         # set Nomatim timeout to 10sec as it might happen that the service is slow
         # default is 1s and that speed is not needed for our service
         geolocator.timeout = 10
-        e = geolocator.reverse((self.location.y, self.location.x))
+        try:
+            loc = geolocator.reverse((self.location.y, self.location.x))
+        except Exception as e:
+            print("reverse didn't work: {}".format(e))
+            return
 
-        address = e.raw['address']
+        try:
+            address = loc.raw['address']
+        except Exception as e:
+            print("Getting address failed: {}", e)
+            return
 
         display_list = []
 
@@ -139,7 +147,7 @@ class Incident(models.Model):
             display_list.append(address['state'])
 
         if len(display_list) == 0:
-            self.address = e.address
+            self.address = loc.address
         else:
             self.address = ", ".join(display_list)
 
