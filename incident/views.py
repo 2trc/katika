@@ -11,10 +11,12 @@ from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay
 from django.contrib.postgres.search import SearchVector
 
 from rest_framework import viewsets
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+
 
 from .models import IncidentType, Incident, IncidentSerializer, \
     IncidentTypeSerializer, IncidentForm, Tag
+
+from katika.models import ReadOnlyOrAdmin
 
 from django.db.models import Q
 
@@ -233,6 +235,7 @@ def incident_stats(request):
             .annotate(year=ExtractYear('date'))
 
     stats = stats.order_by('date')\
+        .annotate(incident_count=Count('pk')) \
         .annotate(deaths=Sum('deaths')).annotate(wounded=Sum('wounded')).annotate(missing=Sum('missing'))\
         .annotate(deaths_security_forces=Sum('deaths_security_forces'))\
         .annotate(wounded_security_forces=Sum('wounded_security_forces'))\
@@ -301,15 +304,6 @@ def incident_geo_serialize(request):
 def anycluster(request):
 
     return render(request, 'anybase.html', {})
-
-
-class ReadOnlyOrAdmin(BasePermission):
-    '''
-    #https://www.django-rest-framework.org/api-guide/permissions/
-    '''
-
-    def has_permission(self, request, view):
-        return (request.method in SAFE_METHODS) or (request.user and request.user.is_staff)
 
 
 class IncidentTypeViewSet(viewsets.ModelViewSet):
