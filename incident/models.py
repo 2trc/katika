@@ -100,6 +100,10 @@ class Incident(models.Model):
 
     tag_ids = models.TextField(default="", blank=True)
 
+    location_inaccurate = models.NullBooleanField(null=True, blank=True)
+
+    #sources = models.
+
     def __str__(self):
         return "{}: {}, {}".format(self.type, self.date, self.address)
 
@@ -300,7 +304,7 @@ class IncidentForm(forms.ModelForm):
                   'tags',
                     'source', 'deaths', 'wounded', 'missing',
                     'deaths_security_forces','wounded_security_forces','missing_security_forces',
-                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator')
+                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator', 'location_inaccurate')
 
         widgets = {
             'location': GooglePointFieldWidget,
