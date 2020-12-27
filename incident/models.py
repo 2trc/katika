@@ -71,6 +71,7 @@ class Tag(models.Model):
 
 admin.site.register(Tag)
 
+
 class Incident(models.Model):
     type = models.ForeignKey(IncidentType, null=True, on_delete=models.SET_NULL)
     location = geo_models.PointField()
@@ -83,6 +84,7 @@ class Incident(models.Model):
     deaths = models.PositiveIntegerField(blank=True, null=True)
     wounded = models.PositiveIntegerField(blank=True, null=True)
     missing = models.PositiveIntegerField(blank=True, null=True)
+    arrested = models.PositiveIntegerField(blank=True, null=True)
 
     # security forces
     deaths_security_forces = models.PositiveIntegerField(blank=True, null=True)
@@ -93,6 +95,8 @@ class Incident(models.Model):
     deaths_perpetrator = models.PositiveIntegerField(blank=True, null=True)
     wounded_perpetrator = models.PositiveIntegerField(blank=True, null=True)
     missing_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+
+
 
     reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -304,7 +308,8 @@ class IncidentForm(forms.ModelForm):
                   'tags',
                     'source', 'deaths', 'wounded', 'missing',
                     'deaths_security_forces','wounded_security_forces','missing_security_forces',
-                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator', 'location_inaccurate')
+                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator',
+                  'arrested', 'location_inaccurate')
 
         widgets = {
             'location': GooglePointFieldWidget,
