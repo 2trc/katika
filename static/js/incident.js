@@ -238,6 +238,12 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 
   $scope.updateStats = function(){
 
+      $scope.statsColors = ['#000000',
+                        '#ff84af', '#ff6300', '#006384', //'#336384',
+                        '#ff84af', '#ff6300', '#006384', //'#336384',
+                        '#ff84af', '#ff6300', '#006384', //'#336384'
+       ]
+
       $scope.statsLabels = [];
 
       $scope.statsData = [[], [],[],[], [],[],[], [], [],[]];
@@ -294,7 +300,14 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 //                        fontColor: 'rgb(255, 99, 132)'
 //                    }
                 }
-         }
+
+         };
+
+         $scope.statsOverride = [
+            {}, {}, {}, {},
+            {borderDash: [1, 2]},{borderDash: [1, 2]},{borderDash: [1, 2]},
+            {borderDash: [5, 15]},{borderDash: [5, 15]},{borderDash: [5, 15]}
+         ]
 
      }
 
