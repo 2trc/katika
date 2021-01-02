@@ -41,8 +41,11 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
                     <div class="form-group col-md-4 mb-0">
                         {{ form.date|as_crispy_field }}
                     </div>
-                    <div class="form-group col-md-4 mb-0">
+                    <div class="form-group col-md-8 mb-0">
                         {{ form.source|as_crispy_field }}
+                    </div>
+                    <div class="form-group col-md-4 mb-0">
+                        {{ form.mention_list|as_crispy_field }}
                     </div>
                 </div>
                 <div class="form-row">
@@ -53,7 +56,12 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
                         {{ form.tags|as_crispy_field }}
                     </div>
                 </div>
-                <div class="form-group col-md-12">
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        {{form.notes|as_crispy_field}}
+                </div>
+                </div>
+                <div class="form-group col-md-12 mb-0">
                     <div class="col-md-4">
                         {{ form.deaths|as_crispy_field}}
                         {{ form.deaths_security_forces|as_crispy_field}}
@@ -72,10 +80,10 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
                 </div>
                 <div class="form-group col-md-12">
                     <div class="col-md-2">
-                        {{form.location_inaccurate|as_crispy_field}}
+                        {{form.arrested|as_crispy_field}}
                     </div>
                     <div class="col-md-2">
-                        {{form.arrested|as_crispy_field}}
+                        {{form.location_inaccurate|as_crispy_field}}
                     </div>
 
                 </div>

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User
 
 from django.contrib import admin
 from django import forms
@@ -72,6 +72,19 @@ class Tag(models.Model):
 admin.site.register(Tag)
 
 
+class KeySource(models.Model):
+    name = models.CharField(max_length=30)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
+    homepage = models.URLField()
+
+    def __str__(self):
+
+        return self.name
+
+
+admin.site.register(KeySource)
+
+
 class Incident(models.Model):
     type = models.ForeignKey(IncidentType, null=True, on_delete=models.SET_NULL)
     location = geo_models.PointField()
@@ -81,6 +94,8 @@ class Incident(models.Model):
     registration_date = models.DateField(verbose_name='registration date')
     description = models.TextField()
     source = models.URLField()
+    mention_list = models.ManyToManyField(KeySource, blank=True)
+
     deaths = models.PositiveIntegerField(blank=True, null=True)
     wounded = models.PositiveIntegerField(blank=True, null=True)
     missing = models.PositiveIntegerField(blank=True, null=True)
@@ -96,8 +111,6 @@ class Incident(models.Model):
     wounded_perpetrator = models.PositiveIntegerField(blank=True, null=True)
     missing_perpetrator = models.PositiveIntegerField(blank=True, null=True)
 
-
-
     reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     tags = models.ManyToManyField(Tag, blank=True)
@@ -106,7 +119,7 @@ class Incident(models.Model):
 
     location_inaccurate = models.NullBooleanField(null=True, blank=True)
 
-    #sources = models.
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return "{}: {}, {}".format(self.type, self.date, self.address)
@@ -306,14 +319,15 @@ class IncidentForm(forms.ModelForm):
         model = Incident
         fields = ('type', 'location', 'date', 'description',
                   'tags',
-                    'source', 'deaths', 'wounded', 'missing',
+                    'source', 'mention_list', 'deaths', 'wounded', 'missing',
                     'deaths_security_forces','wounded_security_forces','missing_security_forces',
                     'deaths_perpetrator','wounded_perpetrator','missing_perpetrator',
-                  'arrested', 'location_inaccurate')
+                  'arrested', 'location_inaccurate', 'notes')
 
         widgets = {
             'location': GooglePointFieldWidget,
             'description': forms.Textarea(attrs={'rows': 8}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
             'tags': forms.SelectMultiple(attrs={'size': 8})
         }
 
