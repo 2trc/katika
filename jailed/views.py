@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
-from .models import Incarceration
+from .models import Incarceration, IncarcerationTag
+from person.models import SEX
 
 
 def jailed_home(request):
@@ -33,16 +34,41 @@ def jailed_home(request):
 
     if q_str:
         jailed_set = Incarceration.objects.annotate(
-            search=SearchVector('last_name', 'first_name'),
+            search=SearchVector('last_name', 'first_name', 'alias'),
         ).filter(search=q_str)
     else:
         jailed_set = Incarceration.objects.all()
+
+    selection = ''
+
+    if request.GET.get('deceased') == 'true':
+        jailed_set = jailed_set.filter(deceased=True)
+        selection = 'deceased=true'
+
+    # check the selection ...
+    if request.GET.get('detained') == 'true':
+        jailed_set = jailed_set.filter(conviction_date=None).filter(release_date__isnull=True)
+        selection = 'detained=true'
+
+    if request.GET.get('released') == 'true':
+        jailed_set = jailed_set.exclude(release_date__isnull=True)
+        selection = 'released=true'
+
+    if request.GET.get('female') == 'true':
+        jailed_set = jailed_set.filter(sex=1)
+        selection = 'female=true'
+
+    tag = request.GET.get('tag', '')
+    if tag:
+        jailed_set = jailed_set.filter(tags__name=tag)
 
     jailed_set = jailed_set.order_by(*order_list)
 
     page = request.GET.get('page', 1)
 
     paginator = Paginator(jailed_set, 50)
+
+    tags = IncarcerationTag.objects.all()
 
     try:
         jailed = paginator.page(page)
@@ -53,7 +79,8 @@ def jailed_home(request):
         jailed = paginator.page(paginator.num_pages)
 
     return render(request, 'jailed.html', context= {'jailed': jailed, 'paginator': paginator,
-                                                    's': s, 'curr': curr, 'q': q_str})
+                                                    's': s, 'curr': curr, 'q': q_str,
+                                                    'selection': selection, 'tags': tags, 's_tag':tag})
 
 
 def get_sign(sign_name):

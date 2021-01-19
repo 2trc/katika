@@ -3,12 +3,12 @@ from katika.models import NullsLastQuerySet
 from django.contrib import admin
 from person.models import Person, SEX
 from django.contrib.gis.db import models as geo_models
-from incident.models import Tag
+from katika.models import AbstractTag
 from mapwidgets.widgets import GooglePointFieldWidget
 
 # Create your models here.
 
-class IncarcerationTag(Tag):
+class IncarcerationTag(AbstractTag):
     pass
 
 
@@ -30,6 +30,7 @@ class Incarceration(Person):
     prison = models.ForeignKey(Prison, null=True, blank=True, on_delete=models.SET_NULL)
     sources = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(IncarcerationTag, blank=True)
+    deceased = models.NullBooleanField(null=True, blank=True)
 
     #https://stackoverflow.com/questions/15121093/django-adding-nulls-last-to-query
     objects = NullsLastQuerySet.as_manager()
@@ -57,7 +58,7 @@ class Incarceration(Person):
 class IncarcerationAdmin(admin.ModelAdmin):
 
     list_display = ('first_name', 'last_name', 'prison', 'arrest_date', 'incarceration_date', 'conviction_date', 'release_date')
-    search_fields = ('first_name', 'last_name',)
+    search_fields = ('first_name', 'last_name', 'alias')
     #list_filter = ('type', 'date')
 
 

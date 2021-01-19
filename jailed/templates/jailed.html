@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {%load static%}
+{% load spurl %}
 
 {% block title %}
     {% if selected_author %}
@@ -48,7 +49,14 @@
             </div>
         </div>
         <div class="row">
-                <span>In detention | </span><span>Deceased | </span><span>Overstaying</span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="detained=true,false" %}">Pre-trial</a> | </span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="deceased=true,false" %}">Deceased</a> | </span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="female=true,false" %}">Women</a> | </span>
+                {% comment %}
+                    <span><a href="/jailed?overstaying=true">Overstaying</a> |</span>
+                {% endcomment %}
+                <span><a href="{% spurl base=request.get_full_path toggle_query="released=true,false" %}">Released</a> |</span>
+                <span><a href="/jailed">Reset</a></span>
         </div>
     </div>
 </section>
@@ -81,18 +89,31 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th scope="col" class="{{s.last_name}}"><a href="?q={{q}}&o=last_name&s={{s.last_name}}">Name</a></th>
-                        <th scope="col" class="{{s.arrest}}"><a href="?q={{q}}&o=arrest&s={{s.arrest}}">Arrest</a></th>
-                        <th scope="col" class="{{s.incarceration}}"><a href="?q={{q}}&o=incarceration&s={{s.incarceration}}">Incarceration</a></th>
-                        <th scope="col" class="{{s.conviction}}"><a href="?q={{q}}&o=conviction&s={{s.conviction}}">Conviction</a></th>
-                        <th scope="col" class="{{s.release}}"><a href="?q={{q}}&o=release&s={{s.release}}">Release</a></th>
-                        <th scope="col" class="{{s.prison}}"><a href="?q={{q}}&o=prison&s={{s.prison}}">Prison</a></th>
+                        <th scope="col" class="{{s.last_name}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=last_name" toggle_query="s=asc,dsc"%}">Name</a>
+                        </th>
+
+                        <th scope="col" class="{{s.arrest}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=arrest" toggle_query="s=asc,dsc"%}">Arrest</a>
+                        </th>
+                        <th scope="col" class="{{s.incarceration}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=incarceration" toggle_query="s=asc,dsc"%}">Incarceration</a>
+                        </th>
+                        <th scope="col" class="{{s.conviction}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=conviction" toggle_query="s=asc,dsc"%}">Conviction</a>
+                        </th>
+                        <th scope="col" class="{{s.release}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=release" toggle_query="s=asc,dsc"%}">Release</a>
+                        </th>
+                        <th scope="col" class="{{s.prison}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=prison" toggle_query="s=asc,dsc"%}">Prison</a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for prisoner in jailed %}
                     <tr href="#" data-toggle="tooltip" title="{{prisoner.more_info}}">
-                        <th scope="row">{{prisoner.last_name}} {{prisoner.first_name}}</th>
+                        <th scope="row">{{prisoner}}</th>
                         <td>{{prisoner.arrest_date|default:""}}</td>
                         <td>{{prisoner.incarceration_date|default:""}}</td>
                         <td>{{prisoner.conviction_date|default:""}}</td>
@@ -104,20 +125,28 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-md-4">
-            tags & filters
+        <div class="col-md-4 tags">
+            <h4><i class="glyphicon glyphicon-tag"></i> Tags</h4>
+
+            {% for tag in tags %}
+
+            <span class="tag tag-default">
+                <a href="/jailed?tag={{tag.name}}">{{tag.name}}</a>
+            </span>
+            {% endfor %}
+
         </div>
     </div>
     <div class="row">
         <ul class="pagination">
             {% if jailed.previous_page_number > 1 %}
             <li>
-                <a href="?page=1&q={{q}}&o={{curr.o}}&s={{curr.s}}">First</a>
+                <a href="?page=1&q={{q}}&o={{curr.o}}&s={{curr.s}}&tag={{s_tag}}">First</a>
             </li>
             {% endif %}
             {% if jailed.has_previous %}
             <li>
-                <a href="?page={{jailed.previous_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}">&laquo;</a>
+                <a href="?page={{jailed.previous_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">&laquo;</a>
                 {% else %}
             <li class="disabled">
                 <a>&laquo;</a>
@@ -129,7 +158,7 @@
 
             {% if jailed.has_next %}
             <li>
-                <a href="?page={{jailed.next_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}">&raquo;</a>
+                <a href="?page={{jailed.next_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">&raquo;</a>
             </li>
             {% else %}
             <li class="disabled">
@@ -138,7 +167,7 @@
             {% endif %}
             {% if jailed.next_page_number < paginator.num_pages %}
             <li>
-                <a href="?page={{paginator.num_pages}}&q={{q}}&o={{curr.o}}&s={{curr.s}}">Last</a>
+                <a href="?page={{paginator.num_pages}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">Last</a>
             </li>
             {% endif %}
 
