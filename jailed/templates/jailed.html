@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+
+{% block title %}
+    {% if selected_author %}
+{{selected_author.last_name}} {{selected_author.first_name}}
+    {% elif selected_university %}
+{{selected_university.name}}
+    {% else %}
+        Prisoners in Cameroon | Katika
+    {% endif %}
+{% endblock %}
+
+{%block meta_description%}
+<meta name="description" content="Prisoners in Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="Cameroon, Katika, Prisoners, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/jailed.css' %}">
+
+
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <div>Prisoners in Cameroon</div>
+            </div>
+            <div class="col-xs-10 col-md-8">
+                <form id="mySearch" class="input-group" action="/jailed" method="get">
+                  <input id="q" type="search" class="form-control" placeholder="Search for..."
+                    name="q">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </span>
+                </form><!-- /input-group -->
+            </div>
+        </div>
+        <div class="row">
+                <span><a href="{% spurl base=request.get_full_path toggle_query="detained=true,false" %}">Pre-trial</a> | </span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="deceased=true,false" %}">Deceased</a> | </span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="female=true,false" %}">Women</a> | </span>
+                {% comment %}
+                    <span><a href="/jailed?overstaying=true">Overstaying</a> |</span>
+                {% endcomment %}
+                <span><a href="{% spurl base=request.get_full_path toggle_query="released=true,false" %}">Released</a> |</span>
+                <span><a href="/jailed">Reset</a></span>
+        </div>
+    </div>
+</section>
+
+<!--
+<div class="container search-box">
+    <div class="row">
+        <div class="col-xs-10 col-md-8">
+            <form id="mySearch" class="input-group" action="/kthesis" method="get">
+              <input id="q" type="search" class="form-control" placeholder="Search for..."
+                name="q">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="submit">
+                    <i class="glyphicon glyphicon-search"></i>
+                </button>
+              </span>
+            </form>
+        </div>
+    </div>
+</div>
+-->
+
+
+<div class="container">
+    <div class="row count-top">
+        {{paginator.count}} records for {{paginator.num_pages}} page(s)
+    </div>
+    <div class="row listing">
+        <div class="col-xs-12 col-md-8">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" class="{{s.last_name}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=last_name" toggle_query="s=asc,dsc"%}">Name</a>
+                        </th>
+
+                        <th scope="col" class="{{s.arrest}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=arrest" toggle_query="s=asc,dsc"%}">Arrest</a>
+                        </th>
+                        <th scope="col" class="{{s.incarceration}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=incarceration" toggle_query="s=asc,dsc"%}">Incarceration</a>
+                        </th>
+                        <th scope="col" class="{{s.conviction}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=conviction" toggle_query="s=asc,dsc"%}">Conviction</a>
+                        </th>
+                        <th scope="col" class="{{s.release}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=release" toggle_query="s=asc,dsc"%}">Release</a>
+                        </th>
+                        <th scope="col" class="{{s.prison}}">
+                            <a href="{% spurl base=request.get_full_path set_query="o=prison" toggle_query="s=asc,dsc"%}">Prison</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prisoner in jailed %}
+                    <tr href="#" data-toggle="tooltip" title="{{prisoner.more_info}}">
+                        <th scope="row">{{prisoner}}</th>
+                        <td>{{prisoner.arrest_date|default:""}}</td>
+                        <td>{{prisoner.incarceration_date|default:""}}</td>
+                        <td>{{prisoner.conviction_date|default:""}}</td>
+                        <td>{{prisoner.release_date|default:""}}</td>
+                        <td>{{prisoner.prison|default:""}}</td>
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4 tags">
+            <h4><i class="glyphicon glyphicon-tag"></i> Tags</h4>
+
+            {% for tag in tags %}
+
+            <span class="tag tag-default">
+                <a href="/jailed?tag={{tag.name}}">{{tag.name}}</a>
+            </span>
+            {% endfor %}
+
+        </div>
+    </div>
+    <div class="row">
+        <ul class="pagination">
+            {% if jailed.previous_page_number > 1 %}
+            <li>
+                <a href="?page=1&q={{q}}&o={{curr.o}}&s={{curr.s}}&tag={{s_tag}}">First</a>
+            </li>
+            {% endif %}
+            {% if jailed.has_previous %}
+            <li>
+                <a href="?page={{jailed.previous_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">&laquo;</a>
+                {% else %}
+            <li class="disabled">
+                <a>&laquo;</a>
+                {% endif %}
+            </li>
+            <li>
+                <a>{{jailed.number}}</a>
+            </li>
+
+            {% if jailed.has_next %}
+            <li>
+                <a href="?page={{jailed.next_page_number}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">&raquo;</a>
+            </li>
+            {% else %}
+            <li class="disabled">
+                <a>&raquo;</a>
+            </li>
+            {% endif %}
+            {% if jailed.next_page_number < paginator.num_pages %}
+            <li>
+                <a href="?page={{paginator.num_pages}}&q={{q}}&o={{curr.o}}&s={{curr.s}}&{{selection}}&tag={{s_tag}}">Last</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    <div class="row count-bottom">
+        {{paginator.count}} records for {{paginator.num_pages}} page(s)
+    </div>
+    <br />
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>-->
+<!--<script src="{% static 'js/kthesis.js' %}"></script>-->
+<!--<script type="text/javascript">-->
+<!--document.getElementById('mySearch').onsubmit = function() {-->
+<!--console.log("Boom");-->
+<!--window.location = '/kthesis?q=' + document.getElementById('q').value;-->
+<!--return false;-->
+<!--}-->
+<!--</script>-->
+{% endblock %}

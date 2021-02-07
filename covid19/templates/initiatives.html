@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+        COVID-19 Resources with focus on Cameroon | Katika
+{% endblock %}
+
+{%block meta_description%}
+<meta name="description" content="COVID-19 crowdsourced resources for Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="COVID-19, COVID19, COVID, Corona, Katika, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/covid19.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p><a href="/covid19">COVID-19</a> | Initiatives around Cameroon
+            {% if user.is_authenticated %}
+                        | <a href="initiatives/add/">Add</a> Intitiave</p>
+            {% endif %}
+        </p>
+    </div>
+</section>
+
+
+<div class="container">
+    <div class="row listing">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+<!--                        <th scope="col">Type</th>-->
+                        <th scope="col">Date</th>
+                        <th scope="col">Contact</th>
+                        <th scope="col">Location</th>
+<!--                        <th scope="col">Phone</th>-->
+<!--                        <th scope="col">Price</th>-->
+
+                        <th scope="col">Description</th>
+                        <th scope="col">Website</th>
+<!--                        <th scope="col">Address</th>-->
+<!--                        <th scope="col">Region</th>-->
+                        {% if user.is_authenticated %}
+                        <th></th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for initiative in initiatives %}
+                    <tr href="#" data-toggle="tooltip" title="{{initiative.more_info}}">
+                        <td class="text-nowrap">{{initiative.date}}</td>
+                        <td>{{initiative.initiator|default:""}}</td>
+                        <td>{{initiative.location_text|default:""}}</td>
+
+                        <td>{{initiative.description|truncatechars:200}}</td>
+                        <td>
+                        {% if initiative.website %}
+                            <a href="{{initiative.website|default:''}}"> Website</a>
+                        {% endif %}
+                        </td>
+                        {% if user.is_authenticated %}
+                        <th><a href="initiatives/{{initiative.id}}/edit/">edit</a></th>
+                        {% endif %}
+                    </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    <div class="row">
+        <ul class="pagination">
+            {% if page_obj.previous_page_number > 1 %}
+            <li>
+                <a href="?page=1">First</a>
+            </li>
+            {% endif %}
+            {% if page_obj.has_previous %}
+            <li>
+                <a href="?page={{page_obj.previous_page_number}}">&laquo;</a>
+                {% else %}
+            <li class="disabled">
+                <a>&laquo;</a>
+                {% endif %}
+            </li>
+            <li>
+                <a>{{page_obj.number}}</a>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li>
+                <a href="?page={{page_obj.next_page_number}}">&raquo;</a>
+            </li>
+            {% else %}
+            <li class="disabled">
+                <a>&raquo;</a>
+            </li>
+            {% endif %}
+            {% if page_obj.next_page_number < paginator.num_pages %}
+            <li>
+                <a href="?page={{paginator.num_pages}}">Last</a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </div>
+    <div class="row">
+        {{paginator.count}} records for {{paginator.num_pages}} page(s)
+    </div>
+    <br />
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}

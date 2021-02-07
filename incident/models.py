@@ -71,6 +71,20 @@ class Tag(models.Model):
 
 admin.site.register(Tag)
 
+
+class KeySource(models.Model):
+    name = models.CharField(max_length=30)
+    full_name = models.CharField(max_length=255, null=True, blank=True)
+    homepage = models.URLField()
+
+    def __str__(self):
+
+        return self.name
+
+
+admin.site.register(KeySource)
+
+
 class Incident(models.Model):
     type = models.ForeignKey(IncidentType, null=True, on_delete=models.SET_NULL)
     location = geo_models.PointField()
@@ -80,14 +94,32 @@ class Incident(models.Model):
     registration_date = models.DateField(verbose_name='registration date')
     description = models.TextField()
     source = models.URLField()
+    mention_list = models.ManyToManyField(KeySource, blank=True)
+
     deaths = models.PositiveIntegerField(blank=True, null=True)
     wounded = models.PositiveIntegerField(blank=True, null=True)
     missing = models.PositiveIntegerField(blank=True, null=True)
+    arrested = models.PositiveIntegerField(blank=True, null=True)
+
+    # security forces
+    deaths_security_forces = models.PositiveIntegerField(blank=True, null=True)
+    wounded_security_forces = models.PositiveIntegerField(blank=True, null=True)
+    missing_security_forces = models.PositiveIntegerField(blank=True, null=True)
+
+    # perpetrators
+    deaths_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+    wounded_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+    missing_perpetrator = models.PositiveIntegerField(blank=True, null=True)
+
     reported_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
     tags = models.ManyToManyField(Tag, blank=True)
 
     tag_ids = models.TextField(default="", blank=True)
+
+    location_inaccurate = models.NullBooleanField(null=True, blank=True)
+
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return "{}: {}, {}".format(self.type, self.date, self.address)
@@ -99,9 +131,20 @@ class Incident(models.Model):
     def get_address(self):
 
         geolocator = Nominatim()
-        e = geolocator.reverse((self.location.y, self.location.x))
+        # set Nomatim timeout to 10sec as it might happen that the service is slow
+        # default is 1s and that speed is not needed for our service
+        geolocator.timeout = 10
+        try:
+            loc = geolocator.reverse((self.location.y, self.location.x))
+        except Exception as e:
+            print("reverse didn't work: {}".format(e))
+            return
 
-        address = e.raw['address']
+        try:
+            address = loc.raw['address']
+        except Exception as e:
+            print("Getting address failed: {}", e)
+            return
 
         display_list = []
 
@@ -125,7 +168,7 @@ class Incident(models.Model):
             display_list.append(address['state'])
 
         if len(display_list) == 0:
-            self.address = e.address
+            self.address = loc.address
         else:
             self.address = ", ".join(display_list)
 
@@ -135,38 +178,76 @@ class Incident(models.Model):
         # print(*args)
         # print(**kwargs)
         #Avoid reverse querying if address already exists
-        if not self.address:
-            try:
-                #https://github.com/geopy/geopy/issues/262
-                #fixed with geopy v-1.12.0
-                self.get_address()
-            except Exception as e:
-                print(e)
-                #pass
+        # if not self.address:
+        #     try:
+        #         #https://github.com/geopy/geopy/issues/262
+        #         #fixed with geopy v-1.12.0
+        #         self.get_address()
+        #     except Exception as e:
+        #         print(e)
+        #         #pass
 
-        #avoid saving before many2many relationship already created
-        try:
-            self.get_tag_ids()
-        except:
-            pass
+        self.get_address()
+
+        # try:
+        #     self.get_tag_ids()
+        # except:
+        #     pass
+
+        print("tag_ids when saving: {}".format(self.tag_ids))
 
         if not self.registration_date:
             self.registration_date = datetime.datetime.now()
 
         super(Incident, self).save(*args, **kwargs)
 
-    def get_tag_ids(self):
+    def get_tag_ids(self, params=None):
 
         self.tag_ids = ""
 
-        if self.tags:
+        ids = []
 
-            ids = []
+        tags = params if params else self.tags.all() if self.tags else []
 
-            for tag in self.tags.all():
-                ids.append(str(tag.pk))
+        for tag in tags:
+            ids.append(str(tag.pk))
 
-            self.tag_ids = ",".join(ids)
+        self.tag_ids = ",".join(ids)
+
+        print("inside get_tag_ids: {}".format(self.tag_ids))
+
+
+def find_miss_matching_tags():
+    '''
+    Return a list of incidents where the tags m2m doesn't match
+    with the tag_ids list. For cleaning up bug where tag_ids
+    weren't getting updated when incident was edited
+    '''
+
+    incidents = []
+
+    for incident in Incident.objects.all().iterator():
+
+        if not incident.tags:
+            continue
+
+        first_set = set()
+        for tag in incident.tags.all():
+            first_set.add(str(tag.id))
+
+        if incident.tag_ids:
+            second_set = set(incident.tag_ids.split(','))
+        else:
+            second_set = set()
+
+        if first_set != second_set:
+            print("there is a difference")
+            print('1st set: {}'.format(first_set))
+            print('2nd set: {}'.format(second_set))
+            incidents.append(incident)
+
+    return incidents
+
 
 # https://stackoverflow.com/questions/23795811/django-accessing-manytomany-fields-from-post-save-signal
 #https://stackoverflow.com/questions/26493254/using-djangos-m2m-changed-to-modify-what-is-being-saved-pre-add
@@ -174,14 +255,17 @@ class Incident(models.Model):
 @receiver(m2m_changed, sender=Incident.tags.through)
 def save_tag_ids(sender, **kwargs):
 
+
     instance = kwargs.pop('instance', None)
     action = kwargs.pop('action', None)
+
+    #print("inside m2m save_tag_ids, with action:".format(action))
 
     if action == 'post_add':
         instance.get_tag_ids()
 
         if instance.tag_ids:
-            #print("tags_string worked: " + instance.tag_ids)
+            print("tags_string worked: " + instance.tag_ids)
             instance.save()
         # else:
         #     print("no tags_string")
@@ -235,9 +319,17 @@ class IncidentForm(forms.ModelForm):
         model = Incident
         fields = ('type', 'location', 'date', 'description',
                   'tags',
-                    'source', 'deaths', 'wounded', 'missing')
+                    'source', 'mention_list', 'deaths', 'wounded', 'missing',
+                    'deaths_security_forces','wounded_security_forces','missing_security_forces',
+                    'deaths_perpetrator','wounded_perpetrator','missing_perpetrator',
+                  'arrested', 'location_inaccurate', 'notes')
 
-        widgets = {'location': GooglePointFieldWidget}
+        widgets = {
+            'location': GooglePointFieldWidget,
+            'description': forms.Textarea(attrs={'rows': 8}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+            'tags': forms.SelectMultiple(attrs={'size': 8})
+        }
 
 
 class IncidentTypeSerializer(serializers.ModelSerializer):
@@ -263,3 +355,13 @@ class IncidentSerializer(serializers.ModelSerializer):
 
         model = Incident
         fields = '__all__'
+
+"""
+from django.db.models import Sum, Count
+from incident.models import Incident
+from django.db.models.functions import ExtractMonth, Extractyear
+
+c = Incident.objects.annotate(month=ExtractMonth('date')).annotate(year=ExtractMonth('date')).values('month').annotate(count=Sum('deaths')).
+   ...: annotate(year=ExtractYear('date')).values('year', 'month','count')
+
+"""

@@ -4,6 +4,8 @@
 #sudo add-apt-repository -y ppa:deadsnakes/ppa
 
 apt-get update
+sudo apt-get update
+
 
 #http://stackoverflow.com/questions/18696078/postgresql-error-when-trying-to-create-an-extension
 #https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu
@@ -31,6 +33,7 @@ su - vagrant -c 'createdb -E UTF8 katika'
 su - vagrant -c "psql katika -c \"CREATE EXTENSION postgis\""
 
 cd /tmp
+
 # https://anycluster.readthedocs.io/en/latest/installconf.html
 git clone https://github.com/umitanuki/kmeans-postgresql.git
 
@@ -51,7 +54,7 @@ sed -i 's/( r\\d.*/.*$'\''/' /usr/local/lib/python3.6/dist-packages/django/contr
 #    r'((rc(?P<release_candidate>\d+))|dev)?-CAPI-(?P<capi_version>\d+\.\d+\.\d+).*$'
 #)
 
-su - vagrant -c "whoami && pwd"
 su - vagrant -c "cd /vagrant && python3 manage.py makemigrations && python3 manage.py migrate"
 su - vagrant -c "nohup python3.6 /vagrant/manage.py runserver 0.0.0.0:8000 &"
+
 

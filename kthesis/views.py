@@ -14,6 +14,7 @@ from django.db.models.functions import Concat
 from django.db.models import TextField, Value as V
 from django.contrib.postgres.aggregates import StringAgg
 from django.contrib.postgres.search import SearchVector
+from katika.models import ReadOnlyOrAdmin
 
 
 #https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html
@@ -166,6 +167,7 @@ class ThesisViewSet(viewsets.ModelViewSet):
     """
 
     serializer_class = ThesisSerializer
+    permission_classes = [ReadOnlyOrAdmin]
     queryset = Thesis.objects.all()
 
 
@@ -174,6 +176,7 @@ class ScholarViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     serializer_class = ScholarSerializer
+    permission_classes = [ReadOnlyOrAdmin]
 
     def get_queryset(self):
 
@@ -188,4 +191,5 @@ class UniversityViewSet(viewsets.ModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     serializer_class = UniversitySerializer
+    permission_classes = [ReadOnlyOrAdmin]
     queryset = University.objects.all()
