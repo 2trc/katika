@@ -15,16 +15,24 @@
       </info-window>
 
 </ng-map>
+<div ng-show="showStats" class="container">
+    <canvas id="bar" class="chart chart-line"  chart-data="statsData" chart-labels="statsLabels"
+                chart-series="statsSeries" chart-options="statsOptions" chart-colors="statsColors"
+                chart-dataset-override="statsOverride">
+            chart-series="series"
+    </canvas>
+</div>
 <div class="promotion">
     <div class="container">
+        <div class="col-md-1" ng-click="toggleStats()">{{showHideStatsText}}</div>
         <div class="col-xs-6 col-md-3"><p>Reported Incidents: {{incidentCount}}</p></div>
         <div class="col-xs-6 col-md-3"><p>Wounded: {{woundedCount}}</p></div>
         <div class="col-xs-6 col-md-3"><p>Deaths: {{deathsCount}}</p></div>
-        <div class="col-xs-6 col-md-3"><p>Missing: {{missingCount||0}}</p></div>
+        <div class="col-xs-6 col-md-2"><p>Missing: {{missingCount||0}}</p></div>
     </div>
 </div>
 <div id="incident-filter" class="container">
-    <div clas="row">
+    <div class="row">
         <div class="col-xs-10 col-md-3">
             <div class="form-group">
                 <select id="incidenttype" class="form-control" ng-model="typeSelected"
@@ -46,16 +54,34 @@
         </div>
         <div class="col-xs-10 col-md-3">
             <div class="input-group">
-            <!--<label for="orderType">Order by</label>-->
-            <select id="orderType" class="form-control" ng-model="orderType" ng-change="orderTypeChanged()"
-            ng-init="orderType=orderByList[0]">
-                <option ng-repeat="order in orderByList" value="{{order}}">Order by: {{order}}</option>
-            </select>
+                <select id="orderType" class="form-control" ng-model="orderType" ng-change="orderTypeChanged()"
+                ng-init="orderType=orderByList[0]">
+                    <option ng-repeat="order in orderByList" value="{{order}}">Order by: {{order}}</option>
+                </select>
                 <span class="input-group-addon">
                     <i class="{{orderIcon}}" ng-click="orderDirectionChanged()"></i>
                 </span>
 
             </div>
+        </div>
+        <div class="col-md-1">
+            <span class="glyphicon glyphicon-search search-icon" ng-click="showSearchBox()">
+
+            </span>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-10">
+            <form class="input-group" ng-show="showSearch" ng-submit="applySearch()">
+                <input class="form-control" type="text" placeholder="" ng-model="searchInput">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-ok" type="button" ng-click="applySearch()">Search</button>
+                </span>
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-cancel" type="button" ng-click="closeSearchBox()">Close</button>
+                </span>
+            </form>
         </div>
     </div>
 </div>
@@ -71,6 +97,11 @@
                     <span>
                         <a href="{{incident.source}}" target="_blank">
                             <i class="glyphicon glyphicon-link"></i>
+                        </a>
+                    </span>
+                    <span>
+                        <a href="edit?id={{incident.id}}" title="edit" ng-show="{{user_is_authenticated}}">
+                            <i class="glyphicon glyphicon-edit"></i>
                         </a>
                     </span>
                     <p>{{incident.description}}</p>

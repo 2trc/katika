@@ -3,9 +3,10 @@ var incidentApp = angular.module('incidentApp', ["ngRoute"
 //  "ui.bootstrap.datetimepicker"
     , 'daterangepicker'
     , 'ngMap'
+    , "chart.js"
 ]);
 
-http://creative-punch.net/2014/04/preserve-html-text-output-angularjs/
+//http://creative-punch.net/2014/04/preserve-html-text-output-angularjs/
 //Allow popup content to show HTML tags/divs...
 incidentApp.filter('unsafe', function($sce) {
     return function(val) {
@@ -96,6 +97,9 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
   $scope.incidents = [];
   $scope.pages = {};
   $scope.orderType ="";
+  $scope.showStats = false;
+  $scope.showHideStatsText = "Show Stats";
+  $scope.showSearch = false;
 
   if(typeof($routeParams.tags) == "undefined"){
     $scope.selectedTag = "";
@@ -117,12 +121,11 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
   $scope.woundedCount = 0;
   $scope.deathsCount= 0;
   $scope.missingCount= 0;
+  $scope.statsInfo = [];
 
   $scope.orderByList = ['date', 'deaths', 'wounded', 'missing'];
 
   $scope.datePicker = { 'date': {startDate: null, endDate: null} };
-
-  console.log($scope.selectedTag);
 
 
   var self = this;
@@ -154,6 +157,37 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
     clusterer.cluster(false);
 
   }
+
+  $scope.showSearchBox = function() {
+    $scope.showSearch = true;
+  }
+
+  $scope.closeSearchBox = function() {
+    $scope.showSearch = false;
+    $scope.searchInput = "";
+    $scope.applySearch();
+  }
+
+  $scope.applySearch = function() {
+
+    console.log("Query text: " + $scope.searchInput);
+    var filters = self.buildFilters();
+    clusterer.filter(filters);
+    incidentsQuery();
+    clusterer.cluster(false);
+  }
+
+  //https://embed.plnkr.co/plunk/tswjcE
+  $scope.toggleStats = function() {
+
+    $scope.showStats = $scope.showStats? false: true;
+
+    $scope.showHideStatsText = $scope.showStats? "Hide Stats": "Show Stats";
+
+    // console.log("show stats: " + $scope.showStats);
+      return $scope.showStats;
+  }
+
 
   /*
   * Choose 'tag' filter
@@ -201,6 +235,83 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
     incidentsQuery();
     clusterer.cluster(false);
   }
+
+  $scope.updateStats = function(){
+
+      $scope.statsColors = ['#000000',
+                        '#ff84af', '#ff6300', '#006384', //'#336384',
+                        '#ff84af', '#ff6300', '#006384', //'#336384',
+                        '#ff84af', '#ff6300', '#006384', //'#336384'
+       ]
+
+      $scope.statsLabels = [];
+
+      $scope.statsData = [[], [],[],[], [],[],[], [], [],[]];
+
+      stats = $scope.statsInfo;
+
+      //console.log(stats);
+
+        for (let ii=0; ii<stats.length;ii++){
+            $scope.statsLabels[ii] = make_label([stats[ii]["year"], stats[ii]["month"], stats[ii]["day"]]);
+            $scope.statsData[0][ii] = stats[ii]["incident_count"];
+            $scope.statsData[1][ii] = stats[ii]["deaths"];
+            $scope.statsData[2][ii] = stats[ii]["wounded"];
+            $scope.statsData[3][ii] = stats[ii]["missing"];
+
+            $scope.statsData[4][ii] = stats[ii]["deaths_security_forces"];
+            $scope.statsData[5][ii] = stats[ii]["wounded_security_forces"];
+            $scope.statsData[6][ii] = stats[ii]["missing_security_forces"];
+
+            $scope.statsData[7][ii] = stats[ii]["deaths_perpetrator"];
+            $scope.statsData[8][ii] = stats[ii]["wounded_perpetrator"];
+            $scope.statsData[9][ii] = stats[ii]["missing_perpetrator"];
+        }
+
+//        console.log($scope.statsData);
+//        console.log($scope.statsLabels);
+
+        $scope.statsSeries = ['incident count','deaths', 'wounded', 'missing',
+        'deaths security forces', 'wounded security forces', 'missing security forces',
+        'deaths assailants', 'wounded assailants', 'missing assailants'
+        ];
+
+        $scope.statsOptions = {
+//            scales: {
+//              xAxes: [{
+//                  stacked: true
+//              }],
+//              yAxes: [{
+//                  stacked: true
+//              }]
+//            },
+            size: {
+                height: 300
+            },
+            title: {
+                      display: true,
+                      text: 'Incident Statistics'
+                    },
+            legend: {
+                    display: true,
+                    position: 'bottom',
+
+//                    labels: {
+//                        fontColor: 'rgb(255, 99, 132)'
+//                    }
+                }
+
+         };
+
+         $scope.statsOverride = [
+            {}, {}, {}, {},
+            {borderDash: [1, 2]},{borderDash: [1, 2]},{borderDash: [1, 2]},
+            {borderDash: [5, 15]},{borderDash: [5, 15]},{borderDash: [5, 15]}
+         ]
+
+     }
+
+
 
 
   /*
@@ -319,6 +430,12 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
         queryUrl += "&type="+ String($scope.typeSelected.id);
     }
 
+    if($scope.searchInput){
+        queryUrl += "&q=" + $scope.searchInput;
+    }
+
+    console.log(queryUrl);
+
     return queryUrl;
   }
 
@@ -399,6 +516,15 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
       $scope.tags_facet = result;
       //console.log(JSON.stringify($scope.tags_facet));
     })
+
+    url = '/incident/stats?' + queryUrl;
+    //console.log('url: ' + url);
+    incidentService.get(url)
+    .then(function(result) {
+    console.log("inside incidentService: " + result);
+      $scope.statsInfo = result;
+      $scope.updateStats();
+    });
 /*    .then(function() {
         clusterer.removeAllMarkers();
     })*/
@@ -870,7 +996,7 @@ function IncidentCtrl(incidentService, $scope, $filter, $window, $routeParams, N
 		xhr.open("POST", url, true);
 
 		var csrftoken = getCookieValue('csrftoken');
-    		xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    	xhr.setRequestHeader("X-CSRFToken", csrftoken);
 
 		xhr.send(JSON.stringify(postParams));
 
@@ -1201,4 +1327,16 @@ function roundMarkerCount(count){
     }
 
     return count;
+}
+
+function make_label( info ){
+
+    output = info[0];
+
+    //https://stackoverflow.com/questions/8043026/how-to-format-numbers-by-prepending-0-to-single-digit-numbers
+     for (ii=1; ii<info.length; ii++){
+        if (info[ii]) {output += "-" + ("0" + info[ii]).slice(-2)}
+     }
+     return output;
+
 }

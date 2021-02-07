@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+        COVID-19 Resources with focus on Cameroon | Katika
+{% endblock %}
+
+{%block meta_description%}
+<meta name="description" content="COVID-19 crowdsourced resources for Cameroon">
+{%endblock%}
+{%block meta_keywords%}
+<meta name="keywords" content="COVID-19, COVID19, COVID, Corona, Katika, Cameroon">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+<link rel="stylesheet" type="text/css" href="{% static 'css/covid19.css' %}">
+{% endblock %}
+{% block content %}
+
+
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1>COVID-19 Resources with focus on Cameroon</h1>
+      <p class="lead text-muted">Are you looking for information regarding COVID-19 in Cameroon?</p>
+<!--      <p>-->
+<!--        <a href="#" class="btn btn-primary my-2">Main call to action</a>-->
+<!--        <a href="#" class="btn btn-secondary my-2">Secondary action</a>-->
+<!--      </p>-->
+    </div>
+  </section>
+
+  <div class="container centering">
+
+      <!-- Three columns of text below the carousel -->
+      <div class="row">
+
+        <div class="col-lg-4">
+          <img class="img-circle" src="{% static 'img/face-masks.jpg' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Makers</h2>
+          <p>Ordinary people are producing face masks and other product to fight COVID-19. We are compiling a list for you</p>
+          <p><a class="btn btn-default" href="producers/" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="img-circle" src="{% static 'img/covid-redcross.png' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Initiatives</h2>
+          <p>Initatives around Cameroon</p>
+          <p><a class="btn btn-default" href="initiatives/" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+        <div class="col-lg-4">
+          <img class="img-circle" src="{% static 'img/fund-raising.png' %}" alt="Generic placeholder image" width="140" height="140">
+          <h2>Fund Raising</h2>
+          <p>Here are the Fund Raising projects you can contribute in to fight the virus</p>
+          <p><a class="btn btn-default" href="funds/" role="button">View details &raquo;</a></p>
+        </div><!-- /.col-lg-4 -->
+      </div><!-- /.row -->
+  </div>
+<div class="info-cat">
+  <div class="container">
+    <h1 class="headline">Official Information</h1>
+    <div class="col-md-6">
+      <h4><a href="http://covid19.minsante.cm/" target="_blank">Ministry of Health COVID-19</a></h4>
+      <p>Official information, regulations, statistics, hotlines, hospitals</p>
+    </div>
+    <div class="col-md-6">
+      <h4><a href="https://www.who.int/" target="_blank">WHO</a></h4>
+      <p>Global information with official statistics, recommendations including for health professionals...</p>
+    </div>
+  </div>
+</div>
+<div class="info-cat-alt">
+  <div class="container">
+    <h1 class="headline">Statistics</h1>
+    <div class="col-md-4">
+      <div class="show-card">
+        <a href="https://coronavirus.chosennews.net/" target="_blank">ChooseNews</a>
+         of <a href="https://twitter.com/jessicanono1" target="_blank">Jessica Nono</a>
+        <span class="made-by">made by Cameroon</span>
+        <div>
+          <a href="https://coronavirus.chosennews.net/" target="_blank">
+          <img src="{% static 'img/covid19/chosenews.jpg' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="https://covid19.cm.fmagweth.com/" target="_blank">CoronaStat</a>
+        of <a href="https://twitter.com/FranklinMagweth" target="_blank">Franklin Magweth</a>
+        <span class="made-by">made by Cameroon</span>
+        <div>
+          <a href="https://covid19.cm.fmagweth.com/" target="_blank">
+          <img src="{% static 'img/covid19/fmagweth.png' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="https://www.worldometers.info/coronavirus/" target="_blank">WorldMeter</a>
+        <div>
+          <a href="https://www.worldometers.info/coronavirus/" target="_blank">
+          <img src="{% static 'img/covid19/worldmeters.png' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="https://www.covidvisualizer.com/" target="_blank">COVID Visualizer</a>
+        <div>
+          <a href="https://www.covidvisualizer.com/" target="_blank">
+          <img src="{% static 'img/covid19/covidvisualizer.png' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="https://coronavirus.jhu.edu/map.html" target="_blank">John Hopkins Covid-19 Dashoard</a>
+        <div>
+          <a href="https://coronavirus.jhu.edu/map.html" target="_blank">
+          <img src="{% static 'img/covid19/johnhopkins.png' %}" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="https://www.facebook.com/groups/640084986135331/permalink/2032683730208776/" target="_blank">InformationIsBeautiful</a>
+        <div>
+          <a href="https://www.facebook.com/groups/640084986135331/permalink/2032683730208776/" target="_blank">
+          <img src="{% static 'img/covid19/InformationIsBeautiful.png' %}" alt=""></a>
+        </div>
+      </div>
+    </div>
+    {% comment %}
+    <div class="col-md-4">
+      <div class="show-card">
+      <a href="#" target="_blank">LeMonde Stats</a>
+      </div>
+    </div>
+    {% endcomment %}
+  </div>
+</div>
+<div class="info-cat">
+  <div class="container">
+    <h1 class="headline">Masks, DOs & DONTs</h1>
+
+    <a href="https://medium.com/@Cancerwarrior/covid-19-why-we-should-all-wear-masks-there-is-new-scientific-rationale-280e08ceee71"
+         target="_blank">
+    <h4>COVID-19: Why We Should All Wear Masks — There Is New Scientific Rationale</h4></a>
+    Sui Huang, March 27, 2020
+    <br><br>
+    <a href="http://prddsgofilestorage.blob.core.windows.net/api/sitreps/3972/Cloth_mask_guidance_IFRC_Covid.pdf" target="_blank">
+    <h4>IFRC guidance on the generalised use of cloth face masks during the COVID-19 pandemic
+    </h4></a>
+    International Federation of Red Cross and Red Crescent Societies (IFRC), March 27, 2020
+    <br>
+  </div>
+
+</div>
+<div class="info-cat-alt">
+  <div class="container">
+    <h1 class="headline">Resources</h1>
+    <br>
+    <br>
+    <p>mesures barières, symptomes</p>
+    <h4>Work in progress...</h4>
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}

@@ -18,13 +18,12 @@
     <div class="promotion">
         <div class="container">
             <span>Incident reporting and visualizing</span>
-            {% comment %}
+
             {%if user.is_authenticated%}
-            {% endcomment%}
-                <span class="add_item"><a href="/incident/add">REPORT NEW</a></span>
-            {% comment %}
+
+            <span class="add_item"><a href="/incident/add">REPORT NEW</a></span>
+
             {%endif%}
-            {% endcomment %}
 
         </div>
     </div>
@@ -41,7 +40,10 @@
     <input type="radio" name="clusterstyle" value="kmeans" id="clusterKmeans" checked><label for="clusterKmeans">Bubble</label>
     -->
 
-    <div ng-app="incidentApp">
+    <div ng-app="incidentApp" ng-init="user_is_authenticated={{ user.is_authenticated |yesno:'true,false'}}">
+    <script type="text/javascript">
+      console.log("{{user.is_authenticated|yesno:'true,false'}}");
+    </script>
         {% csrf_token %}
         <ng-view></ng-view>
     </div>

@@ -68,6 +68,8 @@ urlpatterns += [
     url(r'^$', home, name='home'),
     #url(r'anycluster/', include('anycluster.urls')),
     url(r'^blog/', include('kblog.urls')),
+    url(r'^jailed/', include('jailed.urls')),
+    #url(r'^transcribe/', include('transcribe.urls')),
 
 
     ## User mgnmt, signup, login, logout
@@ -122,5 +124,5 @@ urlpatterns += [
 
 # Adds ``STATIC_URL`` to the context of error pages, so that error
 # pages can use JS, CSS and images.
-handler404 = "mezzanine.core.views.page_not_found"
+#handler404 = "mezzanine.core.views.page_not_found"
 handler500 = "mezzanine.core.views.server_error"

@@ -1,0 +1,11 @@
+.listing th{
+    white-space: nowrap;
+}
+
+.count-top {
+    margin: 10px 0px 0px 0px;
+}
+
+.count-bottom {
+    margin: 0px 0px 10px 0px;
+}
