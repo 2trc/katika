@@ -376,6 +376,38 @@ fieldset[disabled] .btn-regular.active {
     margin-top: 10px;
 }
 
+.tag {
+    border-radius: 3px;
+    margin: 2px;
+    padding: 5px 5px;
+    display: inline-block;
+    font-size: 0.95em;
+}
+
+.tag-default {
+    background-color: #F0F0F0;
+}
+
+.tag-selected, .tag:hover {
+    background-color: #fcff81;
+}
+
+.tag-selected:hover {
+    background-color: #fd4e4e;
+}
+
+.tag_count {
+    font-size: 0.7em;
+    border-radius: 10px;
+    background-color: white;
+    padding: 3px 5px;
+    margin-left: 1px;
+    margin-left: 3px;
+    vertical-align: middle;
+    /*min-width: 18px;
+    display: inline-block;*/
+}
+
 .sub-section {
     margin-top: 30px;
 }

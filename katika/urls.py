@@ -61,14 +61,16 @@ urlpatterns += [
     # url("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
     #url("^eseka/", include("eseka.urls")),
 
-    #url(r'^incident/', include('incident.urls')),
+    url(r'anycluster/', include('anycluster.urls')),
+    url(r'^incident/', include('incident.urls')),
     url(r'^kthesis/', include('kthesis.urls')),
     url(r'^khistory/', include('khistory.urls')),
     url(r'^about/', about, name='about'),
     url(r'^$', home, name='home'),
-    #url(r'anycluster/', include('anycluster.urls')),
+
     url(r'^blog/', include('kblog.urls')),
     url(r'^jailed/', include('jailed.urls')),
+    url(r'^covid19/', include('covid19.urls')),
     #url(r'^transcribe/', include('transcribe.urls')),
 
 

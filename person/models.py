@@ -12,6 +12,7 @@ SEX = ((0, 'M'), (1, 'F'))
 class Person(models.Model):
     first_name = models.CharField(blank=True, null=True, max_length=255)
     last_name = models.CharField(max_length=255)
+    alias = models.CharField(blank=True, null=True, max_length=255)
     birthday = models.DateField(blank=True, null=True)
     sex = models.PositiveSmallIntegerField(blank=True, null=True, choices=SEX)
     featured_image = FileField(verbose_name=_("Featured Image"),
@@ -22,6 +23,9 @@ class Person(models.Model):
         return "{} {}".format(self.first_name, self.last_name.upper())
 
     def __str__(self):
+        # if self.alias:
+        #     return self.alias
+        # else:
         return self.get_full_name()
 
     class Meta:

@@ -3,7 +3,8 @@ from django.contrib import admin
 from rest_framework import routers
 from .views import incident_home, incident_geo_serialize,IncidentViewSet, \
     IncidentTypeViewSet, incident_add, incident_edit, incident_aggregation, \
-    anycluster, tags_facet
+    incident_stats, anycluster, tags_facet
+
 
 
 
@@ -25,6 +26,7 @@ urlpatterns = [
     #url(r'edit/<uuid:pk>/', incident_edit),
     url(r'^edit', incident_edit),
     url(r'^aggregate', incident_aggregation),
+    url(r'^stats', incident_stats),
     url(r'^tags_facet', tags_facet),
     url(r'^', include(router.urls)),
     url(r'geojson', incident_geo_serialize),
