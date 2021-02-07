@@ -150,23 +150,28 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 
 DATABASES = {
     "default": {
-        # Add "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
+        # Ends with "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
+        #"ENGINE": "",
+        # "ENGINE": "django.db.backends.sqlite3",
         #"ENGINE": "django.contrib.gis.db.backends.spatialite",
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
         # DB name or path to database file if using sqlite3.
-        #"NAME": "dev.db",
-        "ENGINE": "django.db.backends.",
-        # DB name or path to database file if using sqlite3.
-        "NAME": "",
+        # "NAME": "dev.db",
+        "NAME": "katika",
+        #https://stackoverflow.com/questions/36214127/django-db-utils-operationalerror-fe-sendauth-no-password-supplied
+        #"NAME": "",
         # Not used with sqlite3.
-        "USER": "",
+        # "USER": "postgres",
+        "USER": "vagrant",
         # Not used with sqlite3.
-        "PASSWORD": "",
+        #"PASSWORD": "postgres",
         # Set to empty string for localhost. Not used with sqlite3.
-        "HOST": "",
+        #"HOST": "localhost",
         # Set to empty string for default. Not used with sqlite3.
-        "PORT": "",
+        #"PORT": "",
     }
 }
+
 
 
 
@@ -205,6 +210,10 @@ MEDIA_ROOT = os.path.join(PROJECT_ROOT, *MEDIA_URL.strip("/").split("/"))
 
 # Package/module name to import the root urlpatterns from for the project.
 ROOT_URLCONF = "%s.urls" % PROJECT_APP
+
+# https://github.com/WeblateOrg/docker/pull/48
+# REDIRECT_IS_HTTPS = True
+
 
 
 # https://stackoverflow.com/questions/39787700/unable-to-locate-the-spatialite-library-django
@@ -249,9 +258,9 @@ if DJANGO_VERSION < (1, 9):
 ################
 
 INSTALLED_APPS = (
+    "django.contrib.contenttypes",
     "django.contrib.admin",
     "django.contrib.auth",
-    "django.contrib.contenttypes",
     "django.contrib.redirects",
     "django.contrib.sessions",
     "django.contrib.sites",
@@ -266,30 +275,39 @@ INSTALLED_APPS = (
     "mezzanine.forms",
     "mezzanine.galleries",
     "mezzanine.twitter",
+    
     # "mezzanine.accounts",
     # "mezzanine.mobile",
     "social_django",
 
     'person',
-    'eseka',
+#    'eseka',
     'incident',
     'kthesis',
     'kblog',
     'khistory',
+    'jailed',
+    'covid19',
+
+#    'transcribe',
 
     'rest_framework',
     'mapwidgets',
     'crispy_forms',
     'django.contrib.gis',
-    'anycluster',
+    # 'anycluster',
+    'mylocation',
+    'smth',
+    #'moderation',
     #'taggit',
-    'tagulous',
+    #'tagulous',
+    'spurl',
 )
 
 MAP_WIDGETS = {
     "GooglePointFieldWidget": (
         ("zoom", 6),
-        ("mapCenterLocationName", "ngaroundere"),
+        ("mapCenterLocationName", "garoua"),
         ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'cm'}}),
         ("markerFitZoom", 12),
         ("size", "600x600"),

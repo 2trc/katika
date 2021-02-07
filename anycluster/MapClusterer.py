@@ -545,9 +545,15 @@ class MapClusterer():
 
         if clusterGeometries:
 
+            print("filtering params: {}".format((self.params["filters"])))
+
             filterstring = self.constructFilterstring(self.params["filters"])
 
+            print("filtering string: {}".format(filterstring))
+
             filterstring += custom_filterstring
+
+            print("custom filtering string: {}".format(filterstring))
 
             for geometry_dic in clusterGeometries:
 

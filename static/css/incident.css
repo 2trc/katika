@@ -116,3 +116,29 @@ input[type="month"] {
     /*min-width: 18px;
     display: inline-block;*/
 }
+
+.search-icon {
+    font-size: 25px;
+}
+
+.btn-ok {
+    background-color: rgb(0,0,0);
+    color: #bbbbbb;
+    transition-duration: 0.4s;
+}
+
+.btn-ok:hover {
+  background-color: rgb(0,0,0, 0.8);
+  color: #dddddd;
+}
+
+.btn-cancel {
+    background-color: rgb(198, 61, 15);
+    color: #bbbbbb;
+    transition-duration: 0.4s;
+}
+
+.btn-cancel:hover {
+  background-color: rgb(198, 61, 15, 0.8);
+  color: #dddddd;
+}

@@ -41,9 +41,6 @@
     -->
 
     <div ng-app="incidentApp" ng-init="user_is_authenticated={{ user.is_authenticated |yesno:'true,false'}}">
-    <script type="text/javascript">
-      console.log("{{user.is_authenticated|yesno:'true,false'}}");
-    </script>
         {% csrf_token %}
         <ng-view></ng-view>
     </div>
@@ -66,6 +63,11 @@
     <script type="text/javascript" src="{% static 'js/ng-map.min.js' %}"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>-->
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-chart.js/0.10.2/angular-chart.js"></script>-->
+    <script src="{% static 'bower_components/angular-animate/dist/angular-animate.min.js' %}"></script>
+    <script src="{% static 'bower_components/chart.js/dist/Chart.min.js' %}"></script>
+    <script src="{% static 'bower_components/angular-chart.js/dist/angular-chart.min.js' %}"></script>
     <!--script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-cookies.min.js"></script-->
     <!-- Google maps API -->
 

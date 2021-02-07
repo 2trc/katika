@@ -4,10 +4,12 @@
 }
 
 .thesis-block{
-    padding: 20px 0px 25px;
-    border-bottom: 2px solid #f0f2f4;
+    padding: 20px 15px;
+    border: 1px solid #E0E0E0;
     font-size: 11pt;
     line-height: 1.5em;
+    box-shadow: 0 0.05em 0.05em rgba(24,24,24,.15);
+    margin-bottom: .65em;
 }
 
 .thesis-content{
@@ -50,6 +52,17 @@
 .thesis-date {
     font-size: 0.7em;
     color: #565656;
+}
+
+.thesis-degree {
+
+    font-size: 0.7em;
+    font-weight: 600;
+    color: #efefef;
+    background-color: #565656;
+    border-radius: 10px;
+    padding: 2px 5px;
+
 }
 
 .thesis-link{

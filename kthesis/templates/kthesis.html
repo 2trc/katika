@@ -91,7 +91,10 @@
                             <a href="/kthesis/scholar/{{thesis.author.slug}}">
                                 {{thesis.author.last_name}} {{thesis.author.first_name}}
                             </a>
-                        </span>&nbsp;
+                        </span>&nbsp
+                        {% if thesis.degree %}
+                            <span class="thesis-degree">{{thesis.degree}}</span>
+                        {% endif%}
                         <span class="thesis-date">{{thesis.year}}</span>
                     </div>
                     <div class="thesis-title">{{thesis.title}}
@@ -162,7 +165,7 @@
             </div>
 {% endfor %}
         </div>
-        <div class="col-xs-8 col-md-3 facet">
+        <div class="col-xs-12 col-md-3 facet">
             <!--<div>facet categories</div>-->
             {% if university_facet %}
             <div class="item">

@@ -58,13 +58,24 @@ admin.site.register(Scholar, ScholarAdmin)
 
 
 class Degree(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=True)
     name_fr = models.CharField(max_length=50, blank=True)
-    abbreviation = models.CharField(null=True, max_length=10)
-    abbreviation_fr = models.CharField(null=True, max_length=10)
+    abbreviation = models.CharField(null=True, blank=True, max_length=10)
+    abbreviation_fr = models.CharField(null=True, blank=True, max_length=10)
 
     def __str__(self):
-        return "{}".format(self.abbreviation)
+
+        if self.abbreviation:
+            return self.abbreviation
+
+        if self.abbreviation_fr:
+            return self.abbreviation_fr
+
+        if self.name:
+            return self.name
+
+        if self.name_fr:
+            return self.name_fr
 
 
 class DegreeSerializer(serializers.ModelSerializer):

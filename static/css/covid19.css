@@ -18,12 +18,11 @@
     font-size: 12px;
 }
 
-.listing th {
+th.listing {
     white-space: nowrap;
 }
 
-.fix-cell {
-    width: 50px;
+td.desc {
     text-overflow: ellipsis;
     overflow: hidden;
 }
