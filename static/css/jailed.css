@@ -9,3 +9,7 @@
 .count-bottom {
     margin: 0px 0px 10px 0px;
 }
+
+.popover-content {
+    word-wrap: break-word;
+}
