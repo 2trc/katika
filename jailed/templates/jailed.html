@@ -29,6 +29,12 @@
 
 {% endblock %}
 {% block content %}
+<script>
+    $(function () {
+      console.log("in pop toggle");
+      $('[data-toggle="popover"]').popover()
+    })
+</script>
 
 <section class="promotion">
     <div class="container">
@@ -112,8 +118,11 @@
                 </thead>
                 <tbody>
                     {% for prisoner in jailed %}
-                    <tr href="#" data-toggle="tooltip" title="{{prisoner.more_info}}">
-                        <th scope="row">{{prisoner}}</th>
+                    <tr>
+                        <th scope="row" href="#" data-toggle="popover" data-original-title="More Info"
+                            data-content="{{prisoner.more_info}}">
+                            {{prisoner}}
+                        </th>
                         <td>{{prisoner.arrest_date|default:""}}</td>
                         <td>{{prisoner.incarceration_date|default:""}}</td>
                         <td>{{prisoner.conviction_date|default:""}}</td>
@@ -124,6 +133,11 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <div>
+                <button type="button" class="btn btn-xs" data-placement="right"
+                                    data-toggle="popover" data-original-title="Details" data-content="Comments and links">+
+                            </button>
+            </div>
         </div>
         <div class="col-md-4 tags">
             <h4><i class="glyphicon glyphicon-tag"></i> Tags</h4>

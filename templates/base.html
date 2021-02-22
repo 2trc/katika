@@ -54,6 +54,7 @@
 
         {% block extra_js_in_head %}
             {# Override this in templates to add extra js in header #}
+            <script type="text/javascript" src="{% static 'js/jquery-3.2.1.js' %}"></script>
         {% endblock %}
 
     </head>
@@ -183,7 +184,7 @@
         </footer-->
 
         {# Global javascript #}
-        <script type="text/javascript" src="{% static 'js/jquery-3.2.1.js' %}"></script>
+
         <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
         <!--<script type="text/javascript" src="{% static 'js/angular.min.js' %}"></script>-->
         <script type="text/javascript" src="{% static 'js/angular.js' %}"></script>
