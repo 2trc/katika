@@ -5,6 +5,8 @@ from person.models import Person, SEX
 from django.contrib.gis.db import models as geo_models
 from katika.models import AbstractTag
 from mapwidgets.widgets import GooglePointFieldWidget
+import copy
+import csv
 
 # Create your models here.
 
@@ -51,6 +53,25 @@ class Incarceration(Person):
 
         return m_info
 
+    def to_dict(self):
+        out = copy.copy( self.__dict__)
+        for x in ['id','prison_id', '_state', '_prison_cache']:
+            if x in out:
+                out.pop(x)
+
+        if self.prison:
+            out['prison'] = str(self.prison)
+
+        if self.tags:
+            out['tags'] = ",".join([tag.name for tag in self.tags.all()])
+
+        if self.sex:
+            out['sex'] = 'F'
+        else:
+            out['sex'] = 'M'
+
+        return out
+
     #class Meta:
     #    managed = True
 
@@ -77,3 +98,28 @@ class PrisonAdmin(admin.ModelAdmin):
 
 admin.site.register(IncarcerationTag)
 admin.site.register(Prison, PrisonAdmin)
+
+def export_data(filename='incarceration.csv'):
+    data = []
+    for jailed in Incarceration.objects.all():
+        data.append(jailed.to_dict())
+
+    if len(data) == 0:
+        print("Empty data, exiting")
+        return
+
+    print(f"{len(data)} records retrieved")
+    print(f"first data: {data[0]}")
+
+    with open(filename, mode='w') as csv_file:
+        fieldnames = list(data[0].keys())
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+        writer.writeheader()
+
+        writer.writerows(data)
+        print(f"{len(data)} rows written in {filename}")
+
+    print("returning")
+
+
