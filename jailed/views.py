@@ -4,6 +4,7 @@ from django.contrib.postgres.search import SearchVector
 from .models import Incarceration, IncarcerationTag
 from person.models import SEX
 
+import csv
 
 def jailed_home(request):
     # &q={{q}}&o={{curr.o}}&s={{curr.s}}
@@ -85,3 +86,27 @@ def jailed_home(request):
 
 def get_sign(sign_name):
     return "" if sign_name == 'dsc' else "-"
+
+
+def export_data(filename='incarceration.csv'):
+    data = []
+    for jailed in Incarceration.objects.all():
+        data.append(jailed.to_dict())
+
+    if len(data) == 0:
+        print("Empty data, exiting")
+        return
+
+    print(f"{len(data)} records retrieved")
+    print(f"first data: {data[0]}")
+
+    with open(filename, mode='w') as csv_file:
+        fieldnames = list(data[0].keys())
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+
+        writer.writeheader()
+
+        writer.writerows(data)
+        print(f"{len(data)} rows written in {filename}")
+
+    print("returning")
