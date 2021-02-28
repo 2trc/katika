@@ -19,6 +19,12 @@ import datetime
 from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
+import logging
+
+import copy
+
+logger = logging.getLogger(__name__)
+
 # Create your models here.
 class IncidentType(models.Model):
 
@@ -137,13 +143,13 @@ class Incident(models.Model):
         try:
             loc = geolocator.reverse((self.location.y, self.location.x))
         except Exception as e:
-            print("reverse didn't work: {}".format(e))
+            logger.error("reverse didn't work: {}".format(e))
             return
 
         try:
             address = loc.raw['address']
         except Exception as e:
-            print("Getting address failed: {}", e)
+            logger.error("Getting address failed: {}", e)
             return
 
         display_list = []
@@ -194,7 +200,7 @@ class Incident(models.Model):
         # except:
         #     pass
 
-        print("tag_ids when saving: {}".format(self.tag_ids))
+        logger.debug("tag_ids when saving: {}".format(self.tag_ids))
 
         if not self.registration_date:
             self.registration_date = datetime.datetime.now()
@@ -214,7 +220,23 @@ class Incident(models.Model):
 
         self.tag_ids = ",".join(ids)
 
-        print("inside get_tag_ids: {}".format(self.tag_ids))
+        logger.debug("inside get_tag_ids: {}".format(self.tag_ids))
+
+    def to_dict(self):
+        out = copy.copy( self.__dict__)
+
+        for x in ['location', 'notes', 'id','type_id', '_state', '_prison_cache', 'reported_by_id', 'tag_ids']:
+            if x in out:
+                out.pop(x)
+
+        out['type'] = str(self.type)
+
+        out['lat'], out['lng'] = self.location.y, self.location.x
+
+        if self.tags:
+            out['tags'] = ",".join([tag.name for tag in self.tags.all()])
+
+        return out
 
 
 def find_miss_matching_tags():
@@ -241,9 +263,9 @@ def find_miss_matching_tags():
             second_set = set()
 
         if first_set != second_set:
-            print("there is a difference")
-            print('1st set: {}'.format(first_set))
-            print('2nd set: {}'.format(second_set))
+            logger.debug("there is a difference")
+            logger.debug('1st set: {}'.format(first_set))
+            logger.debug('2nd set: {}'.format(second_set))
             incidents.append(incident)
 
     return incidents

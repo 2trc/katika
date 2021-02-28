@@ -26,6 +26,12 @@ import calendar
 
 from anycluster.MapClusterer import MapClusterer
 
+import logging
+
+import csv
+
+logger = logging.getLogger(__name__)
+
 
 def incident_home(request):
 
@@ -97,9 +103,9 @@ def incident_edit(request):
             #incident = get_object_or_404(Incident, pk)
             #not enough values to unpack (expected 2, got 1)
             incident = Incident.objects.get(pk=pk)
-            print(incident)
+            logger.debug(incident)
         except Exception as e:
-            print(e)
+            logger.error(e)
             raise Http404("Incident doesn't exist")
 
         form = IncidentForm(instance=incident)
@@ -389,6 +395,34 @@ class IncidentViewSet(viewsets.ModelViewSet):
         return queryset
 
 
+def export_data(start_date, end_date, type=None, tag_ids=None, filename=None):
+    data = []
 
+    queryset = filter_query_set(Incident.objects.all(), start_date, end_date, type, tag_ids)
+
+    for incident in queryset:
+        data.append(incident.to_dict())
+
+    if len(data) == 0:
+        print("Empty data, exiting")
+        return
+
+    print(f"{len(data)} records retrieved")
+    print(f"first data: {data[0]}")
+
+    if not filename:
+        filename = f'incidents-{start_date}-{end_date}.csv'
+
+    with open(filename, mode='w', encoding='utf-8') as csv_file:
+        fieldnames = list(data[0].keys())
+        #writer = csv.DictWriter(csv_file, delimiter=',', quotechar="'", quoting=csv.QUOTE_ALL, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, dialect='excel-tab',fieldnames=fieldnames)
+
+        writer.writeheader()
+
+        writer.writerows(data)
+        print(f"{len(data)} rows written in {filename}")
+
+    print("returning")
 
 #TODO function for parsing query parameters
