@@ -6,7 +6,6 @@ from django.contrib.gis.db import models as geo_models
 from katika.models import AbstractTag
 from mapwidgets.widgets import GooglePointFieldWidget
 import copy
-import csv
 
 # Create your models here.
 
@@ -99,27 +98,5 @@ class PrisonAdmin(admin.ModelAdmin):
 admin.site.register(IncarcerationTag)
 admin.site.register(Prison, PrisonAdmin)
 
-def export_data(filename='incarceration.csv'):
-    data = []
-    for jailed in Incarceration.objects.all():
-        data.append(jailed.to_dict())
-
-    if len(data) == 0:
-        print("Empty data, exiting")
-        return
-
-    print(f"{len(data)} records retrieved")
-    print(f"first data: {data[0]}")
-
-    with open(filename, mode='w') as csv_file:
-        fieldnames = list(data[0].keys())
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-
-        writer.writeheader()
-
-        writer.writerows(data)
-        print(f"{len(data)} rows written in {filename}")
-
-    print("returning")
 
 
