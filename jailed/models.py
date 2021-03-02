@@ -77,8 +77,8 @@ class Incarceration(Person):
 
 class IncarcerationAdmin(admin.ModelAdmin):
 
-    list_display = ('first_name', 'last_name', 'prison', 'arrest_date', 'incarceration_date', 'conviction_date', 'release_date')
-    search_fields = ('first_name', 'last_name', 'alias')
+    list_display = ('last_name', 'first_name', 'prison', 'arrest_date', 'incarceration_date', 'conviction_date', 'release_date')
+    search_fields = ('first_name', 'last_name', 'alias', 'sources')
     #list_filter = ('type', 'date')
 
 
