@@ -33,26 +33,28 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
     <div class="container">
             <form method="POST" action="" role="form" class="submission-form uniForm">
                 {% csrf_token %}
-                <input class="btn btn-lg btn-regular" type="submit" value="Submit">
+                <button class="btn btn-lg btn-regular" type="submit" value="Submit">Submit</button>
                 <div class="form-row">
-                    <div class="form-group col-md-4 mb-0">
-                        {{ form.type|as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-4 mb-0">
-                        {{ form.date|as_crispy_field }}
-                    </div>
-                    <div class="form-group col-md-8 mb-0">
-                        {{ form.source|as_crispy_field }}
+                    <div class="col-md-8 mb-0">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.type|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.date|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-12 mb-0">
+                            {{ form.source|as_crispy_field }}
+                        </div>
                     </div>
                     <div class="form-group col-md-4 mb-0">
                         {{ form.mention_list|as_crispy_field }}
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-9 mb-0">
+                    <div class="form-group col-md-8 mb-0">
                         {{ form.description|as_crispy_field }}
                     </div>
-                    <div class="form-group col-md-3 mb-0">
+                    <div class="form-group col-md-4 mb-0">
                         {{ form.tags|as_crispy_field }}
                     </div>
                 </div>
@@ -62,35 +64,30 @@ https://blog.bixly.com/awesome-forms-django-crispy-forms
                 </div>
                 </div>
                 <div class="form-group col-md-12 mb-0">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{ form.deaths|as_crispy_field}}
                         {{ form.deaths_security_forces|as_crispy_field}}
                         {{ form.deaths_perpetrator|as_crispy_field}}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{ form.wounded|as_crispy_field}}
                         {{ form.wounded_security_forces|as_crispy_field}}
                         {{ form.wounded_perpetrator|as_crispy_field}}
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         {{ form.missing|as_crispy_field}}
                         {{ form.missing_security_forces|as_crispy_field}}
                         {{ form.missing_perpetrator|as_crispy_field}}
                     </div>
-                </div>
-                <div class="form-group col-md-12">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         {{form.arrested|as_crispy_field}}
-                    </div>
-                    <div class="col-md-2">
                         {{form.location_inaccurate|as_crispy_field}}
                     </div>
-
                 </div>
                 <div class="form-group col-md-12">
                         {{form.location|as_crispy_field}}
                 </div>
-                <input class="btn btn-lg btn-regular" type="submit" value="Submit">
+                <button class="btn btn-lg btn-regular" type="submit" value="Submit">Submit</button>
             </form>
     </div>
 
