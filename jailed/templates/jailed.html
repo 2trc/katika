@@ -54,12 +54,13 @@
             </div>
         </div>
         <div class="row">
-                <span><a href="{% spurl base=request.get_full_path toggle_query="detained=true,false" %}">Pre-trial</a> | </span>
+                <span><a href="{% spurl base=request.get_full_path toggle_query="pretrial=true,false" %}">Pre-trial</a> | </span>
                 <span><a href="{% spurl base=request.get_full_path toggle_query="deceased=true,false" %}">Deceased</a> | </span>
                 <span><a href="{% spurl base=request.get_full_path toggle_query="female=true,false" %}">Women</a> | </span>
                 {% comment %}
                     <span><a href="/jailed?overstaying=true">Overstaying</a> |</span>
                 {% endcomment %}
+                <span><a href="{% spurl base=request.get_full_path toggle_query="detained=true,false" %}">Detained</a> |</span>
                 <span><a href="{% spurl base=request.get_full_path toggle_query="released=true,false" %}">Released</a> |</span>
                 <span><a href="/jailed">Reset</a></span>
         </div>

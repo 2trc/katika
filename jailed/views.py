@@ -47,13 +47,17 @@ def jailed_home(request):
         selection = 'deceased=true'
 
     # check the selection ...
-    if request.GET.get('detained') == 'true':
+    if request.GET.get('pretrial') == 'true':
         jailed_set = jailed_set.filter(conviction_date=None).filter(release_date__isnull=True)
-        selection = 'detained=true'
+        selection = 'pretrial=true'
 
     if request.GET.get('released') == 'true':
         jailed_set = jailed_set.exclude(release_date__isnull=True)
         selection = 'released=true'
+
+    if request.GET.get('detained') == 'true':
+        jailed_set = jailed_set.filter(release_date__isnull=True)
+        selection = 'detained=true'
 
     if request.GET.get('female') == 'true':
         jailed_set = jailed_set.filter(sex=1)
