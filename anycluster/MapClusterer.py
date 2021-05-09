@@ -77,6 +77,10 @@ from django.apps import apps
 
 from incident.models import Incident
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 BASE_K = getattr(settings, 'ANYCLUSTER_BASE_K', 6)
 K_CAP = getattr(settings, 'ANYCLUSTER_K_CAP', 30)
 
@@ -545,15 +549,15 @@ class MapClusterer():
 
         if clusterGeometries:
 
-            print("filtering params: {}".format((self.params["filters"])))
+            logger.info("filtering params: %s", self.params["filters"])
 
             filterstring = self.constructFilterstring(self.params["filters"])
 
-            print("filtering string: {}".format(filterstring))
+            logger.debug("filtering string: %s", filterstring)
 
             filterstring += custom_filterstring
 
-            print("custom filtering string: {}".format(filterstring))
+            logger.debug("custom filtering string: %s", filterstring)
 
             for geometry_dic in clusterGeometries:
 
@@ -600,7 +604,7 @@ class MapClusterer():
                             if incident:
                                 marker["type"] = incident.type.name
                     except Exception as e:
-                        print(e)
+                        logger.error(e)
 
                     markers.append(marker)
 

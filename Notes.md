@@ -56,4 +56,10 @@ Années : 2007 2008 2009 2010
 Nombre d’accidents : 3277 3566 3806 3503
 Nombre de blessés : 4829 4635 4019 5292
 Nombre de tués : 990 1056 936 1258
-Source : Gendarmerie nationale
+Source : Gendarmerie nationale  
+
+
+* Backup  
+cd /tmp
+sudo su -p -l postgres  
+pg_dump katika -f katika-2021-05-29.dump
