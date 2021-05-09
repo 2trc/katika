@@ -404,11 +404,11 @@ def export_data(start_date, end_date, type=None, tag_ids=None, filename=None):
         data.append(incident.to_dict())
 
     if len(data) == 0:
-        print("Empty data, exiting")
+        logger.info("Empty data, exiting")
         return
 
-    print(f"{len(data)} records retrieved")
-    print(f"first data: {data[0]}")
+    logger.info("%s records retrieved", len(data))
+    logger.info("first data: %s", data[0])
 
     if not filename:
         filename = f'incidents-{start_date}-{end_date}.csv'
@@ -421,8 +421,46 @@ def export_data(start_date, end_date, type=None, tag_ids=None, filename=None):
         writer.writeheader()
 
         writer.writerows(data)
-        print(f"{len(data)} rows written in {filename}")
+        logger.info("%s rows written in %s", len(data), filename)
 
-    print("returning")
+    logger.info("returning")
+
+
+def extract_links_2_sources():
+    '''
+    Find links in notes and add them as source_2 and source_3
+    only the 2 first links are used
+    '''
+
+    #Vagrant
+    #pre_filtered_in = Incident.objects.all().exclude(notes=u'').filter(source_2=u'').filter(source_3=u'')
+
+    #PROD?
+    pre_filtered_in = Incident.objects.all().exclude(notes=u'').filter(source_2__isnull=True).filter(source_3__isnull=True)
+    pre_filtered_in = pre_filtered_in.exclude(notes__isnull=True)
+
+    logger.info("%s counted incident", len(pre_filtered_in))
+
+    for incident in pre_filtered_in:
+
+        ii = 0
+
+        for chunck in incident.notes.split():
+
+            if chunck.startswith("http"):
+                if ii == 0:
+                    incident.source_2 = chunck
+                else:
+                    incident.source_3 = chunck
+
+                ii += 1
+
+                if ii == 2:
+                    break
+
+        if ii > 0:
+            logger.info("%s link(s) added to %s", ii, incident)
+            incident.save()
+
 
 #TODO function for parsing query parameters

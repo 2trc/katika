@@ -99,6 +99,16 @@
                             <i class="glyphicon glyphicon-link"></i>
                         </a>
                     </span>
+                    <span ng-show="incident.source_2">
+                        <a href="{{incident.source_2}}" target="_blank">
+                            <i class="glyphicon glyphicon-link"></i>
+                        </a>
+                    </span>
+                    <span ng-show="incident.source_3">
+                        <a href="{{incident.source_3}}" target="_blank">
+                            <i class="glyphicon glyphicon-link"></i>
+                        </a>
+                    </span>
                     <span>
                         <a href="edit?id={{incident.id}}" title="edit" ng-show="{{user_is_authenticated}}">
                             <i class="glyphicon glyphicon-edit"></i>

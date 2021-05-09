@@ -99,7 +99,9 @@ class Incident(models.Model):
     last_modified = models.DateField(verbose_name='last modified', auto_now=True)
     registration_date = models.DateField(verbose_name='registration date')
     description = models.TextField()
-    source = models.URLField()
+    source = models.URLField(verbose_name="primary source")
+    source_2 = models.URLField(blank=True, null=True, verbose_name="2nd source")
+    source_3 = models.URLField(blank=True, null=True, verbose_name="3rd source")
     mention_list = models.ManyToManyField(KeySource, blank=True)
 
     deaths = models.PositiveIntegerField(blank=True, null=True)
@@ -341,7 +343,7 @@ class IncidentForm(forms.ModelForm):
         model = Incident
         fields = ('type', 'location', 'date', 'description',
                   'tags',
-                    'source', 'mention_list', 'deaths', 'wounded', 'missing',
+                    'source', 'source_2', 'source_3','mention_list', 'deaths', 'wounded', 'missing',
                     'deaths_security_forces','wounded_security_forces','missing_security_forces',
                     'deaths_perpetrator','wounded_perpetrator','missing_perpetrator',
                   'arrested', 'location_inaccurate', 'notes')
