@@ -71,7 +71,7 @@ urlpatterns += [
     url(r'^blog/', include('kblog.urls')),
     url(r'^jailed/', include('jailed.urls')),
     url(r'^covid19/', include('covid19.urls')),
-    #url(r'^transcribe/', include('transcribe.urls')),
+    url(r'^transcribe/', include('transcribe.urls')),
 
 
     ## User mgnmt, signup, login, logout
