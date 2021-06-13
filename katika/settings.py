@@ -288,6 +288,7 @@ INSTALLED_APPS = (
     'khistory',
     'jailed',
     'covid19',
+    'transcribe',
 
 #    'transcribe',
 
@@ -317,6 +318,33 @@ MAP_WIDGETS = {
 
 # https://blog.bixly.com/awesome-forms-django-crispy-forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+#https://stackoverflow.com/questions/19256919/location-of-django-logs-and-errors/19257221
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'logs', 'debug.log'),
+            # 'maxBytes': 1024*1024*15, # 15MB
+            # 'backupCount': 10
+        },
+    },
+    'root': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+
+    },
+}
 
 
 REST_FRAMEWORK = {

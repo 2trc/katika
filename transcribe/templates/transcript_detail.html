@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+
+{% block title %}
+    {{transcript.title}}
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content={{transcript.description}}>
+{%endblock%}
+
+{%block meta_keywords%}
+    <meta name="keywords" content={{transcript.keywords_list}}>
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/jailed.css' %}">-->
+
+
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="block-content"><h2> Title: {{transcript.title}}</h2></div>
+        <div class="block-content"> <h3>Decription:</h3>
+            <div>{{transcript.description}}</div>
+        </div>
+        <div class="block-content"><h3>Original document sources:
+            {% if transcript.source %}
+            <span>
+                <a href="{{transcript.source}}" target="_blank">
+                    <i class="glyphicon glyphicon-link"></i>
+                </a>
+            </span>
+            {% endif %}
+            {% if transcript.source_2 %}
+            <span>
+                <a href="{{transcript.source_2}}" target="_blank">
+                    <i class="glyphicon glyphicon-link"></i>
+                </a>
+            </span>
+            {% endif %}
+            {% if transcript.source_3 %}
+            <span>
+                <a href="{{transcript.source_3}}" target="_blank">
+                    <i class="glyphicon glyphicon-link"></i>
+                </a>
+            </span>
+            {% endif %}
+            </h3>
+        </div>
+        <div class="block-content">{{transcript.content|safe}}</div>
+    </div>
+    <br/>
+    <br/>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}
