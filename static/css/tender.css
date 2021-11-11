@@ -1,0 +1,115 @@
+.btn{
+    margin-right: 4px;
+}
+
+.total {
+    font-size: 0.9em;
+    margin-top: 12px;
+    margin-bottom: 25px;
+}
+
+.total .count {
+    font-size: 1.1em;
+    font-weight: 300;
+    border-bottom: 2px solid #606060;
+    padding-bottom: 3px;
+}
+
+.tender-entry {
+
+    /*background: #fafafa;
+    border-radius: 2px;*/
+    border-bottom: 2px solid #f0f2f4;
+    margin-bottom: 20px;
+    padding: 10px 0px;
+
+}
+
+.tender-entry .date {
+    margin-right: 8px;
+    border-bottom: 2px solid #F0F0F0;
+    padding-bottom: 3px;
+
+}
+
+.tender-entry .title {
+    margin-top: 10px;
+    margin-bottom: 8px;
+    font-size: 15px;
+    line-height: 1.7em;
+
+}
+
+.tender-entry .cost {
+
+    border-radius: 5px;
+    /*background-color: #ffc8b5;*/
+    background-color: #fee6de;
+    color: #000;
+
+    font-weight: 350;
+    padding: 2px 5px;
+    margin-left: 1px;
+    margin-left: 3px;
+    vertical-align: middle;
+    /*min-width: 18px;
+    display: inline-block;*/
+}
+
+.tender-entry .owner {
+
+    border-radius: 5px;
+    background-color: #444;
+    color: #FDFDFD;
+    font-weight: 300;
+    padding: 2px 5px;
+    margin-left: 1px;
+    margin-left: 3px;
+    vertical-align: middle;
+    /*min-width: 18px;
+    display: inline-block;*/
+}
+
+.tender-entry .type {
+    border-radius: 5px;
+    background-color: #F0F0F0;
+    color: #000000;
+    font-size: 0.8em;
+    font-weight: 300;
+    padding: 2px 5px;
+    margin-left: 1px;
+    margin-left: 3px;
+    vertical-align: middle;
+    /*min-width: 18px;
+    display: inline-block;*/
+}
+
+.facet .item {
+    /*padding : 5px 15px;*/
+    margin-bottom: 50px;
+    border: 1px solid #f0f2f4;
+
+}
+
+
+.facet .facet-header {
+    /*padding-bottom: 3px;*/
+    maring: 5px;
+    font-family: 'Lato', 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+    font-size: 1.05em;
+    font-weight: 600;
+    height: 50px;
+    background: #eee;
+    border-bottom: 1px solid #c63d0f33;
+    display : flex;
+    align-items : center;
+
+}
+
+.facet-header .text, .facet-body {
+    padding: 5px 15px;
+}
+
+.facet-header .text {
+    color: #4e4d4d;
+}

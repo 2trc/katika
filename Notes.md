@@ -63,3 +63,54 @@ Source : Gendarmerie nationale
 cd /tmp
 sudo su -p -l postgres  
 pg_dump katika -f katika-2021-05-29.dump
+
+sudo su lapiro
+pg_dump katika > /tmp/katika-2021-04-23.sql
+
+
+WSGI with uwsgi
+sudo su katika
+source venv/bin/active
+uwsgi --ini katika_uwsgi.ini
+
+
+Fulltext search
+https://www.enterprisedb.com/postgres-tutorials/how-implement-faceted-search-django-and-postgresql
+
+## Update search_vector field
+https://blog.lotech.org/postgres-full-text-search-with-django.html
+
+## Unaccent
+
+https://pretagteam.com/question/how-use-unaccent-with-full-text-search-in-django-110
+
+ArmpEntry.objects.update(search_vector=SearchVector('title','content', config='french_unaccent'))
+
+
+
+
+Context issue (older mezzanine version with django-1.11)
+https://github.com/stephenmcd/mezzanine/pull/1750/commits/b2830271f20bd7ea0a914175d90029df2dcb5d5e
+
+
+python3 -m pip install -U --force-reinstall pip
+pip3 install mezzanine==v5.0.0-rc.1 django==3.2
+
+pip3 install mezzanine==4.3.1 django==1.11
+pip3 install django-debug-toolbar==1.9.1
+
+
+django.contrib.humanize
+{% load humanize %}
+https://docs.djangoproject.com/en/1.11/ref/contrib/humanize/#ref-contrib-humanize
+
+Issue with spurl toggle-query
+https://github.com/j4mie/django-spurl/issues/28
+
+work-around
+#if key in current_query and first in current_query[key]
+if key in current_query and first == current_query[key]:
+#OR
+#if key in current_query and first in current_query[key] and second not in current_query[key]:
+
+

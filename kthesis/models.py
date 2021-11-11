@@ -54,6 +54,7 @@ class ScholarAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name', 'sex')
     search_fields = ('last_name', 'first_name')
 
+
 admin.site.register(Scholar, ScholarAdmin)
 
 
