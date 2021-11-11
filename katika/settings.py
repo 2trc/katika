@@ -81,6 +81,8 @@ from django.utils.translation import ugettext_lazy as _
 #
 BLOG_USE_FEATURED_IMAGE = True
 
+INTERNAL_IPS = ["165.227.128.134", "127.0.0.1", "localhost", "10.0.2.2"]
+
 # If True, the django-modeltranslation will be added to the
 # INSTALLED_APPS setting.
 USE_MODELTRANSLATION = False
@@ -266,6 +268,7 @@ INSTALLED_APPS = (
     "django.contrib.sites",
     "django.contrib.sitemaps",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "mezzanine.boot",
     "mezzanine.conf",
     "mezzanine.core",
@@ -289,6 +292,7 @@ INSTALLED_APPS = (
     'jailed',
     'covid19',
     'transcribe',
+    'tender',
 
 #    'transcribe',
 
@@ -303,6 +307,7 @@ INSTALLED_APPS = (
     #'taggit',
     #'tagulous',
     'spurl',
+    "debug_toolbar",
 )
 
 MAP_WIDGETS = {
@@ -357,6 +362,23 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 
+DEBUG_TOOLBAR_PANELS = [
+    #'debug_toolbar.panels.history.HistoryPanel',
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
 ANYCLUSTER_GEODJANGO_MODEL = "incident.Incident"
 ANYCLUSTER_COORDINATES_COLUMN = "location"
 
@@ -367,6 +389,7 @@ LOGIN_URL = 'login'
 # these middleware classes will be applied in the order given, and in the
 # response phase the middleware will be applied in reverse order.
 MIDDLEWARE_CLASSES = (
+#MIDDLEWARE = (
     "mezzanine.core.middleware.UpdateCacheMiddleware",
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -389,6 +412,7 @@ MIDDLEWARE_CLASSES = (
     "mezzanine.core.middleware.FetchFromCacheMiddleware",
 
     "social_django.middleware.SocialAuthExceptionMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 )
 
 # Store these package names here as they may change in the future since
@@ -402,7 +426,6 @@ PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
 
 # These will be added to ``INSTALLED_APPS``, only if available.
 OPTIONAL_APPS = (
-    "debug_toolbar",
     "django_extensions",
     "compressor",
     PACKAGE_NAME_FILEBROWSER,

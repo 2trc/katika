@@ -6,6 +6,8 @@ from django.contrib import admin
 from django.views.i18n import set_language
 from django.contrib.auth import views as auth_views
 
+import debug_toolbar
+
 from mezzanine.core.views import direct_to_template
 from mezzanine.conf import settings
 
@@ -72,6 +74,7 @@ urlpatterns += [
     url(r'^jailed/', include('jailed.urls')),
     url(r'^covid19/', include('covid19.urls')),
     url(r'^transcribe/', include('transcribe.urls')),
+    url(r'^tender/', include('tender.urls')),
 
 
     ## User mgnmt, signup, login, logout
@@ -80,6 +83,8 @@ urlpatterns += [
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+
+    url("__debug__/", include(debug_toolbar.urls)),
 
 
     # HOMEPAGE FOR A BLOG-ONLY SITE

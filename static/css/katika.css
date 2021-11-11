@@ -429,3 +429,8 @@ thead th.asc a:after {
 thead th.dsc a:after {
     content: url('../img/icons/icon-th-descending.png');
 }
+
+.search-box{
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
