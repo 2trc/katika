@@ -141,7 +141,7 @@ def sort_queryset(query_set, sort_str):
         object_list = query_set.order_by(my_sorting)
 
     else:
-        object_list = query_set.order_by(F('cost').desc(nulls_last=True))
+        object_list = query_set.order_by(F('publication_datetime').desc(nulls_last=True))
 
     return object_list
 
