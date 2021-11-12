@@ -1,17 +1,10 @@
-import time
-
 from django.db import models
 from django.contrib import admin
-from bs4 import BeautifulSoup
-import requests
 import logging
 from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.contrib.postgres.indexes import GinIndex
 from rest_framework import serializers
-import re
 
-
-# Create your models here.
 
 logger = logging.getLogger(__name__)
 
@@ -75,13 +68,13 @@ class ArmpEntry(models.Model):
 
     def save(self, *args, **kwargs):
 
-        super(ArmpEntry, self).save(*args, **kwargs)
-
         if not self.cost:
             if self.final_cost:
                 self.cost = self.final_cost
             else:
                 self.cost = self.projected_cost
+
+        super(ArmpEntry, self).save(*args, **kwargs)
 
         #https://blog.lotech.org/postgres-full-text-search-with-django.html
         if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
@@ -150,37 +143,7 @@ admin.site.register(ArmpEntry, ArmpEntryAdmin)
 #     ...:             except Exception as e:
 #     ...:                 print(e)
 
-def collect_content_when_empty():
 
-    list_of_interest = ArmpEntry.objects.filter(content__isnull=True)
-
-    ii = 0
-    total = list_of_interest.count()
-
-    print("{} entries found".format(total))
-
-    s = requests.Session()
-
-    for entry in list_of_interest:
-
-        print("Processing {}".format(entry.link))
-        r = s.get(entry.link)
-        soup = BeautifulSoup(r.text, 'html.parser')
-
-        entry.content = soup.text
-        try:
-            entry.original_link = soup.find(class_="float-left").a.get("href")
-        except Exception as e:
-            print(e)
-
-        entry.save()
-        ii += 1
-
-        print("{:.3f}% done!".format(100.0*ii/total))
-
-        time.sleep(5)
-
-    s.close()
 
 # def clean_extra_space(in_content: str) -> str:
 #     out_content = re.sub("[]")
