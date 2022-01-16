@@ -73,7 +73,11 @@ class TenderListView(ListView):
             .annotate(total=Count('owner')).order_by('-total')
         data['regions'] = query_set.values('region').annotate(total=Count('region')).order_by('-total')
         data['years'] = query_set.annotate(year=ExtractYear('publication_datetime')).values('year')\
-            .annotate(total=Count('year')).order_by('-total')
+            .annotate(total=Count('year')).order_by('-year')
+
+        query_str = self.request.GET.get('q', '')
+        if query_str:
+            data['q'] = query_str
 
         return data
 

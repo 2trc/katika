@@ -12,7 +12,10 @@ logger = logging.getLogger(__name__)
 class TenderOwner(models.Model):
     short_name = models.CharField(max_length=255, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
-    owner_id = models.IntegerField(blank=True, unique=True)
+    #owner_id = models.IntegerField(blank=True, unique=True)
+    #ARMP keeps changing short_name so in order not to miss entries, they can be collected first
+    #then re-assigned later
+    owner_id = models.IntegerField(blank=True, null=True)
 
     class Meta:
         ordering = ["owner_id"]
@@ -55,6 +58,12 @@ class ArmpEntry(models.Model):
     search_vector = SearchVectorField(null=True, blank=True)
 
     class Meta:
+        # TODO this works????
+        # x=ArmpEntry()
+        # x.save()
+        # x=ArmpEntry()
+        # x.save()
+
         unique_together = ("owner", "link", "publication_type", "verbose_type")
         indexes = [
 
@@ -83,7 +92,13 @@ class ArmpEntry(models.Model):
             self.save(update_fields=['search_vector'])
 
 
-admin.site.register(TenderOwner)
+class TenderOwnerAdmin(admin.ModelAdmin):
+
+    list_display = ('owner_id', 'short_name', 'full_name')
+    search_fields = ('owner_id', 'short_name', 'full_name')
+
+
+admin.site.register(TenderOwner, TenderOwnerAdmin)
 
 
 class ArmpEntryAdmin(admin.ModelAdmin):
