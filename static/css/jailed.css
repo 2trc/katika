@@ -13,3 +13,11 @@
 .popover-content {
     word-wrap: break-word;
 }
+
+.table-striped {
+    display: block;
+    overflow-x: auto;
+    /*overflow: scroll;*/
+    white-space: nowrap;
+    width: 100%;
+}

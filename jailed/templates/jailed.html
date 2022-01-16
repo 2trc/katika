@@ -43,8 +43,8 @@
             </div>
             <div class="col-xs-10 col-md-8">
                 <form id="mySearch" class="input-group" action="/jailed" method="get">
-                  <input id="q" type="search" class="form-control" placeholder="Search for..."
-                    name="q">
+                  <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for ..."
+                    name="q" required="required">
                   <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">
                         <i class="glyphicon glyphicon-search"></i>
@@ -91,7 +91,7 @@
         {{paginator.count}} records for {{paginator.num_pages}} page(s)
     </div>
     <div class="row listing">
-        <div class="col-xs-12 col-md-8">
+        <div class="col-xs-12 col-md-10">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -114,6 +114,9 @@
                         <th scope="col" class="{{s.prison}}">
                             <a href="{% spurl base=request.get_full_path set_query="o=prison" toggle_query="s=asc,dsc"%}">Prison</a>
                         </th>
+                        <th scope="col" >
+                            Judges
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,20 +131,35 @@
                         <td>{{prisoner.conviction_date|default:""}}</td>
                         <td>{{prisoner.release_date|default:""}}</td>
                         <td>{{prisoner.prison|default:""}}</td>
+                        <td>{% for j in prisoner.judges.all %}
+                            <a href="?j={{j.pk}}">{{j}}</a>
+                            {% endfor %}
+                        </td>
                     </tr>
 
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <div class="col-md-4 tags">
+        <div class="col-md-2 tags">
+
             <h4><i class="glyphicon glyphicon-tag"></i> Tags</h4>
 
             {% for tag in tags %}
+            <script>
+                console.log("{{tag.name}}:{{tag.count}}")
+            </script>
 
-            <span class="tag tag-default">
-                <a href="/jailed?tag={{tag.name}}">{{tag.name}}</a>
-            </span>
+                {% if s_tag == tag.name %}
+                    <span class="tag tag-selected">
+                {% else %}
+                    <span class="tag tag-default">
+                {% endif %}
+                    <a href="{% spurl base=request.get_full_path set_query="o=release" toggle_query="tag={{tag.name}},"%}">
+                        {{tag.name}}<span class="tag_count">{{tag.count}}</span>
+                    </a>
+                </span>
+
             {% endfor %}
 
         </div>

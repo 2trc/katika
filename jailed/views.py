@@ -2,9 +2,14 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
 from .models import Incarceration, IncarcerationTag
-from person.models import SEX
+from django.db.models import Count, Q, F
+from django.http import FileResponse
+import logging
 
 import csv
+
+logger = logging.getLogger(__name__)
+
 
 def jailed_home(request):
     # &q={{q}}&o={{curr.o}}&s={{curr.s}}
@@ -35,10 +40,16 @@ def jailed_home(request):
 
     if q_str:
         jailed_set = Incarceration.objects.annotate(
-            search=SearchVector('last_name', 'first_name', 'alias'),
+            search=SearchVector('last_name', 'first_name', 'alias', 'name_mispelling'),
         ).filter(search=q_str)
     else:
         jailed_set = Incarceration.objects.all()
+
+    judge_id = request.GET.get('j')
+
+    if judge_id:
+
+        jailed_set = jailed_set.filter(judges__id=judge_id)
 
     selection = ''
 
@@ -63,9 +74,23 @@ def jailed_home(request):
         jailed_set = jailed_set.filter(sex=1)
         selection = 'female=true'
 
+    #In case of downloading, terminate here
+    if request.GET.get('download'):
+
+        filename = '/tmp/incarceration.csv'
+
+        export_data(filename, jailed_set=jailed_set)
+
+        response = FileResponse(open(filename, 'rb'))
+
+        response.setdefault('Content-Disposition', 'attachment; filename={}'.format(filename))
+
+        return response
+
     tag = request.GET.get('tag', '')
     if tag:
-        jailed_set = jailed_set.filter(tags__name=tag)
+        # TODO filtering cases with multiple tags doesn't seem to be working well
+        jailed_set = jailed_set.filter(tags__name__in=[tag])
 
     jailed_set = jailed_set.order_by(*order_list)
 
@@ -73,7 +98,15 @@ def jailed_home(request):
 
     paginator = Paginator(jailed_set, 50)
 
-    tags = IncarcerationTag.objects.all()
+    tags = jailed_set.exclude(tags__isnull=True)\
+        .annotate(name=F('tags__name')).values('name')\
+        .annotate(count=Count('pk')).order_by('-count')
+
+    #tags = IncarcerationTag.objects.annotate(count=Count('incarceration')).order_by('-count')
+
+    #print(tags)
+    # print("#\n#\n#\n")
+    # print(tags2)
 
     try:
         jailed = paginator.page(page)
@@ -92,25 +125,35 @@ def get_sign(sign_name):
     return "" if sign_name == 'dsc' else "-"
 
 
-def export_data(filename='incarceration.csv'):
+def export_data(filename='incarceration.csv', jailed_set=None):
+
+    logger.info("Starting!")
+
     data = []
-    for jailed in Incarceration.objects.all():
+
+    if not jailed_set:
+        jailed_set = Incarceration.objects.all()
+
+    for jailed in jailed_set:
         data.append(jailed.to_dict())
 
     if len(data) == 0:
-        print("Empty data, exiting")
+        logger.info("Empty data, exiting")
         return
 
-    print(f"{len(data)} records retrieved")
-    print(f"first data: {data[0]}")
+    logger.info(f"{len(data)} records retrieved")
+    logger.debug(f"first data: {data[0]}")
 
     with open(filename, mode='w') as csv_file:
+
+        # TODO have better control of fields to be exported
+        # dict contains fields not in fieldnames: 'prison'
         fieldnames = list(data[0].keys())
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, extrasaction='ignore')
 
         writer.writeheader()
 
         writer.writerows(data)
-        print(f"{len(data)} rows written in {filename}")
+        logger.info(f"{len(data)} rows written in {filename}")
 
-    print("returning")
+    logger.info("Exiting!")

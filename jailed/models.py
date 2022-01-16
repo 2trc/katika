@@ -22,16 +22,34 @@ class Prison(models.Model):
         return self.short_name if self.short_name else self.name
 
 
+# Magistrate or juge?
+class Judge(Person):
+    pass
+
+
+admin.site.register(Judge)
+
+
 class Incarceration(Person):
+    #Todo change sources to comment
+    #Todo add source, source_2, source_3
+    #Todo extract&remove image, source/_2/_3 from comment
     arrest_date = models.DateField(null=True, blank=True)
     incarceration_date = models.DateField(null=True, blank=True)
     conviction_date = models.DateField(null=True, blank=True)
-    conviction_duration = models.DurationField(null=True, blank=True)
+    conviction_duration_years = models.PositiveSmallIntegerField(null=True, blank=True)
+    conviction_duration_months = models.PositiveSmallIntegerField(null=True, blank=True)
+    conviction_duration_days = models.PositiveSmallIntegerField(null=True, blank=True)
+    estimated_release_date = models.DateField(null=True, blank=True)
     release_date = models.DateField(null=True, blank=True)
     prison = models.ForeignKey(Prison, null=True, blank=True, on_delete=models.SET_NULL)
     sources = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(IncarcerationTag, blank=True)
     deceased = models.NullBooleanField(null=True, blank=True)
+    dates_inaccurate = models.NullBooleanField(null=True, blank=True)
+
+    #related juges/magistrates
+    judges = models.ManyToManyField(Judge, null=True, blank=True)
 
     #https://stackoverflow.com/questions/15121093/django-adding-nulls-last-to-query
     objects = NullsLastQuerySet.as_manager()
@@ -77,8 +95,8 @@ class Incarceration(Person):
 
 class IncarcerationAdmin(admin.ModelAdmin):
 
-    list_display = ('last_name', 'first_name', 'prison', 'arrest_date', 'incarceration_date', 'conviction_date', 'release_date')
-    search_fields = ('first_name', 'last_name', 'alias', 'sources')
+    list_display = ('last_name', 'first_name', 'prison', 'birthday', 'arrest_date', 'incarceration_date', 'conviction_date', 'release_date')
+    search_fields = ('first_name', 'last_name', 'name_mispelling', 'alias', 'sources')
     #list_filter = ('type', 'date')
 
 
