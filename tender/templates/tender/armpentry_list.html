@@ -5,15 +5,15 @@
 {% load humanize %}
 
 {% block title %}
-    {{tender.title}}
+    Katika:Tender Marchés Publics
 {% endblock %}
 
 {%block meta_description%}
-    <meta name="description" content={{tender.description}}>
+    <meta name="description" content="Marchés Publics extraits du site de l'Agence de Regulation des Marchés Publics. Cameroon Public Tender">
 {%endblock%}
 
 {%block meta_keywords%}
-    <meta name="keywords" content={{tender.keywords_list}}>
+    <meta name="keywords" content="Marchés Publics, Public Tender">
 {%endblock%}
 
 
@@ -28,7 +28,8 @@
         <div class="row">
             <div class="col-xs-10 col-md-8">
                 <form id="mySearch" class="input-group" action="/tender/" method="get">
-                  <input id="q" type="search" class="form-control" placeholder="Search for..."
+                  <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for..."
+                         required="required"
                     name="q">
                   <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">
@@ -91,7 +92,16 @@
             <div class="tender-entry">
                 <div class="row">
                     <span class="date">{{tender.publication_datetime|date:"M d, Y"}}</span>
-                    <span title="{{tender.owner.full_name}}" class="owner">{{tender.owner.short_name}}</span>
+                    <!--span title="{{tender.owner.full_name}}" class="owner">{{tender.owner.short_name}}</span-->
+                    <a title="{{tender.owner.full_name}}"
+                       href="{% spurl base=request.get_full_path toggle_query="o={{tender.owner.owner_id}},"%}"
+                       class="owner">
+                        {{tender.owner.short_name}}
+                    </a>
+                    <a href="{% spurl base=request.get_full_path toggle_query="r={{tender.region}},"%}"
+                       class="region">
+                        {{tender.region}}
+                    </a>
                     <span class="type">{{tender.publication_type}}</span>
                     {% if tender.cost %}
                     <span title="{{tender.cost}}" class="cost">
@@ -185,9 +195,10 @@
                 <div class="facet-header"><span class="text">Top Authorities</span></div>
                 <div class="facet-body">
                 {% for owner in owners|slice:":10" %}
-                <div>
-                    <a href="{% spurl base=request.get_full_path toggle_query="o={{owner.owner_id}},"%}" >
-                        {{owner.short_name}} ({{owner.total}})</a>
+                <div class="line">
+                    <a href="{% spurl base=request.get_full_path toggle_query="o={{owner.owner_id}},"%}">
+                        {{owner.short_name}} <span class="count">{{owner.total}}</span>
+                    </a>
                 </div>
                 {% endfor %}
                 </div>
@@ -197,9 +208,9 @@
                 <div class="facet-body">
 
                 {% for region in regions %}
-                    <div>
+                    <div class="line">
                         <a href="{% spurl base=request.get_full_path toggle_query="r={{region.region}},"%}" >
-                            {{region.region}} ({{region.total}})</a>
+                            {{region.region}} <span class="count">{{region.total}}</span></a>
                     </div>
                 {% endfor %}
 
@@ -209,9 +220,9 @@
                 <div class="facet-header"><span class="text">Top Dates</span></div>
                     <div class="facet-body">
                     {% for year in years %}
-                        <div>
+                        <div class="line">
                             <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year}},"%}" >
-                                {{year.year}} ({{year.total}})</a>
+                                {{year.year}} <span class="count">{{year.total}}</span></a>
                         </div>
                     {% endfor %}
                     </div>
