@@ -5,14 +5,18 @@ from bs4 import BeautifulSoup
 import time
 from django.db.models import Q
 
+import logging
 
-# TODO: logging in file and std.ou?
+logger = logging.getLogger(__name__)
 # TODO: testing
+
 
 # ref: https://docs.djangoproject.com/en/dev/howto/custom-management-commands/
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+
+        logger.info("Starting!")
 
         list_of_interest = ArmpEntry.objects.filter(
             Q(content__isnull=True)
@@ -22,13 +26,13 @@ class Command(BaseCommand):
         ii = 0
         total = list_of_interest.count()
 
-        print("{} entries found".format(total))
+        logger.info("%s entries found", total)
 
         s = requests.Session()
 
         for entry in list_of_interest:
 
-            print("Processing {}".format(entry.link))
+            logger.info("Processing %s", entry.link)
             r = s.get(entry.link)
             soup = BeautifulSoup(r.text, 'html.parser')
 
@@ -36,13 +40,15 @@ class Command(BaseCommand):
             try:
                 entry.original_link = soup.find(class_="float-left").a.get("href")
             except Exception as e:
-                print(e)
+                logger.exception(e)
 
             entry.save()
             ii += 1
 
-            print("{:.3f}% done!".format(100.0*ii/total))
+            logger.info("%.3f done!", 100.0*ii/total)
 
             time.sleep(5)
 
         s.close()
+
+        logger.info("Exiting!")
