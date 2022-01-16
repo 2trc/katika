@@ -1,0 +1,12 @@
+#myDiv {
+    height: 1000px;
+    width: 1500px;
+    display: block;
+    margin: auto;
+}
+
+.money {
+    text-align: right;
+    white-space: nowrap;
+
+}

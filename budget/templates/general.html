@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{%load static%}
+
+{% block title %}
+    Cameroon Budget Project | Katika
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Cameroon Budget Project">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Budget, Cameroun">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/budget.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p>Cameroon Budget Project</p>
+    </div>
+
+</section>
+
+<div class="container">
+    <div id="gd"></div>
+    <div id="viz0"></div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <script src="{% static 'js/plotly.min.js' %}"></script>
+
+
+    <script>
+        //var data = [];
+
+
+        var layout = {
+            barmode: 'stack',
+            autosize: false,
+            height: 800
+        };
+
+        var data = {{data|safe}}
+        Plotly.newPlot('gd', data, layout);
+
+/*
+        var data3 = {{jsony2|safe}}
+        new roughViz.StackedBar({
+           element: '#viz0',
+           data: data3,
+           labels: 'year',
+           axisFontSize: '1.2em',
+           legend: true,
+           legendPosition: 'right',
+           title: 'anything'
+         })*/
+
+
+    </script>
+{% endblock %}
