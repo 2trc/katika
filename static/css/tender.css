@@ -84,13 +84,26 @@
     display: inline-block;*/
 }
 
+.tender-entry .region {
+    border-radius: 5px;
+    background-color: #8ab4f8;
+    color: #222;
+    font-size: 0.8em;
+
+    padding: 2px 5px;
+    margin-left: 1px;
+    margin-left: 3px;
+    vertical-align: middle;
+    /*min-width: 18px;
+    display: inline-block;*/
+}
+
 .facet .item {
     /*padding : 5px 15px;*/
     margin-bottom: 50px;
     border: 1px solid #f0f2f4;
 
 }
-
 
 .facet .facet-header {
     /*padding-bottom: 3px;*/
@@ -108,8 +121,24 @@
 
 .facet-header .text, .facet-body {
     padding: 5px 15px;
+    font-size: 0.9em;
 }
 
 .facet-header .text {
     color: #4e4d4d;
+}
+
+.facet .count {
+    border-radius: 7px;
+    background-color: #F4F4F4;
+    color: #111;
+    font-size: 0.9em;
+    font-weight: 200;
+    padding: 2px 5px;
+    margin-left: 1px;
+    margin-bottom: 3px;
+}
+
+.facet .line {
+    margin-bottom: 3px;
 }
