@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{%load static%}
+{%load humanize%}
+
+{% block title %}
+    Cameroon Budget Project | Katika
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Cameroon Budget Project">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Budget, Cameroun">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/budget.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+    <div class="container">
+        <p>Cameroon Budget Project</p>
+    </div>
+
+</section>
+
+<div class="container">
+    <table data-toggle="table" class="table">
+      <thead>
+        <tr>
+          <th>Chapitre</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th>Budget de Fonctionnement</th>
+          <th>Budget d'Investissement</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for entry in data%}
+        <tr>
+          <td>{{entry.chapitre__number}}</td>
+          <td>{{entry.chapitre__short_name}}</td>
+          <td>{{entry.year}}</td>
+          <!--td>{{entry.bf|default:""}}</td>
+          <td>{{entry.bip|default:""}}</td-->
+          <td>{{entry.bf|intcomma}}</td>
+          <td>{{entry.bip|intcomma}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+
+{% endblock %}

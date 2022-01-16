@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+{%load humanize%}
+{% load budget %}
+
+{% block title %}
+    Cameroon Budget Project | Katika
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Cameroon Budget Project">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Budget, Cameroun">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/budget.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+
+    <div class="container">
+        <p>Cameroon Budget Project</p>
+        {% if years %}
+            <div>
+            {% for y in years %}
+            <a href="{% spurl base=request.get_full_path set_query="y={{y.year}}"%}">{{y.year}}</a>
+            {% endfor %}
+            </div>
+        {% elif c %}
+        <div><a href="{% spurl base=request.get_full_path toggle_query="c={{c}},"%}"><|Back</a></div>
+        {% endif %}
+    </div>
+
+
+</section>
+<!--div class="container">
+    <h1>{{year}}</h1>
+    <h3>Unit: Billion (Milliard) <b>FCFA</b></h3>
+</div-->
+<div id="myDiv"></div>
+
+<div class="container">
+
+    <h3>Programme Details</h3>
+
+    <table data-toggle="table" class="table">
+      <thead>
+        <tr>
+          <th>Chapitre</th>
+          <th>Department</th>
+          <th>Year</th>
+          <th class="money">AE</th>
+            <th class="money">CP</th>
+          <th>Code</th>
+            <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for entry in queryset%}
+        <tr>
+          <td><a href="{% spurl base=request.get_full_path set_query="c={{entry.chapitre.number}}"%}">
+              {{entry.chapitre.number}}</a></td>
+          <td title="{{entry.chapitre.full_name_fr}}
+{{entry.chapitre.full_name_en}}">
+              <a href="{% spurl base=request.get_full_path set_query="c={{entry.chapitre.number}}"%}">
+                  {{entry.chapitre.short_name}}
+                </a>
+          </td>
+          <td>{{entry.year}}</td>
+          <!--td>{{entry.bf|default:""}}</td>
+          <td>{{entry.bip|default:""}}</td-->
+          <td class="money">{{entry.ae|big_money}}</td>
+          <td class="money">{{entry.cp|big_money}}</td>
+            <td>{{entry.code}}</td>
+            <td title="{{entry.description_en}}">{{entry.description_fr}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <script src="{% static 'js/plotly.min.js' %}"></script>
+    <script>
+
+
+        var data = {{data_js|safe}};
+        var layout = {
+        {% if c %}
+            {% with queryset|first as first_c %}
+                title: 'Cameroon<br>{{first_c.chapitre.full_name_fr}}<br>Unit: Billion (Milliard) FCFA'
+            {% endwith %}
+        {% elif years %}
+            title: 'Cameroon {{year}} <br>Annual Budget per Chapter<br>Unit: Billion (Milliard) FCFA',
+            tiling: {packing: "binary"}
+
+
+        {% endif %}
+        }
+
+
+        Plotly.newPlot('myDiv', data, layout,
+        {
+            //modeBarButtonsToRemove: ['toImage'],
+            displaylogo: false,
+            responsive: true,
+
+        })
+    </script>
+
+{% endblock %}

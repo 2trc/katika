@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+{%load humanize%}
+{% load budget %}
+
+{% block title %}
+    Cameroon Budget Project | Katika
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Cameroon Budget Project">
+{%endblock%}
+{%block meta_keywords%}
+    <meta name="keywords" content="Cameroon, Katika, Budget, Cameroun">
+{%endblock%}
+
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/budget.css' %}">
+{% endblock %}
+{% block content %}
+
+<section class="promotion">
+
+    <div class="container">
+        <p>Cameroon Budget Project</p>
+    </div>
+
+
+</section>
+<!--div class="container">
+    <h1>{{year}}</h1>
+    <h3>Unit: Billion (Milliard) <b>FCFA</b></h3>
+</div-->
+<div id="myDiv"></div>
+
+<div class="container">
+
+    <h3>Yearly Budget (F CFA)</h3>
+
+    <table data-toggle="table" class="table">
+      <thead>
+        <tr>
+          <th>Year</th>
+          <th class="money">AE</th>
+            <th class="money">CP</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for entry in queryset%}
+        <tr>
+          <td><a href="/budget/prog?y={{entry.year}}">{{entry.year}}</a></td>
+          <td class="money">{{entry.ae|big_money}}</td>
+          <td class="money">{{entry.cp|big_money}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+    <script src="{% static 'js/plotly.min.js' %}"></script>
+    <script>
+
+
+        var data = {{data_js|safe}};
+        var layout = {
+            title: 'Cameroon Yearly Budget<br>Unit: Billion (Milliard) FCFA'
+        }
+
+        Plotly.newPlot('myDiv', data, layout,
+        {
+            //modeBarButtonsToRemove: ['toImage'],
+            displaylogo: false,
+            responsive: true,
+
+        })
+    </script>
+
+{% endblock %}
