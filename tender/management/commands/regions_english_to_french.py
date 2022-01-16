@@ -1,10 +1,11 @@
 from django.core.management.base import BaseCommand, CommandError
 from tender.models import ArmpEntry
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-# TODO: logging in file and std.ou?
 # TODO: testing
-
 # ref: https://docs.djangoproject.com/en/dev/howto/custom-management-commands/
 class Command(BaseCommand):
 
