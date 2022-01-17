@@ -38,10 +38,16 @@ def jailed_home(request):
 
     q_str = request.GET.get('q', '')
 
+    q = Q()
+
     if q_str:
         jailed_set = Incarceration.objects.annotate(
             search=SearchVector('last_name', 'first_name', 'alias', 'name_mispelling'),
         ).filter(search=q_str)
+
+# Q(title__icontains=search_post) & Q(content__icontains=search_post
+        q = (Q(incarceration__last_name__icontains=q_str) |Q(incarceration__first_name__icontains=q_str)
+             |Q(incarceration__alias__icontains=q_str) |Q(incarceration__name_mispelling__icontains=q_str))
     else:
         jailed_set = Incarceration.objects.all()
 
@@ -50,28 +56,37 @@ def jailed_home(request):
     if judge_id:
 
         jailed_set = jailed_set.filter(judges__id=judge_id)
+        q = q & Q(incarceration__judges__id=judge_id)
 
     selection = ''
 
     if request.GET.get('deceased') == 'true':
         jailed_set = jailed_set.filter(deceased=True)
+        q = q & Q(incarceration__deceased=True)
         selection = 'deceased=true'
 
     # check the selection ...
     if request.GET.get('pretrial') == 'true':
         jailed_set = jailed_set.filter(conviction_date=None).filter(release_date__isnull=True)
+        q = q & Q(incarceration__conviction_date=None) & Q(incarceration__release_date=None) &\
+        Q(incarceration__conviction_duration_years=None) & Q(incarceration__conviction_duration_months=None) &\
+        Q(incarceration__conviction_duration_days=None)
+
         selection = 'pretrial=true'
 
     if request.GET.get('released') == 'true':
         jailed_set = jailed_set.exclude(release_date__isnull=True)
+        q = q & ~Q(incarceration__release_date=None)
         selection = 'released=true'
 
     if request.GET.get('detained') == 'true':
         jailed_set = jailed_set.filter(release_date__isnull=True)
+        q = q & Q(incarceration__release_date=None)
         selection = 'detained=true'
 
     if request.GET.get('female') == 'true':
         jailed_set = jailed_set.filter(sex=1)
+        q = q & Q(incarceration__sex=1)
         selection = 'female=true'
 
     #In case of downloading, terminate here
@@ -91,16 +106,39 @@ def jailed_home(request):
     if tag:
         # TODO filtering cases with multiple tags doesn't seem to be working well
         jailed_set = jailed_set.filter(tags__name__in=[tag])
+        q = q & Q(incarceration__tags__name__exact=tag)
 
     jailed_set = jailed_set.order_by(*order_list)
+
+    for s in jailed_set:
+        print("name = {}, tags={}".format(s, s.tags.all()))
+
+# TODO check Q with search vector
+# TODO Django and Facet with tag
 
     page = request.GET.get('page', 1)
 
     paginator = Paginator(jailed_set, 50)
 
-    tags = jailed_set.exclude(tags__isnull=True)\
-        .annotate(name=F('tags__name')).values('name')\
-        .annotate(count=Count('pk')).order_by('-count')
+    # tags = jailed_set.exclude(tags__isnull=True)\
+    #     .annotate(name=F('tags__name')).values('name')\
+    #     .annotate(count=Count('pk')).order_by('-count')
+
+    #tags = jailed_set.exclude(tags__isnull=True) \
+    #    .annotate(name=F('tags__name'))
+    tags = IncarcerationTag.objects.filter(q).distinct().annotate(count=Count('incarceration'))\
+        .values('name', 'count')
+
+    # for t in tags:
+    #     print(t)
+        #print(t.name)
+
+    # tags = jailed_set.exclude(tags__isnull=True) \
+    #     .annotate(name=F('tags__name')).values('name') \
+    #     .annotate(count=Count('pk')).order_by('-count')
+    #
+    # for t in tags:
+    #     print(t)
 
     #tags = IncarcerationTag.objects.annotate(count=Count('incarceration')).order_by('-count')
 
