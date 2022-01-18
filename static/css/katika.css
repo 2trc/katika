@@ -388,6 +388,15 @@ fieldset[disabled] .btn-regular.active {
     font-size: 0.95em;
 }
 
+.tag a {
+    color: inherit;
+    text-decoration: inherit;
+}
+.tag a:visited {
+    color: inherit;
+    text-decoration: inherit;
+}
+
 .tag-default {
     background-color: #F0F0F0;
 }
