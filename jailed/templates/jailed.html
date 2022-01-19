@@ -38,10 +38,15 @@
 <section class="promotion">
     <div class="container">
         <div class="row">
-            <div class="col-md-2">
-                <div>Prisoners in Cameroon</div>
+            <div>
+                <div><h2>Prisoners in Cameroon</h2>
+                    <p>Please follow our Bot on Twitter with birthday announcements...
+                    <a href="https://twitter.com/katika_237" target="_blank"><i class="fa fa-twitter"></i>katika_237</a>
+                </p>
+                </div>
+
             </div>
-            <div class="col-xs-10 col-md-8">
+            <div>
                 <form id="mySearch" class="input-group" action="/jailed" method="get">
                   <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for ..."
                     name="q" required="required">
@@ -66,24 +71,6 @@
         </div>
     </div>
 </section>
-
-<!--
-<div class="container search-box">
-    <div class="row">
-        <div class="col-xs-10 col-md-8">
-            <form id="mySearch" class="input-group" action="/kthesis" method="get">
-              <input id="q" type="search" class="form-control" placeholder="Search for..."
-                name="q">
-              <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
-              </span>
-            </form>
-        </div>
-    </div>
-</div>
--->
 
 
 <div class="container">
@@ -209,15 +196,5 @@
 
 {% block extra_js %}
     {# Override this in templates to add extra javascript #}
-<!--<script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>-->
-<!--<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>-->
-<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>-->
-<!--<script src="{% static 'js/kthesis.js' %}"></script>-->
-<!--<script type="text/javascript">-->
-<!--document.getElementById('mySearch').onsubmit = function() {-->
-<!--console.log("Boom");-->
-<!--window.location = '/kthesis?q=' + document.getElementById('q').value;-->
-<!--return false;-->
-<!--}-->
-<!--</script>-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
 {% endblock %}
