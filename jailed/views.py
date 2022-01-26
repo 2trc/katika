@@ -45,9 +45,8 @@ def jailed_home(request):
             search=SearchVector('last_name', 'first_name', 'alias', 'name_mispelling'),
         ).filter(search=q_str)
 
-# Q(title__icontains=search_post) & Q(content__icontains=search_post
-        q = (Q(incarceration__last_name__icontains=q_str) |Q(incarceration__first_name__icontains=q_str)
-             |Q(incarceration__alias__icontains=q_str) |Q(incarceration__name_mispelling__icontains=q_str))
+        q = (Q(incarceration__last_name__iexact=q_str) | Q(incarceration__first_name__iexact=q_str)
+             | Q(incarceration__alias__iexact=q_str) | Q(incarceration__name_mispelling__iexact=q_str))
     else:
         jailed_set = Incarceration.objects.all()
 
@@ -126,7 +125,7 @@ def jailed_home(request):
 
     #tags = jailed_set.exclude(tags__isnull=True) \
     #    .annotate(name=F('tags__name'))
-    tags = IncarcerationTag.objects.filter(q).distinct().annotate(count=Count('incarceration'))\
+    tags = IncarcerationTag.objects.filter(q).annotate(count=Count('incarceration')).distinct()\
         .values('name', 'count')
 
     # for t in tags:
