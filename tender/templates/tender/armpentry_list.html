@@ -197,7 +197,7 @@
             <div class="item">
                 <div class="facet-header"><span class="text">Top Authorities</span></div>
                 <div class="facet-body">
-                {% for owner in owners|slice:":10" %}
+                {% for owner in owners|slice:o_length %}
                 <div class="line">
                     <a href="{% spurl base=request.get_full_path toggle_query="o={{owner.owner_id}},"%}">
                         {{owner.short_name}} <span class="count">{{owner.total}}</span>

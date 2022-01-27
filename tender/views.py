@@ -46,6 +46,7 @@ class TenderListView(ListView):
     def get_queryset(self):
 
         query_str = self.request.GET.get('q', '')
+        query_o_str = self.request.GET.get('q_o', '')
         owner_str = self.request.GET.get('o', '')
         sort_str = self.request.GET.get('sort', '')
         tender_type = self.request.GET.get('type', '')
@@ -55,6 +56,7 @@ class TenderListView(ListView):
         object_list = self.model.objects.all()
 
         object_list = search_queryset(object_list, query_str)
+        object_list = search_owner_queryset(object_list, query_o_str)
         object_list = restrict_owner(object_list, owner_str)
         object_list = restrict_type(object_list, tender_type)
         object_list = restrict_region(object_list, region_str)
@@ -79,6 +81,11 @@ class TenderListView(ListView):
         if query_str:
             data['q'] = query_str
 
+        if self.request.GET.get('steroid', False):
+            data['o_length'] = ":30"
+        else:
+            data['o_length'] = ":10"
+
         return data
 
 
@@ -86,6 +93,14 @@ def search_queryset(query_set, query_str):
 
     if query_str:
         query_set = query_set.filter(search_vector=SearchQuery(query_str, config='french_unaccent'))
+
+    return query_set
+
+
+def search_owner_queryset(query_set, query_o_str):
+
+    if query_o_str:
+        query_set = query_set.filter(owner__full_name__icontains=query_o_str)
 
     return query_set
 
