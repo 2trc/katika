@@ -75,7 +75,8 @@ def jailed_home(request):
 
     if request.GET.get('released') == 'true':
         jailed_set = jailed_set.exclude(release_date__isnull=True)
-        q = q & ~Q(incarceration__release_date=None)
+        #TODO check for tag it's not working
+        q = q & (~Q(incarceration__release_date=None))
         selection = 'released=true'
 
     if request.GET.get('detained') == 'true':
@@ -109,8 +110,8 @@ def jailed_home(request):
 
     jailed_set = jailed_set.order_by(*order_list)
 
-    for s in jailed_set:
-        print("name = {}, tags={}".format(s, s.tags.all()))
+    # for s in jailed_set:
+    #     print("name = {}, tags={}".format(s, s.tags.all()))
 
 # TODO check Q with search vector
 # TODO Django and Facet with tag
