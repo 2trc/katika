@@ -7,7 +7,8 @@ from katika.models import AbstractTag
 from mapwidgets.widgets import GooglePointFieldWidget
 import copy
 
-# Create your models here.
+# TODO auto-complete for prison, people?
+# https://django-autocomplete-light.readthedocs.io/en/master/
 
 class IncarcerationTag(AbstractTag):
     pass
