@@ -92,6 +92,10 @@ admin.site.register(KeySource)
 
 
 class Incident(models.Model):
+    #Todo add weapon gun, IED
+    #Todo cause of death? drowning, strangulation
+    #Todo types like riot, protest, grève
+
     type = models.ForeignKey(IncidentType, null=True, on_delete=models.SET_NULL)
     location = geo_models.PointField()
     address = models.TextField(null=True)
