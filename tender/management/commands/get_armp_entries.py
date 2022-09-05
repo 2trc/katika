@@ -136,6 +136,7 @@ def crawl_with_pages(page_start, page_count):
                  page_start, page_count)
 
     page_url = "https://armp.cm/lang?val=fr"
+    #page_url = "https://armp.cm/recherche_avancee?mots_cles=RGPH&date_debut=&date_fin=&reference_avis=&maitre_ouvrage=0&region=0&departement=0"
 
     if page_start:
         page_url += "&page={}".format(page_start)

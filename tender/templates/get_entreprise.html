@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+{% load humanize %}
+
+{% block title %}
+    Katika:Tender Marchés Publics
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Marchés Publics extraits du site de l'Agence de Regulation des Marchés Publics. Cameroon Public Tender">
+{%endblock%}
+
+{%block meta_keywords%}
+    <meta name="keywords" content="Marchés Publics, Public Tender">
+{%endblock%}
+
+
+
+{% block content %}
+    <section id="page-header">
+        <div class="container">
+            <span class="sub-menu"><a href="/tender/">Tenders</a></span>
+            <span class="sub-menu"><a href="/tender/contracts/">Contracts</a></span>
+            <span class="sub-menu"><a href="/tender/contribuables/">Contribuables</a></span>
+
+            <p>Mirror of official
+                <a href="https://armp.cm">ARMP</a> and
+                <a href="http://fiscalis.dgi.cm/modules/immatriculation/Consultation/listecontribuable.aspx">DGI</a> but much better.
+                Follow our Bot on Twitter with filtered publication
+                <a href="https://twitter.com/tender237" target="_blank"><i class="fa fa-twitter"></i>tender237</a>
+        </div>
+    </section>
+    <div class="container search-box">
+        <div class="row">
+            <div class="col-xs-10 col-md-8">
+                <form id="mySearch" class="input-group" action="/tender/contribuables" method="get">
+                  <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for..."
+                         required="required" name="q" autofocus>
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </span>
+                </form><!-- /input-group -->
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+        <div class="col-md-9 col-xs-12">
+        
+
+            <div class="tender-entry">
+                <div class="row">
+
+                    <span class="region">NIU: {{object.niu}}</span>
+                    {% if object.sigle %}
+                        <span class="object">
+                            {{object.sigle}}
+                        </span>
+                    {% endif %}
+                    {% if object.raison_sociale %}
+                        <span class="object">
+                            {{object.raison_sociale}}
+                        </span>
+                    {% endif %}
+                    {%if object.regime %}
+                    <span class="type">{{object.regime}}</span>
+                    {% endif %}
+                    {%if object.forme_juridique %}
+                    <span>{{object.forme_juridique}}</span>
+                    {% endif %}
+
+                    {%if object.telephone %}
+                    <span class="cost">Tel: {{object.telephone}}</span>
+                    {% endif %}
+                    {%if object.bp %}
+                    <span class="count">BP: {{object.bp}}</span>
+                    {% endif %}
+                    {%if object.ville %}
+                    <span>{{object.ville}}</span>
+                    {% endif %}
+                </div>
+
+                <div class="row title">
+                    {% if object.activite_principale %}
+                    <span class="type">Activité Principlate: {{object.activite_principale}}</span>
+                    {%endif%}
+                    {%if object.cdi_cri %}
+                    <span class="date">{{object.cdi_cri}}</span>
+                    {%endif%}
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="container-fluid">
+            <div >
+                <div>
+                    <h3>Changes Recorded</h3>
+                    {% for change in object.change_list.all %}
+                    <div class="log">
+                        <span class="exercice">{{change.exercice.year}}/{{change.exercice.month}}</span>
+                        <span class="change">{{change.log}}</span>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+    </div>
+    <div class="container-fluid">
+            <div >
+                <div>
+                    <h3>Registered Records</h3>
+                    {% for exercice in object.exercice_list.all %}
+                        <span class="record">{{exercice.year}}/{{exercice.month}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+    </div>
+    <br/>
+        <br/>
+
+<br/>
+        <br/>
+
+
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tender.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+{% endblock %}
