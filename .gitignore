@@ -77,8 +77,6 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
-<<<<<<< HEAD
-=======
 ### Node ###
 # Logs
 logs
@@ -234,3 +232,6 @@ ENV/
 
 # mkdocs documentation
 /site
+
+# Migrations
+migrations/
