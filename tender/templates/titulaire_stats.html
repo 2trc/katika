@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{%load static%}
+{% load spurl %}
+{% load humanize %}
+
+{% block title %}
+    Katika:Tender Marchés Publics
+{% endblock %}
+
+{%block meta_description%}
+    <meta name="description" content="Marchés Publics extraits du site de l'Agence de Regulation des Marchés Publics. Cameroon Public Tender">
+{%endblock%}
+
+{%block meta_keywords%}
+    <meta name="keywords" content="Marchés Publics, Public Tender">
+{%endblock%}
+
+
+
+{% block content %}
+    <section id="page-header">
+        <div class="container">
+            <h1><a href="/tender/contracts/"><|</a> Statistiques des Prestataires</h1>
+            <p>Mirror of official tender website <a href="https://armp.cm">armp.cm</a> but much better.
+                Please follow our Bot on Twitter with filtered publication
+                <a href="https://twitter.com/tender237" target="_blank"><i class="fa fa-twitter"></i>tender237</a></p>
+        </div>
+    </section>
+<!--    <div class="container search-box">-->
+<!--        <div class="row">-->
+<!--            <div class="col-xs-10 col-md-8">-->
+<!--                <form id="mySearch" class="input-group" action="/tender/" method="get">-->
+<!--                  <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for..."-->
+<!--                         required="required"-->
+<!--                    name="q">-->
+<!--                  <span class="input-group-btn">-->
+<!--                    <button class="btn btn-default" type="submit">-->
+<!--                        <i class="glyphicon glyphicon-search"></i>-->
+<!--                    </button>-->
+<!--                  </span>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="container search-box">
+        <div class="row">
+            <div class="col-xs-10 col-md-8">
+                <form id="mySearch" class="input-group" action="/tender/contracts/titulaires" method="get">
+                  <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for..."
+                         required="required"
+                    name="q">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </span>
+                </form><!-- /input-group -->
+            </div>
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="btn-group" role="group">
+
+                <a type="button" class="btn btn-primary" href="{% spurl base=request.get_full_path toggle_query="sort=-a,a" set_query="page=1"%}">
+                    Amount Order
+                </a>
+                <a type="button" class="btn btn-primary" href="{% spurl base=request.get_full_path toggle_query="sort=count,-count" set_query="page=1"%}">
+                    Count Order
+                </a>
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row total">Total
+                <span class="result-count">{{page_obj.paginator.count}}</span>
+                entries found</div>
+
+        <div class="row">
+            {% for year in years %}
+                <span class="count">
+                    <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year}},"%}" >
+                        {{year.year}}
+                    </a>
+                </span>
+            {% endfor %}
+        </div>
+        <hr/>
+    </div>
+
+
+    <div class="container-fluid">
+        
+        {% for owner in object_list %}
+        <div class="col-md-6 col-xs-12 owner-block">
+            <a href="/tender/contracts/?t={{owner.titulaire|urlencode}}">
+                <span class="owner">{{owner.titulaire}}</span>
+                <span class="count">{{owner.count}}</span>
+                <span>
+                    {% if owner.cost >= 1000000 %}
+                        {{owner.cost|intword}}
+                    {% else %}
+                        {{owner.cost}}
+                    {% endif %} FCFA
+                </span>
+
+            </a></div>
+        {% endfor %}
+
+
+
+    </div>
+    <br/>
+        <br/>
+    <div class="container">
+        {% if is_paginated %}
+          {% if page_obj.has_previous %}
+            <a href="{% spurl base=request.get_full_path set_query="page=1"%}">First</a>
+            {% if page_obj.previous_page_number != 1 %}
+              <a href="{% spurl base=request.get_full_path set_query="page={{page_obj.previous_page_number}}"%}">Previous</a>
+            {% endif %}
+          {% endif %}
+
+          Page {{ page_obj.number }} of {{ paginator.num_pages }}
+
+          {% if page_obj.has_next %}
+            {% if page_obj.next_page_number != paginator.num_pages %}
+              <a href="{% spurl base=request.get_full_path set_query="page={{page_obj.next_page_number}}"%}">Next</a>
+            {% endif %}
+            <a href="{% spurl base=request.get_full_path set_query="page={{paginator.num_pages}}"%}">Last</a>
+          {% endif %}
+
+        {% endif %}
+    </div>
+<br/>
+        <br/>
+
+
+
+
+
+{% endblock %}
+
+{% block extra_js %}
+    {# Override this in templates to add extra javascript #}
+{% endblock %}
+
+{% block extra_css %}
+    {# Override this in templates to add extra stylesheets #}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/tender.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+{% endblock %}

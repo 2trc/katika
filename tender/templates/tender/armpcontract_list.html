@@ -35,7 +35,7 @@
     <div class="container search-box">
         <div class="row">
             <div class="col-xs-10 col-md-8">
-                <form id="mySearch" class="input-group" action="/tender/" method="get">
+                <form id="mySearch" class="input-group" action="/tender/contracts/" method="get">
                   <input id="q" type="search" class="form-control" value="{{q}}" placeholder="Search for..."
                          required="required"
                     name="q">
@@ -64,16 +64,10 @@
                     <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filter by Type
                       <span class="caret"></span></button>
                       <ul class="dropdown-menu">
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=ADDITIF,"%}">ADDITIF</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=AMI,"%}">AMI</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=AO,"%}">AO</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=COMM,"%}">COMM</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DC,"%}">DC</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DEC-ANN,"%}">DEC-ANN</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DEC-ATTR,"%}">DEC-ATTR</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DEC-INF,"%}">DEC-INF</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DEC-RES,"%}">DEC-RES</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=DP,"%}">DP</a></li>
+                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=0,"%}">VIABLE</a></li>
+                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=1,"%}">INFRUCTUEUX</a></li>
+                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=2,"%}">ANNULE</a></li>
+                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=5,"%}">RESILIE</a></li>
                       </ul>
                 </div>
 
@@ -99,18 +93,18 @@
             {% for tender in object_list %}
             <div class="tender-entry">
                 <div class="row">
-                    <span class="date">{{tender.publication_datetime|date:"M d, Y"}}</span>
-                    <!--span title="{{tender.owner.full_name}}" class="owner">{{tender.owner.short_name}}</span-->
-                    <a title="{{tender.owner.full_name}}"
-                       href="{% spurl base=request.get_full_path toggle_query="o={{tender.owner.owner_id}},"%}"
+                    {% if tender.date|date:"Y-m-d" < "2000-01-01" %}
+                    <span class="date">{{tender.year}}</span>
+                    {% else%}
+                    <span class="date">{{tender.date|date:"M d, Y"}}</span>
+                    {% endif%}
+
+                    <a href="{% spurl base=request.get_full_path toggle_query="o={{tender.maitre_ouvrage|urlencode}},"%}"
                        class="owner">
-                        {{tender.owner.short_name}}
+                        {{tender.maitre_ouvrage}}
                     </a>
-                    <a href="{% spurl base=request.get_full_path toggle_query="r={{tender.region}},"%}"
-                       class="region">
-                        {{tender.region}}
-                    </a>
-                    <span class="type">{{tender.publication_type}}</span>
+
+                    <span class="type">{{tender.get_status_display}}</span>
                     {% if tender.cost %}
                     <span title="{{tender.cost}}" class="cost">
                         {% if tender.cost >= 1000000 %}
@@ -120,13 +114,19 @@
                         {% endif %} FCFA
                     </span>
                     {% endif %}
+                    {% if tender.reference %}
+                    <span class="region">
+                        {{tender.reference}}
+                    </span>
+                    {% endif %}
                 </div>
                 <div class="row title">
                     {{tender.title|truncatechars:1000}}
                 </div>
                 <div class="row">
-                    <a href="{{tender.link}}" target="_blank"> source</a>,
-                    <a href="{{tender.dao_link}}" target="_blank" alt="Dossier d'Appel d'offres">DAO</a>
+                    Prestataire: <a href="{% spurl base=request.get_full_path toggle_query="t={{tender.titulaire|urlencode}},"%}">
+                                {{tender.titulaire}}</a>
+
                 </div>
             </div>
             {% endfor %}
@@ -204,22 +204,26 @@
                 <div class="facet-body">
                 {% for owner in owners|slice:o_length %}
                 <div class="line">
-                    <a href="{% spurl base=request.get_full_path toggle_query="o={{owner.owner_id}},"%}">
-                        {{owner.short_name}} <span class="count">{{owner.total}}</span>
+                    <a href="{% spurl base=request.get_full_path toggle_query="o={{owner.maitre_ouvrage|urlencode}},"%}">
+                        {{owner.maitre_ouvrage}} <span class="count">{{owner.total}}</span>
                     </a>
                 </div>
                 {% endfor %}
                 </div>
             </div>
             <div class="item">
-                <div class="facet-header"><span class="text">Top Regions</span></div>
+                <div class="facet-header"><span class="text">Top Prestataires</span></div>
                 <div class="facet-body">
 
-                {% for region in regions %}
+                {% for titulaire in titulaires|slice:"10" %}
+                    {% if titulaire.titulaire %}
                     <div class="line">
-                        <a href="{% spurl base=request.get_full_path toggle_query="r={{region.region}},"%}" >
-                            {{region.region}} <span class="count">{{region.total}}</span></a>
+
+                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.titulaire|urlencode}},"%}">
+                                {{titulaire.titulaire}} <span class="count">{{titulaire.total}}</span>
+                        </a>
                     </div>
+                    {% endif%}
                 {% endfor %}
 
                 </div>
@@ -228,10 +232,12 @@
                 <div class="facet-header"><span class="text">Top Dates</span></div>
                     <div class="facet-body">
                     {% for year in years %}
+                        {% if year.year %}
                         <div class="line">
-                            <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year}},"%}" >
+                            <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year}},"%}">
                                 {{year.year}} <span class="count">{{year.total}}</span></a>
                         </div>
+                        {% endif %}
                     {% endfor %}
                     </div>
                 </div>

@@ -8,7 +8,7 @@
     margin-bottom: 25px;
 }
 
-.total .count {
+.result-count {
     font-size: 1.1em;
     font-weight: 300;
     border-bottom: 2px solid #606060;
@@ -56,7 +56,7 @@
     display: inline-block;*/
 }
 
-.tender-entry .owner {
+.owner {
 
     border-radius: 5px;
     background-color: #444;
@@ -68,6 +68,13 @@
     vertical-align: middle;
     /*min-width: 18px;
     display: inline-block;*/
+}
+
+.owner-block {
+
+    margin: 5px 0px 5px;
+    line-height: 1.4em;
+
 }
 
 .tender-entry .type {
@@ -128,7 +135,7 @@
     color: #4e4d4d;
 }
 
-.facet .count {
+.count {
     border-radius: 7px;
     background-color: #F4F4F4;
     color: #111;
@@ -141,4 +148,58 @@
 
 .facet .line {
     margin-bottom: 3px;
+}
+
+.log {
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-top: 15px;
+
+}
+
+.log .exercice {
+    margin-right: 10px;
+    font-weight: 600;
+    font-size: 0.905em;
+
+}
+
+.log .change {
+    font-weight: 400;
+    font-size: 0.950em;
+    border-bottom: 2px solid #F0F0F0F0;
+    border-bottom-style: dashed;
+}
+
+.record {
+    margin: 10px;
+    padding: 3px 6px;
+    background-color: #fee6de;
+    line-height: 2.3em;
+}
+
+h3 {
+    margin-top: 20px;
+}
+
+.sub-menu {
+    /*color: #000;
+    background-color: #F49777;*/
+    padding: 3px 5px;
+
+
+}
+.sub-menu a:link, a:visited{
+    font-size: 1.3em;
+    font-weight: 600;
+    border-bottom: 2px solid;
+}
+
+.sub-menu a:hover {
+    border-bottom: 4px solid;
+    text-decoration: none;
+}
+
+#page-header p {
+    margin-top: 1em;
 }
