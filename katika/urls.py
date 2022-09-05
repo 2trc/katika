@@ -75,6 +75,7 @@ urlpatterns += [
     url(r'^covid19/', include('covid19.urls')),
     url(r'^transcribe/', include('transcribe.urls')),
     url(r'^tender/', include('tender.urls')),
+    url(r'^budget/', include('budget.urls')),
 
 
     ## User mgnmt, signup, login, logout
