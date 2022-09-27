@@ -6,6 +6,7 @@ from django.contrib.gis.db import models as geo_models
 from katika.models import AbstractTag
 from mapwidgets.widgets import GooglePointFieldWidget
 import copy
+from rest_framework import serializers
 
 # TODO auto-complete for prison, people?
 # https://django-autocomplete-light.readthedocs.io/en/master/
@@ -102,6 +103,32 @@ class IncarcerationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Incarceration, IncarcerationAdmin)
+
+
+class IncarcerationTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IncarcerationTag
+        fields = ('name', 'name_fr')
+
+
+class PrisonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prison
+        fields = ("name", "short_name")
+
+
+class IncarcerationSerializer(serializers.ModelSerializer):
+
+    tags = IncarcerationTagSerializer(many=True)
+    prison = PrisonSerializer()
+
+    class Meta:
+
+        model = Incarceration
+        fields = ("first_name", "last_name", "alias", "birthday", "arrest_date", "incarceration_date",
+                  "prison", "tags", "conviction_date", "conviction_duration_years", "conviction_duration_months",
+                  "conviction_duration_days", "release_date", "deceased", "sources",)
+
 
 class PrisonAdmin(admin.ModelAdmin):
 
