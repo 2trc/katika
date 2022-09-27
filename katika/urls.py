@@ -65,8 +65,8 @@ urlpatterns += [
 
     url(r'anycluster/', include('anycluster.urls')),
     url(r'^incident/', include('incident.urls')),
-    url(r'^kthesis/', include('kthesis.urls')),
-    url(r'^khistory/', include('khistory.urls')),
+    #url(r'^kthesis/', include('kthesis.urls')),
+    #url(r'^khistory/', include('khistory.urls')),
     url(r'^about/', about, name='about'),
     url(r'^$', home, name='home'),
 

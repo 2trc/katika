@@ -94,7 +94,7 @@ USE_MODELTRANSLATION = False
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost.com"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -286,13 +286,14 @@ INSTALLED_APPS = (
     'person',
 #    'eseka',
     'incident',
-    'kthesis',
+    #'kthesis',
     'kblog',
-    'khistory',
+    #'khistory',
     'jailed',
     'covid19',
     'transcribe',
     'tender',
+    'budget',
 
 #    'transcribe',
 
@@ -328,24 +329,51 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {module} {message}',
+            'style': '{',
+        },
+    },
+
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join(PROJECT_ROOT, 'logs', 'debug.log'),
+            'formatter': 'verbose',
             # 'maxBytes': 1024*1024*15, # 15MB
             # 'backupCount': 10
         },
+        'tender': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'logs', 'tender_commands.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*15, # 15MB
+            # 'backupCount': 10
+        },
     },
-    'root': {
+    # 'root': {
+    #         'handlers': ['file'],
+    #         'level': 'DEBUG',
+    # },
+    'loggers': {
+        '': {
             'handlers': ['file'],
             'level': 'DEBUG',
+            'propagate': True,
         },
-    'loggers': {
         'django': {
             'handlers': ['file'],
             'level': 'WARNING',
             'propagate': True,
+        },
+        'tender.management.commands': {
+            'handlers': ['tender'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
 
     },

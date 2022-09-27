@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
-from .models import Incarceration, IncarcerationTag
+from .models import Incarceration, IncarcerationTag, IncarcerationSerializer
 from django.db.models import Count, Q, F
 from django.http import FileResponse
 import logging
+
+from rest_framework import viewsets
+from katika.models import ReadOnlyOrAdmin
 
 import csv
 
@@ -161,6 +164,18 @@ def jailed_home(request):
 
 def get_sign(sign_name):
     return "" if sign_name == 'dsc' else "-"
+
+
+class IncarcerationViewSet(viewsets.ModelViewSet):
+
+    serializer_class = IncarcerationSerializer
+
+    #TODO align access-right with django-admin?
+    permission_classes = [ReadOnlyOrAdmin]
+
+    def get_queryset(self):
+
+        return Incarceration.objects.all()
 
 
 def export_data(filename='incarceration.csv', jailed_set=None):
