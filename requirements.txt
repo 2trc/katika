@@ -46,3 +46,5 @@ tzlocal==1.4
 urllib3==1.23
 wcwidth==0.1.7
 webencodings==0.5.1
+django-debug-toolbar==1.9.1
+
