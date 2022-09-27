@@ -45,6 +45,8 @@ su - vagrant -c "psql -f /usr/share/postgresql/10/extension/kmeans.sql -d katika
 
 pip3 install -r /vagrant/requirements.txt
 
+mkdir -p /vagrant/logs/
+
 # https://code.djangoproject.com/ticket/20036
 # django.contrib.gis.geos.error.GEOSException: Could not parse version info string "3.4.0dev-CAPI-1.8.0 r0"
 # https://unix.stackexchange.com/questions/32907/what-characters-do-i-need-to-escape-when-using-sed-in-a-sh-script

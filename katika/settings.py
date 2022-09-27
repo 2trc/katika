@@ -81,7 +81,7 @@ from django.utils.translation import ugettext_lazy as _
 #
 BLOG_USE_FEATURED_IMAGE = True
 
-INTERNAL_IPS = ["165.227.128.134", "127.0.0.1", "localhost", "10.0.2.2"]
+INTERNAL_IPS = ["127.0.0.1", "localhost", "10.0.2.2"]
 
 # If True, the django-modeltranslation will be added to the
 # INSTALLED_APPS setting.
@@ -300,9 +300,9 @@ INSTALLED_APPS = (
     'mapwidgets',
     'crispy_forms',
     'django.contrib.gis',
-    # 'anycluster',
-    'mylocation',
-    'smth',
+    'anycluster',
+    #'mylocation',
+    #'smth',
     #'moderation',
     #'taggit',
     #'tagulous',
