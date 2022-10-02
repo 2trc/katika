@@ -12,7 +12,7 @@ from mezzanine.core.views import direct_to_template
 from mezzanine.conf import settings
 
 from katika.views import home, about
-import eseka
+#import eseka
 
 
 admin.autodiscover()
