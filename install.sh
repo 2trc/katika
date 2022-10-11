@@ -50,13 +50,13 @@ mkdir -p /vagrant/logs/
 # https://code.djangoproject.com/ticket/20036
 # django.contrib.gis.geos.error.GEOSException: Could not parse version info string "3.4.0dev-CAPI-1.8.0 r0"
 # https://unix.stackexchange.com/questions/32907/what-characters-do-i-need-to-escape-when-using-sed-in-a-sh-script
-#sed -i 's/( r\\d.*/.*$'\''/' /usr/local/lib/python3.6/dist-packages/django/contrib/gis/geos/libgeos.py
-sed -i 's/( r\\d.*/.*$'\''/' $HOME/.local/lib/python3.6/site-packages/django/contrib/gis/geos/libgeos.py
+sed -i 's/( r\\d.*/.*$'\''/' /usr/local/lib/python3.6/dist-packages/django/contrib/gis/geos/libgeos.py
+#sed -i 's/( r\\d.*/.*$'\''/' $HOME/.local/lib/python3.6/site-packages/django/contrib/gis/geos/libgeos.py
 #version_regex = re.compile(
 #    r'^(?P<version>(?P<major>\d+)\.(?P<minor>\d+)\.(?P<subminor>\d+))'
 #    r'((rc(?P<release_candidate>\d+))|dev)?-CAPI-(?P<capi_version>\d+\.\d+\.\d+).*$'
 #)
-
+su - vagrant -c "cd /vagrant && python3 manage.py migrate --run-syncdb"
 su - vagrant -c "cd /vagrant && python3 manage.py makemigrations && python3 manage.py migrate"
 su - vagrant -c "nohup python3.6 /vagrant/manage.py runserver 0.0.0.0:8000 &"
 
