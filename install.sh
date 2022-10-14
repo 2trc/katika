@@ -31,6 +31,7 @@ su - postgres -c "psql -c \"create user vagrant with superuser createdb;\""
 su - vagrant -c 'createdb -E UTF8 katika'
 
 su - vagrant -c "psql katika -c \"CREATE EXTENSION postgis\""
+su - vagrant -c "psql katika -f /vagrant/config_french_unaccent.sql"
 
 cd /tmp
 
@@ -56,8 +57,9 @@ sed -i 's/( r\\d.*/.*$'\''/' /usr/local/lib/python3.6/dist-packages/django/contr
 #    r'^(?P<version>(?P<major>\d+)\.(?P<minor>\d+)\.(?P<subminor>\d+))'
 #    r'((rc(?P<release_candidate>\d+))|dev)?-CAPI-(?P<capi_version>\d+\.\d+\.\d+).*$'
 #)
-su - vagrant -c "cd /vagrant && python3 manage.py migrate --run-syncdb"
-su - vagrant -c "cd /vagrant && python3 manage.py makemigrations && python3 manage.py migrate"
+#su - vagrant -c "cd /vagrant && python3 manage.py migrate --run-syncdb"
+su - vagrant -c "cd /vagrant && python3 manage.py makemigrations tender incident budget jailed transcribe kblog covid19"
+su - vagrant -c "python3 /vagrant/populate_db.py"
 su - vagrant -c "nohup python3.6 /vagrant/manage.py runserver 0.0.0.0:8000 &"
 
 
