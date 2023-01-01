@@ -11,7 +11,7 @@ At its core Katika uses:
 * AngularJS is mainly used in the Incident project;
 * Plotly is used in the Budget project.
 
-# How to ge started?
+# How to get started?
 In order to get you started really quick, we have Vagrant to build an VM image packed with all the necessary dependencies, libraries, DB configuration... and even pre-populate some dummy data.
 This is also a good way for us to enhance our documentation by using `Infrastructure-as-Code` methodology.
 
