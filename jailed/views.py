@@ -14,9 +14,74 @@ import csv
 logger = logging.getLogger(__name__)
 
 
+def filter_incarceration(query_params):
+    q_str = query_params.get('q', '')
+    q = Q()
+
+    if q_str:
+        jailed_set = Incarceration.objects.annotate(
+            search=SearchVector('last_name', 'first_name', 'alias', 'name_mispelling'),
+        ).filter(search=q_str)
+
+        q = (Q(incarceration__last_name__iexact=q_str) | Q(incarceration__first_name__iexact=q_str)
+             | Q(incarceration__alias__iexact=q_str) | Q(incarceration__name_mispelling__iexact=q_str))
+    else:
+        jailed_set = Incarceration.objects.all()
+
+    judge_id = query_params.get('j')
+
+    if judge_id:
+        jailed_set = jailed_set.filter(judges__id=judge_id)
+        q = q & Q(incarceration__judges__id=judge_id)
+
+    selection = ''
+
+    if query_params.get('deceased') == 'true':
+        jailed_set = jailed_set.filter(deceased=True)
+        q = q & Q(incarceration__deceased=True)
+        selection = 'deceased=true'
+
+    # check the selection ...
+    if query_params.get('pretrial') == 'true':
+        jailed_set = jailed_set.filter(conviction_date=None).filter(release_date__isnull=True)
+        q = q & Q(incarceration__conviction_date=None) & Q(incarceration__release_date=None) & \
+            Q(incarceration__conviction_duration_years=None) & Q(incarceration__conviction_duration_months=None) & \
+            Q(incarceration__conviction_duration_days=None)
+
+        selection = 'pretrial=true'
+
+    if query_params.get('released') == 'true':
+        jailed_set = jailed_set.exclude(release_date__isnull=True)
+        # TODO check for tag it's not working
+        q = q & (~Q(incarceration__release_date=None))
+        selection = 'released=true'
+
+    if query_params.get('detained') == 'true':
+        jailed_set = jailed_set.filter(release_date__isnull=True)
+        q = q & Q(incarceration__release_date=None)
+        selection = 'detained=true'
+
+    if query_params.get('female') == 'true':
+        jailed_set = jailed_set.filter(sex=1)
+        q = q & Q(incarceration__sex=1)
+        selection = 'female=true'
+
+    tag = query_params.get('tag', '')
+    if tag:
+        # TODO filtering cases with multiple tags doesn't seem to be working well
+        jailed_set = jailed_set.filter(tags__name__in=[tag])
+        q = q & Q(incarceration__tags__name__exact=tag)
+
+    return jailed_set, q, q_str, selection, tag
+
+
 def jailed_home(request):
-    # &q={{q}}&o={{curr.o}}&s={{curr.s}}
-    # q={{q}}&o=name&s={{s.name}}, s.arrest, s.incarceration, s.conviction, s.release, s.prison
+
+    jailed_set, q, q_str, selection, tag = filter_incarceration(request.GET)
+
+    # Build order list
+    # TODO: break in separate testable function
+
     curr = {'o': request.GET.get('o'), 's': request.GET.get('s')}
     s = {'last_name': None, 'arrest': None, 'incarceration': None, 'conviction': None, 'release': None, 'prison': None}
 
@@ -24,7 +89,7 @@ def jailed_home(request):
 
     for k in s:
 
-        print(k,curr)
+        # print(k,curr)
 
         if k == curr['o']:
 
@@ -39,62 +104,10 @@ def jailed_home(request):
     if len(order_list) == 0:
         order_list = ['-arrest_date', '-incarceration_date', '-conviction_date', '-release_date']
 
-    q_str = request.GET.get('q', '')
+    jailed_set = jailed_set.order_by(*order_list)
 
-    q = Q()
-
-    if q_str:
-        jailed_set = Incarceration.objects.annotate(
-            search=SearchVector('last_name', 'first_name', 'alias', 'name_mispelling'),
-        ).filter(search=q_str)
-
-        q = (Q(incarceration__last_name__iexact=q_str) | Q(incarceration__first_name__iexact=q_str)
-             | Q(incarceration__alias__iexact=q_str) | Q(incarceration__name_mispelling__iexact=q_str))
-    else:
-        jailed_set = Incarceration.objects.all()
-
-    judge_id = request.GET.get('j')
-
-    if judge_id:
-
-        jailed_set = jailed_set.filter(judges__id=judge_id)
-        q = q & Q(incarceration__judges__id=judge_id)
-
-    selection = ''
-
-    if request.GET.get('deceased') == 'true':
-        jailed_set = jailed_set.filter(deceased=True)
-        q = q & Q(incarceration__deceased=True)
-        selection = 'deceased=true'
-
-    # check the selection ...
-    if request.GET.get('pretrial') == 'true':
-        jailed_set = jailed_set.filter(conviction_date=None).filter(release_date__isnull=True)
-        q = q & Q(incarceration__conviction_date=None) & Q(incarceration__release_date=None) &\
-        Q(incarceration__conviction_duration_years=None) & Q(incarceration__conviction_duration_months=None) &\
-        Q(incarceration__conviction_duration_days=None)
-
-        selection = 'pretrial=true'
-
-    if request.GET.get('released') == 'true':
-        jailed_set = jailed_set.exclude(release_date__isnull=True)
-        #TODO check for tag it's not working
-        q = q & (~Q(incarceration__release_date=None))
-        selection = 'released=true'
-
-    if request.GET.get('detained') == 'true':
-        jailed_set = jailed_set.filter(release_date__isnull=True)
-        q = q & Q(incarceration__release_date=None)
-        selection = 'detained=true'
-
-    if request.GET.get('female') == 'true':
-        jailed_set = jailed_set.filter(sex=1)
-        q = q & Q(incarceration__sex=1)
-        selection = 'female=true'
-
-    #In case of downloading, terminate here
+    # In case of downloading, terminate here
     if request.GET.get('download'):
-
         filename = '/tmp/incarceration.csv'
 
         export_data(filename, jailed_set=jailed_set)
@@ -104,14 +117,6 @@ def jailed_home(request):
         response.setdefault('Content-Disposition', 'attachment; filename={}'.format(filename))
 
         return response
-
-    tag = request.GET.get('tag', '')
-    if tag:
-        # TODO filtering cases with multiple tags doesn't seem to be working well
-        jailed_set = jailed_set.filter(tags__name__in=[tag])
-        q = q & Q(incarceration__tags__name__exact=tag)
-
-    jailed_set = jailed_set.order_by(*order_list)
 
     # for s in jailed_set:
     #     print("name = {}, tags={}".format(s, s.tags.all()))
@@ -175,7 +180,9 @@ class IncarcerationViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
 
-        return Incarceration.objects.all()
+        jailed_set, _, _, _, _ = filter_incarceration(self.request.query_params)
+
+        return jailed_set
 
 
 def export_data(filename='incarceration.csv', jailed_set=None):
