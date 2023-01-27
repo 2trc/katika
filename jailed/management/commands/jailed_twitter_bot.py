@@ -10,11 +10,10 @@ logger = logging.getLogger(__name__)
 MAX_LENGTH=280
 
 #jailed237
-consumer_key = "LeBWiBoil99o7UzFZOWlvXmof"
-consumer_secret = "WTGIaFWedmI7iMquXhwRC4pS80ZrMMVsikFsg0Cqw0jyP1pdE2"
-access_token = "1472564228414480384-Cx7N6BbUEhYZUe9chLPHyiSjNPvhYZ"
-access_token_secret = "rYczX5ufGITU7xUdEZQzw8Z7r6NCp4Yd3l7d4aufhHGLa"
-#b = "AAAAAAAAAAAAAAAAAAAAALrQXAEAAAAA36X628VPjTWOiiBrsy%2BgbmdVRZk%3DBLWksD9mYrsFBKN19Pb84F60CPBgojkbmMqdBEhXIlaSWAssO4"
+consumer_key = ""
+consumer_secret = ""
+access_token = ""
+access_token_secret = ""
 
 
 def initialize(c_key, c_secret, a_token, a_token_secret):
