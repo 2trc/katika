@@ -355,6 +355,15 @@ LOGGING = {
             'maxBytes': 1024*1024*15, # 15MB
             # 'backupCount': 10
         },
+        'jailed': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(PROJECT_ROOT, 'logs', 'jailed_commands.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024*1024*15, # 15MB
+            # 'backupCount': 10
+        },
+
     },
     # 'root': {
     #         'handlers': ['file'],
@@ -373,6 +382,11 @@ LOGGING = {
         },
         'tender.management.commands': {
             'handlers': ['tender'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'jailed.management.commands': {
+            'handlers': ['jailed'],
             'level': 'DEBUG',
             'propagate': False,
         },
