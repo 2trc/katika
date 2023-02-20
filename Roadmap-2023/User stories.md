@@ -1,8 +1,6 @@
 # Internaute
 
-> * En tant qu’internaute, je veux pouvoir naviguer dans le site par catégorie afin de trouver une information donnée ;
 > * En tant qu’internaute, je veux pouvoir faire un tri des informations par date ou par région;
-> * En tant qu’internaute, je veux pouvoir faire une recherche afin de trouver une information donnée ;
 > * En tant qu’internaute, je veux pouvoir m’inscrire à une newsletter afin d’être informé des actualités;
 > * En tant qu’internaute, je veux pouvoir m’inscrire aux notifications;
 > * En tant qu’internaute, je veux pouvoir être alerté d’une information du jour urgente et importante par scrowl;
