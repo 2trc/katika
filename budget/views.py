@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
 import json
-from budget.models import AnnualEntry, BudgetProgramme, Chapitre
+from budget.models import AnnualEntry, BudgetProgramme, BudgetProgrammeForm, Chapitre
 from django.db.models import Sum, Case, When, BigIntegerField, Q
+from django.contrib.auth.decorators import login_required, permission_required
 
 COLORS = {"EN": "rgb(84,48,5)", "NO": "rgb(140,81,10)", "AD": "rgb(191,129,45)",
           "OU": "rgb(0,60,48)", "NW": "rgb(1,102,94)", "SW": "rgb(128,205,193)",
@@ -174,3 +176,18 @@ def budget_programme(request):
         'years': years,
         'year': year
     })
+
+
+@login_required
+@permission_required('budget.add_budgetprogramme', raise_exception=True)
+def budgetprogramme_add(request):
+
+    form = BudgetProgrammeForm(data=request.POST or None, label_suffix='')
+
+    if request.method == 'POST' and form.is_valid():
+
+        budget = form.save()
+
+        return HttpResponseRedirect('/budget')
+
+    return render(request, 'add_budgetprogramme.html', {'form': form})

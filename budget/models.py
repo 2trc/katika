@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib import admin
+from django import forms
 
 
 class Chapitre(models.Model):
@@ -106,3 +107,21 @@ class BudgetProgrammeAdmin(admin.ModelAdmin):
 
 admin.site.register(BudgetProgramme, BudgetProgrammeAdmin)
 
+
+class BudgetProgrammeForm(forms.ModelForm):
+
+    class Meta:
+        model = BudgetProgramme
+        fields = ('year', 'chapitre', 'ae', 'cp', 'code',
+                  'description_fr', 'description_en',
+                  'objective_fr', 'objective_en', 'indicator_fr', 'indicator_en')
+
+        widgets = {
+            'description_fr': forms.Textarea(attrs={'rows': 3}),
+            'description_en': forms.Textarea(attrs={'rows': 3}),
+            'objective_fr': forms.Textarea(attrs={'rows': 3}),
+            'objective_en': forms.Textarea(attrs={'rows': 3}),
+            'indicator_fr': forms.Textarea(attrs={'rows': 3}),
+            'indicator_en': forms.Textarea(attrs={'rows': 3}),
+
+        }
