@@ -203,3 +203,21 @@ h3 {
 #page-header p {
     margin-top: 1em;
 }
+
+.niu_annotation {
+    vertical-align: super;
+    font-size: 0.5em;
+    font-weight: 800;
+    border-radius: 5px;
+    padding: 1px 3px;
+}
+
+.niu_missing, .niu_inactive {
+    background-color: rgb(235, 139, 139);
+}
+.niu_multiple {
+    background-color: rgb(243, 152, 78);
+}
+.niu_reg_duration {
+    background-color: rgb(196, 171, 255);
+}
