@@ -133,76 +133,7 @@ class TenderSerializer(serializers.ModelSerializer):
 
 
 
-class ArmpContract(models.Model):
 
-    maitre_ouvrage = models.CharField(max_length=255)
-    reference = models.CharField(blank=True, max_length=255)
-    title = models.CharField(max_length=2550)
-    date = models.DateField(blank=True, null=True)
-    cost = models.BigIntegerField(null=True, blank=True)
-    titulaire = models.CharField(blank=True, max_length=255)
-
-    #dummy = models.IntegerField(blank=True, null=True)
-
-    INFRUCTUEUX = 1
-    ANNULE = 2
-    ATTRIBUE = 3
-    SIGNE = 4
-    RESILIE = 5
-    RECEPTIONNE = 6
-
-    STATUS = (
-        (INFRUCTUEUX, 'INFRUCTUEUX'),
-        (ANNULE, 'ANNULE'),
-        (ATTRIBUE, 'ATTRIBUE'),
-        (SIGNE, 'SIGNE'),
-        (RESILIE, 'RESILIE'),
-        (RECEPTIONNE, 'RECEPTIONNE'),
-    )
-
-    status = models.IntegerField(choices=STATUS)
-    year = models.PositiveIntegerField(blank=True, null=True)
-
-    search_vector = SearchVectorField(null=True, blank=True)
-
-    s_unique = models.CharField(blank=True, max_length=1000)
-
-    class Meta:
-        #unique_together = (("maitre_ouvrage", "title", "year", "titulaire"), ("s_unique",))
-        unique_together = (("maitre_ouvrage", "title", "year", "titulaire", "cost"), ("s_unique",))
-        indexes = [
-
-            GinIndex(fields=['search_vector']),
-
-        ]
-
-    def __str__(self):
-        return "{}, {}, {}, {}, {}".format(self.maitre_ouvrage, self.reference, self.year, self.cost, self.title )
-
-    def save(self, *args, **kwargs):
-        # print(*args)
-        # print(**kwargs)
-        self.s_unique = self.__str__()[:1000]
-        super(ArmpContract, self).save(*args, **kwargs)
-        if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
-            # instance = self._meta.default_manager.with_documents().get(pk=self.pk)
-
-            self.search_vector = SearchVector('maitre_ouvrage', 'title',
-                                              'reference', 'titulaire', config='french_unaccent')
-            #if self.pk % 1000 == 0:
-            #    print(f"{self.pk}, {self.search_vector}")
-            #print(f"{self.pk}, {self.search_vector}")
-            self.save(update_fields=['search_vector'])
-
-
-class ArmpContractAdmin(admin.ModelAdmin):
-
-    list_display = ('maitre_ouvrage', 'status','reference', 'title', 'date', 'year', 'cost', 'titulaire')
-    search_fields = ('title', 'maitre_ouvrage', 'titulaire', 'reference')
-    list_filter = ('status', 'maitre_ouvrage', 'year')
-
-
-admin.site.register(ArmpContract, ArmpContractAdmin)
 
 
 # class AddressBP(models.Model):
@@ -520,3 +451,289 @@ class EntrepriseSerializer(serializers.ModelSerializer):
                   "telephone", "etat_niu", "forme_juridique", "lieu_dit", "regime",
                   "regime_sub", "region", "departement", "ville", "commune", "quartier",
                   "cdi_cri"]
+
+
+class ContribuableMixin(models.Model):
+
+    niu_count = models.PositiveIntegerField(default=0)
+    is_active = models.NullBooleanField(null=True, blank=True)
+    from_registration = models.SmallIntegerField(blank=True, null=True)
+    is_contribuables_scanned = models.BooleanField(default=False)
+
+    def get_supplier_names(self)->list:
+        pass
+
+    class Meta:
+        abstract = True
+
+class ArmpContract(ContribuableMixin):
+
+    maitre_ouvrage = models.CharField(max_length=255)
+    reference = models.CharField(blank=True, max_length=255)
+    title = models.CharField(max_length=2550)
+    date = models.DateField(blank=True, null=True)
+    cost = models.BigIntegerField(null=True, blank=True)
+    titulaire = models.CharField(blank=True, max_length=255)
+    
+    # niu_count = models.PositiveIntegerField(default=0)
+    # is_active = models.NullBooleanField(null=True, blank=True)
+    # from_registration = models.SmallIntegerField(blank=True, null=True)
+    # is_contribuables_scanned = models.BooleanField(default=False)
+
+    INFRUCTUEUX = 1
+    ANNULE = 2
+    ATTRIBUE = 3
+    SIGNE = 4
+    RESILIE = 5
+    RECEPTIONNE = 6
+
+    STATUS = (
+        (INFRUCTUEUX, 'INFRUCTUEUX'),
+        (ANNULE, 'ANNULE'),
+        (ATTRIBUE, 'ATTRIBUE'),
+        (SIGNE, 'SIGNE'),
+        (RESILIE, 'RESILIE'),
+        (RECEPTIONNE, 'RECEPTIONNE'),
+    )
+
+    status = models.IntegerField(choices=STATUS)
+    year = models.PositiveIntegerField(blank=True, null=True)
+
+    search_vector = SearchVectorField(null=True, blank=True)
+
+    s_unique = models.CharField(blank=True, max_length=1000)
+
+    class Meta:
+        # 2022, check LE VICOMTE SARL
+        # 2022
+        # Fourniture de quatre (04) lots de pièces de rechange pour camions RVI (MIDLUM et DXI) à la SODECOTON
+        # Fourniture de quatre (04) lots de pièces de rechange pour camions RVI à la SODECOTON
+        # 2021
+        # MIDLUM et DXI à la SODECOTON
+        #unique_together = (("maitre_ouvrage", "title", "year", "titulaire"), ("s_unique",))
+        unique_together = (("maitre_ouvrage", "title", "year", "titulaire", "cost"), ("s_unique",))
+        indexes = [
+
+            GinIndex(fields=['search_vector']),
+
+        ]
+
+    def __str__(self):
+        return "{}, {}, {}, {}, {}".format(self.maitre_ouvrage, self.reference, self.year, self.cost, self.title )
+    
+    def get_supplier_names(self):
+        return self.titulaire.split("/")
+
+    def save(self, *args, **kwargs):
+        # print(*args)
+        # print(**kwargs)
+        self.s_unique = self.__str__()[:1000]
+        super(ArmpContract, self).save(*args, **kwargs)
+        if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
+            # instance = self._meta.default_manager.with_documents().get(pk=self.pk)
+
+            self.search_vector = SearchVector('maitre_ouvrage', 'title',
+                                              'reference', 'titulaire', config='french_unaccent')
+            #if self.pk % 1000 == 0:
+            #    print(f"{self.pk}, {self.search_vector}")
+            #print(f"{self.pk}, {self.search_vector}")
+            self.save(update_fields=['search_vector'])
+
+
+class ArmpContractAdmin(admin.ModelAdmin):
+
+    list_display = ('maitre_ouvrage', 'status','reference', 'title', 'date', 'year', 'cost', 'titulaire')
+    search_fields = ('title', 'maitre_ouvrage', 'titulaire', 'reference')
+    list_filter = ('status', 'maitre_ouvrage', 'year')
+
+
+admin.site.register(ArmpContract, ArmpContractAdmin)
+
+####################################################################################################
+## WORLD BANK PROJECT
+####################################################################################################
+
+# TODO don't forget tags whether one-to-one or many-to-one
+# TODO french or english accent for search_vector?
+
+class WBProject(models.Model):
+    #Listing projects https://search.worldbank.org/api/v2/projects?format=json&fct=projectfinancialtype_exact,status_exact,regionname_exact,theme_exact,sector_exact,countryshortname_exact,cons_serv_reqd_ind_exact,esrc_ovrl_risk_rate_exact&fl=id,regionname,countryname,projectstatusdisplay,project_name,countryshortname,pdo,impagency,cons_serv_reqd_ind,url,boardapprovaldate,closingdate,projectfinancialtype,curr_project_cost,ibrdcommamt,idacommamt,totalamt,grantamt,borrower,lendinginstr,envassesmentcategorycode,esrc_ovrl_risk_rate,sector1,sector2,sector3,theme1,theme2,%20%20status,totalcommamt,proj_last_upd_date,curr_total_commitment&apilang=en&rows=20&countrycode_exact=CM&os=80
+
+    project_id = models.CharField(max_length=20, unique=True) #id
+    
+    # Maybe charfield?
+    name = models.TextField(null=True, blank=True) #project_name
+    abstract = models.TextField(null=True, blank=True) #project_abstract.cdata!
+    objective = models.TextField(null=True, blank=True) #pdo
+    link = models.URLField(verbose_name="primary source") # url
+    # borrower = models.CharField(max_length=255, blank=True, null=True) # borrower
+
+    financial_type = models.CharField(max_length=10, blank=True, null=True) # projectfinancialtype[0]
+    main_theme = models.CharField(max_length=255, blank=True, null=True) # ignore "!$!0"
+    main_sector = models.CharField(max_length=255, blank=True, null=True) # sectorx.name, check sectorx.percent
+
+    is_scanned = models.BooleanField(default=False)
+
+    CLOSED = 0
+    ACTIVE = 1
+    DROPPED = 2
+    PIPELINE = 3
+
+    STATUS = (
+        (CLOSED, 'Closed'),
+        (ACTIVE, 'Active'),
+        (DROPPED, 'Dropped'),
+        (PIPELINE, 'Pipeline'),
+    )
+
+    status = models.IntegerField(choices=STATUS, blank=True, null=True) # status
+
+    # Implementing Agency
+    agency = models.CharField(max_length=255, blank=True, null=True) # impagency
+    
+    start_date = models.DateField(blank=True, null=True) #boardapprovaldate
+    end_date = models.DateField(blank=True, null=True) #closingdate
+    last_update = models.DateField(blank=True, null=True) #proj_last_upd_date
+
+    cost = models.BigIntegerField(null=True, blank=True) # curr_project_cost
+
+    # Note sure what this about
+    lendinginstr = models.CharField(max_length=255, blank=True, null=True)
+
+    search_vector = SearchVectorField(null=True, blank=True)
+
+    class Meta:
+
+        indexes = [
+
+            GinIndex(fields=['search_vector']),
+
+        ]
+        ordering = ["-start_date", '-cost']
+
+    def __str__(self):
+        return "{}: {}".format(self.project_id, self.name)
+
+    def save(self, *args, **kwargs):
+
+        super(WBProject, self).save(*args, **kwargs)
+
+        #https://blog.lotech.org/postgres-full-text-search-with-django.html
+        if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
+            #instance = self._meta.default_manager.with_documents().get(pk=self.pk)
+            self.search_vector = SearchVector('name', 'abstract', config='french_unaccent')
+            self.save(update_fields=['search_vector'])
+
+
+class WBProjectAdmin(admin.ModelAdmin):
+
+    list_display = ('project_id', 'start_date', 'cost', 'name')
+    search_fields = ('project_id', 'name', 'abstract', 'search_vector')
+    list_filter = ('financial_type', 'status', 'agency')
+    #exclude = ['search_vector']
+
+
+admin.site.register(WBProject, WBProjectAdmin)
+
+
+class WBSupplier(models.Model):
+    # Listing sup
+
+    # Maybe Integer?
+    supplier_id = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
+    country = models.CharField(max_length=5, blank=True, null=True)
+
+    search_vector = SearchVectorField(null=True, blank=True)
+
+    class Meta:
+
+        indexes = [
+
+            GinIndex(fields=['search_vector']),
+
+        ]
+        ordering = ["-supplier_id"]
+
+    def __str__(self):
+        return "{}, {}".format(self.supplier_id, self.name)
+
+    def save(self, *args, **kwargs):
+
+        super(WBSupplier, self).save(*args, **kwargs)
+
+        #https://blog.lotech.org/postgres-full-text-search-with-django.html
+        if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
+            #instance = self._meta.default_manager.with_documents().get(pk=self.pk)
+            self.search_vector = SearchVector('name', config='french_unaccent')
+            self.save(update_fields=['search_vector'])
+
+
+class WBSupplierAdmin(admin.ModelAdmin):
+
+    list_display = ('supplier_id', 'name')
+    search_fields = ('supplier_id', 'name', 'search_vector')
+    exclude = ['search_vector']
+
+
+admin.site.register(WBSupplier, WBSupplierAdmin)
+
+
+class WBContract(ContribuableMixin):
+
+    # Maybe Integer?
+    contract_id = models.CharField(max_length=50, unique=True)
+    project = models.ForeignKey(WBProject)
+    description = models.TextField()
+    date = models.DateField()
+    suppliers = models.ManyToManyField(WBSupplier, blank=True)
+    cost = models.BigIntegerField()
+    team_fullname = models.CharField(max_length=255, blank=True, null=True)
+    procurement_group = models.CharField(max_length=255, blank=True, null=True)
+    procurement_group_description = models.CharField(max_length=255, blank=True, null=True)
+    procurement_meth_text = models.CharField(max_length=255, blank=True, null=True)
+    rw_type = models.CharField(max_length=255, blank=True, null=True)
+
+    is_scanned = models.BooleanField(default=False)
+
+    search_vector = SearchVectorField(null=True, blank=True)
+
+    class Meta:
+
+        indexes = [
+
+            GinIndex(fields=['search_vector',]),
+        ]
+        ordering = ["-date", "project__project_id"]
+    
+    def get_project_id(self):
+        return self.project.project_id
+
+    def __str__(self):
+        return "{}, {}: {}".format(self.project.project_id, self.contract_id, self.description)
+
+
+    def get_supplier_names(self) -> list:
+        return [x.name for x in self.suppliers.all()]
+
+    def save(self, *args, **kwargs):
+
+        super(WBContract, self).save(*args, **kwargs)
+
+        #https://blog.lotech.org/postgres-full-text-search-with-django.html
+        if 'update_fields' not in kwargs or 'search_vector' not in kwargs['update_fields']:
+            #instance = self._meta.default_manager.with_documents().get(pk=self.pk)
+            self.search_vector = SearchVector('description', 'team_fullname', config='french_unaccent')
+            self.save(update_fields=['search_vector'])
+
+
+class WBContractAdmin(admin.ModelAdmin):
+
+    list_display = ('date', 'get_project_id', 'cost', 'description')
+    list_filter = ('project__project_id',)
+    search_fields = ('search_vector',)
+
+admin.site.register(WBContract, WBContractAdmin)
+
+
+

@@ -4,11 +4,11 @@ from django.shortcuts import render
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 # Create your views here.
-from .models import ArmpEntry, TenderOwner, ArmpContract, Entreprise,\
+from .models import ArmpEntry, TenderOwner, ArmpContract, Entreprise, WBContract, WBProject,\
     TenderSerializer, TenderOwnerSerializer, EntrepriseSerializer
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.db.models import F, Count, Sum
+from django.db.models import F, Count, Sum, Q
 from django.db.models.functions import ExtractYear
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.core.paginator import Paginator
@@ -260,6 +260,7 @@ class ContractListView(ListView):
         tender_type = self.request.GET.get('type', '')
         titulaire_str = self.request.GET.get('t', '')
         year_str = self.request.GET.get('y', '')
+        niu_str = self.request.GET.get('n', '')
 
         object_list = self.model.objects.all()
 
@@ -285,8 +286,11 @@ class ContractListView(ListView):
                 object_list = object_list.filter(status__in=[3,4,6])
             elif tender_type in ['1','2','5']:
                 object_list = object_list.filter(status=tender_type)
+        
+        # if niu_str:
+        #     object_list = object_list.filter(is_niu_available=False)
 
-        print("search done!")
+        #print("search done!")
 
         sort_tuple = []
         # TODO use regex match
@@ -406,29 +410,40 @@ class EntrepriseListView(ListView):
 
     def get_queryset(self):
 
-        return query_entreprise(self.request, self.model.objects.all())
+        #return query_entreprise(self.request, self.model.objects.all())
+        return query_entreprise(self.request, self.model.objects.prefetch_related('cdi_cri'))
 
     def get_context_data(self, **kwargs):
         # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
         data = super().get_context_data(**kwargs)
-        query_set = self.object_list
-    #
-    #     data['owners'] = query_set.values('maitre_ouvrage')\
-    #          .annotate(total=Count('maitre_ouvrage')).order_by('-total')
-    #     data['titulaires'] = query_set.values('titulaire').annotate(total=Count('titulaire')).order_by('-total')
-    #     data['years'] = query_set.values('year')\
-    #          .annotate(total=Count('year')).order_by('-year')
-    #
+
         query_str = self.request.GET.get('q', '')
         if query_str:
             data['q'] = query_str
-    #
-    #     if self.request.GET.get('steroid', False):
-    #         data['o_length'] = ":30"
-    #     else:
-    #         data['o_length'] = ":10"
-    #
+
         return data
+
+class Entreprise2ListView(ListView):
+
+    model = Entreprise
+    paginate_by = 10
+    template_name = "tender/entreprise2_list.html"
+
+    # def get_queryset(self):
+
+    #     #return query_entreprise(self.request, self.model.objects.all())
+    #     return query_entreprise(self.request, self.model.objects.prefetch_related('cdi_cri'))
+
+    # def get_context_data(self, **kwargs):
+    #     # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
+    #     data = super().get_context_data(**kwargs)
+
+    #     query_str = self.request.GET.get('q', '')
+    #     if query_str:
+    #         data['q'] = query_str
+
+    #     return data
+
 
 
 def query_entreprise(request, object_list):
@@ -450,7 +465,9 @@ def query_entreprise(request, object_list):
     if niu:
         object_list = object_list.filter(niu__contains=niu)
 
-    return object_list.distinct()  # .order_by(*sort_tuple)
+    
+    return object_list.order_by('niu').distinct()  # .order_by(*sort_tuple)
+    #return object_list
 
 
 def get_enterprise(request, niu):
@@ -470,4 +487,62 @@ class ContribuableSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return query_entreprise(self.request, Entreprise.objects.all())
+
+
+class WBContractListView(ListView):
+
+    model = WBContract
+    paginate_by = 50
+
+    def get_queryset(self):
+
+        query_str = self.request.GET.get('q', '')
+        project_id = self.request.GET.get('p')
+
+        object_list = self.model.objects.prefetch_related('project')
+
+        if project_id:
+            object_list = object_list.filter(project__project_id=project_id)
+
+        if query_str:
+            object_list = object_list.filter(
+                Q(search_vector=SearchQuery(query_str, config='french_unaccent'))|
+                Q(suppliers__name__icontains=query_str))
+            
+
+        return object_list
+
+
+    def get_context_data(self, **kwargs):
+        # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
+        data = super().get_context_data(**kwargs)
+
+    #
+        query_str = self.request.GET.get('q', '')
+        if query_str:
+            data['q'] = query_str
+    #
+        query_set = self.object_list
+
+        data['projects'] = query_set.values(project_id=F('project__project_id'))\
+             .annotate(total=Count('project_id')).order_by('-total')
+        data['statuses'] = query_set.values(status=F('project__status')).annotate(total=Count('status')).order_by('-total')
+
+        for item in data['statuses']:
+            item['name'] = WBProject.STATUS[item['status']][1]
+        # data['years'] = query_set.values('year')\
+        #      .annotate(total=Count('year')).order_by('-year')
+
+        query_str = self.request.GET.get('q', '')
+        if query_str:
+            data['q'] = query_str
+
+        if self.request.GET.get('steroid', False):
+            data['o_length'] = ":30"
+        else:
+            data['o_length'] = ":10"
+
+        return data
+
+
 
