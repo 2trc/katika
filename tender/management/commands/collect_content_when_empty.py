@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 from django.db.models import Q
+from retry.api import retry_call
 
 import logging
 
@@ -42,7 +43,9 @@ class Command(BaseCommand):
             except Exception as e:
                 logger.exception(e)
 
-            entry.save()
+            # django.db.utils.InterfaceError: connection already closed
+            retry_call(entry.save, fargs=None, fkwargs=None, tries=3, delay=60)
+            
             ii += 1
 
             logger.info("%.3f done!", 100.0*ii/total)
