@@ -60,18 +60,6 @@
                     sort by cost
                 </a>
 
-                <div class="btn-group" role="group">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filter by Type
-                      <span class="caret"></span></button>
-                      <ul class="dropdown-menu">
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=0,"%}">VIABLE</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=1,"%}">INFRUCTUEUX</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=2,"%}">ANNULE</a></li>
-                        <li><a href="{% spurl base=request.get_full_path toggle_query="type=5,"%}">RESILIE</a></li>
-                      </ul>
-                </div>
-
-
             </div>
             {% comment %}
             <div>
