@@ -168,8 +168,6 @@
             <div class="item">
                 <div class="facet-header"><span class="text">Project Status</span></div>
                 <div class="facet-body">
-
-
                 {% for status in statuses|slice:"10" %}
                     <div class="line">
 
@@ -182,9 +180,42 @@
                 {% endfor %}
                 </div>
 
+            </div>
+            <div class="item">
+                <div class="facet-header"><span class="text">Top Dates</span></div>
+                <div class="facet-body">
+                {% for year in years|slice:o_length %}
+                <div class="line">
+                    <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year|urlencode}},"%}">
+                        {{year.year}} <span class="count">{{year.total}}</span>
+                    </a>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="item">
+                <div class="facet-header"><span class="text">Top Suppliers</span></div>
+                <div class="facet-body">
+
+
+                {% for titulaire in titulaires|slice:o_length %}
+                    {% if titulaire.suppliers__name %}
+                    <div class="line">
+
+                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.suppliers__name|urlencode}},"%}">
+                                {{titulaire.suppliers__name}} <span class="count">{{titulaire.total}}</span>
+                        </a>
+
+                    </div>
+                    {% endif%}
+                {% endfor %}
+
 
                 </div>
             </div>
+            
+            
+        </div>
 
     </div>
 

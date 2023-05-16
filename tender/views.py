@@ -314,8 +314,6 @@ class ContractListView(ListView):
 
         sort_tuple.append('-status')
 
-        print("sorting done and about to return!")
-
         return object_list.order_by(*sort_tuple)
 
     def get_context_data(self, **kwargs):
@@ -498,6 +496,9 @@ class WBContractListView(ListView):
 
         query_str = self.request.GET.get('q', '')
         project_id = self.request.GET.get('p')
+        sort_str = self.request.GET.get('sort', '')
+        year_str = self.request.GET.get('y', '')
+        titulaire_str = self.request.GET.get('t', '')
 
         object_list = self.model.objects.prefetch_related('project')
 
@@ -508,9 +509,39 @@ class WBContractListView(ListView):
             object_list = object_list.filter(
                 Q(search_vector=SearchQuery(query_str, config='french_unaccent'))|
                 Q(suppliers__name__icontains=query_str))
-            
 
-        return object_list
+        if year_str:
+            object_list = object_list.filter(date__year=year_str)
+
+        if titulaire_str:
+            object_list = object_list.filter(suppliers__name=titulaire_str)
+
+
+        sort_tuple = []
+        # TODO use regex match
+        if 'cost' in sort_str:
+
+            if '-cost' == sort_str:
+                my_sorting = F('cost').asc(nulls_last=True)
+            elif 'cost' == sort_str:
+                my_sorting = F('cost').desc(nulls_last=True)
+
+            sort_tuple.append(my_sorting)
+
+        elif 'date' in sort_str:
+
+            if '-' in sort_str:
+                sort_tuple +=['-date']
+            else:
+                sort_tuple +=['date']
+        else:
+            sort_tuple = ['-date']
+
+        #sort_tuple.append('-status')
+
+        #print("sorting done and about to return!")
+
+        return object_list.order_by(*sort_tuple)
 
 
     def get_context_data(self, **kwargs):
@@ -526,6 +557,9 @@ class WBContractListView(ListView):
 
         data['projects'] = query_set.values(project_id=F('project__project_id'))\
              .annotate(total=Count('project_id')).order_by('-total')
+        data['years'] = query_set.annotate(year=ExtractYear('date')).values('year')\
+            .annotate(total=Count('year')).order_by('-year')
+        data['titulaires'] = query_set.values('suppliers__name').annotate(total=Count('suppliers__name')).order_by('-total')
         data['statuses'] = query_set.values(status=F('project__status')).annotate(total=Count('status')).order_by('-total')
 
         for item in data['statuses']:
