@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 
 from django import VERSION as DJANGO_VERSION
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 ######################
@@ -79,9 +79,12 @@ from django.utils.translation import ugettext_lazy as _
 
 # Setting to turn on featured images for blog posts. Defaults to False.
 #
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BLOG_USE_FEATURED_IMAGE = True
+SITE_NAME           =  os.environ.get('KATIKA_SITE_NAME', 'Katika')
 
 INTERNAL_IPS = ["127.0.0.1", "localhost", "10.0.2.2"]
+ALLOWED_HOSTS = [os.getenv('KATIKA_ALLOWED_HOST')]
 
 # If True, the django-modeltranslation will be added to the
 # INSTALLED_APPS setting.
@@ -92,9 +95,6 @@ USE_MODELTRANSLATION = False
 # MAIN DJANGO SETTINGS #
 ########################
 
-# Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -120,8 +120,9 @@ LANGUAGES = (
 # A boolean that turns on/off debug mode. When set to ``True``, stack traces
 # are displayed for error pages. Should always be set to ``False`` in
 # production. Best set to ``True`` in local_settings.py
-DEBUG = True
-SECRET_KEY = "asdasd12312!@^!^#$!@#$!^@#^!$@"
+
+DEBUG = os.environ.get(f"{SITE_NAME}_DEBUG",'false') == 'true'
+SECRET_KEY =  os.environ['KATIKA_SECRET_KEY']
 
 # Whether a user's session cookie expires when the Web browser is closed.
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -151,29 +152,54 @@ FILE_UPLOAD_PERMISSIONS = 0o644
 # DATABASES #
 #############
 
+# DATABASES = {
+#     "default": {
+#         # Ends with "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
+#         #"ENGINE": "",
+#         # "ENGINE": "django.db.backends.sqlite3",
+#         #"ENGINE": "django.contrib.gis.db.backends.spatialite",
+#         "ENGINE": "django.contrib.gis.db.backends.postgis",
+#         # DB name or path to database file if using sqlite3.
+#         # "NAME": "dev.db",
+#         "NAME": "katika",
+#         #https://stackoverflow.com/questions/36214127/django-db-utils-operationalerror-fe-sendauth-no-password-supplied
+#         #"NAME": "",
+#         # Not used with sqlite3.
+#         # "USER": "postgres",
+#         "USER": "vagrant",
+#         # Not used with sqlite3.
+#         #"PASSWORD": "postgres",
+#         # Set to empty string for localhost. Not used with sqlite3.
+#         #"HOST": "localhost",
+#         # Set to empty string for default. Not used with sqlite3.
+#         #"PORT": "",
+#     }
+# }
+###################
+## CONFIGURABLE DATABASE SETTINGS
 DATABASES = {
-    "default": {
-        # Ends with "postgresql_psycopg2", "mysql", "sqlite3" or "oracle".
-        #"ENGINE": "",
-        # "ENGINE": "django.db.backends.sqlite3",
-        #"ENGINE": "django.contrib.gis.db.backends.spatialite",
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        # DB name or path to database file if using sqlite3.
-        # "NAME": "dev.db",
-        "NAME": "katika",
-        #https://stackoverflow.com/questions/36214127/django-db-utils-operationalerror-fe-sendauth-no-password-supplied
-        #"NAME": "",
-        # Not used with sqlite3.
-        # "USER": "postgres",
-        "USER": "vagrant",
-        # Not used with sqlite3.
-        #"PASSWORD": "postgres",
-        # Set to empty string for localhost. Not used with sqlite3.
-        #"HOST": "localhost",
-        # Set to empty string for default. Not used with sqlite3.
-        #"PORT": "",
-    }
+    'dev': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'katika.sqlite3'),
+    },
+    'production': {
+	'ENGINE':  os.environ['KATIKA_DATABASE_ENGINE'],
+	'NAME'	:  os.environ['KATIKA_DATABASE_NAME'],
+	'USER'	:  os.environ['KATIKA_DATABASE_USERNAME'],
+	'PASSWORD':  os.environ['KATIKA_DATABASE_PW'],
+	'HOST'	:  os.environ['KATIKA_DATABASE_HOST'] ,
+	'PORT' 	:  os.environ['KATIKA_DATABASE_PORT'],
+    'OPTIONS' : {
+        'sslmode': 'require'
+    },
+    'TEST'  :{
+        'NAME': os.getenv('KATIKA_TEST_DATABASE', 'test_katika')
+    },
+   },
+
 }
+DATABASES['default'] = DATABASES[os.environ.get('DJANGO_DATABASE', 'dev')]
+
 
 
 
