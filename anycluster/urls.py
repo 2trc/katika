@@ -1,10 +1,13 @@
 from django.conf.urls import url
+from django.urls import path
 from anycluster import views
 from django.conf import settings
 
+app_name = "anycluster"
+
 urlpatterns = [
-    url(r'^grid/(\d+)/(\d+)/$', views.getGrid, name='getGrid'),
-    url(r'^kmeans/(\d+)/(\d+)/$', views.getPins, name='getPins'),
-    url(r'^getClusterContent/(\d+)/(\d+)/$', views.getClusterContent, name='getClusterContent'),
-    url(r'^getAreaContent/(\d+)/(\d+)/$', views.getAreaContent, name='getAreaContent'),
+    path('grid/<int:zoom>/<int:gridSize>/', views.getGrid, name='getGrid'),
+    path('kmeans/<int:zoom>/<int:gridSize>/', views.getPins, name='getPins'),
+    path('getClusterContent/<int:zoom>/<int:gridSize>/', views.getClusterContent, name='getClusterContent'),
+    path('getAreaContent/<int:zoom>/<int:gridSize>/', views.getAreaContent, name='getAreaContent'),
 ]
