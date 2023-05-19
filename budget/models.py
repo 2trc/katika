@@ -29,7 +29,7 @@ admin.site.register(Chapitre, ChapitreAdmin)
 class AnnualEntry(models.Model):
 
     year = models.PositiveIntegerField()
-    chapitre = models.ForeignKey(Chapitre)
+    chapitre = models.ForeignKey(Chapitre, blank=True, null=True, on_delete=models.SET_NULL)
     ae = models.BigIntegerField(blank=True, null=True)
     cp = models.BigIntegerField(blank=True, null=True)
 
@@ -80,7 +80,7 @@ admin.site.register(AnnualEntry, AnnualEntryAdmin)
 
 class BudgetProgramme(models.Model):
     year = models.PositiveIntegerField()
-    chapitre = models.ForeignKey(Chapitre)
+    chapitre = models.ForeignKey(Chapitre, blank=True, null=True, on_delete=models.SET_NULL)
     pg_id = models.CharField(max_length=20, blank=True, null=True)
     exercice_id = models.CharField(max_length=10, blank=True, null=True)
     code = models.CharField(max_length=10)
