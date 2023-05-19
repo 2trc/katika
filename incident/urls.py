@@ -16,7 +16,7 @@ from .views import incident_home, incident_geo_serialize,IncidentViewSet, \
 app_name = "incident"
 router = routers.DefaultRouter()
 router.register('api/type', IncidentTypeViewSet)
-router.register('api', IncidentViewSet, base_name="Incident")
+router.register('api', IncidentViewSet, basename="Incident")
 
 
 # Wire up our API using automatic URL routing.

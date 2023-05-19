@@ -9,9 +9,9 @@ from rest_framework import routers
 app_name = 'tender'
 router = routers.DefaultRouter()
 
-router.register('api/tenders', TenderViewSet, base_name="ArmpEntry")
-router.register('api/tender_owners', TenderOwnerViewSet, base_name="TenderOwner")
-router.register('api/contribuables', ContribuableSet, base_name="Enterprise")
+router.register('api/tenders', TenderViewSet, basename="ArmpEntry")
+router.register('api/tender_owners', TenderOwnerViewSet, basename="TenderOwner")
+router.register('api/contribuables', ContribuableSet, basename="Enterprise")
 
 
 urlpatterns = [

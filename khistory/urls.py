@@ -12,7 +12,7 @@ app_name ="khistory"
 
 router = routers.DefaultRouter()
 #router.register(r'api/type', IncidentTypeViewSet)
-router.register('api/event', views.EventViewSet, base_name="Event")
+router.register('api/event', views.EventViewSet, basename="Event")
 router.register('api/personnage', views.PersonnageViewSet)
 #router.register(r'api/university', UniversityViewSet)
 
