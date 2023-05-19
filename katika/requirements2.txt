@@ -1,7 +1,7 @@
 appdirs==1.4.3
 django-bootstrap-datepicker==1.4.0
 django-bootstrap-form==3.4
-django-bootstrap3-datetimepicker==3.2.6.0
+django-bootstrap3-datetimepicker==2.2.3
 django-crispy-forms==2.0
 django-datetime-widget==0.9.3
 django-forms-bootstrap==3.1.0
