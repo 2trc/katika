@@ -31,6 +31,6 @@ urlpatterns = [
     path('stats', incident_stats),
     path('tags_facet', tags_facet),
     path('geojson', incident_geo_serialize),
-    path('api-auth/', include('rest_framework.paths', namespace='rest_framework')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('anycluster', anycluster)
 ]

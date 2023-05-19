@@ -19,7 +19,7 @@ urlpatterns = [
     path('owners/', TenderOwnerListView.as_view()),
     path('contracts/titulaires/', titulaire_stats),
     path('contracts/', ContractListView.as_view()),
-    path('contribuables/niu/(?P<niu>[A-Z0-9]+)/$', get_enterprise),
+    path('contribuables/niu/<str:niu>/', get_enterprise),
     path('contribuables/', EntrepriseListView.as_view()),
     path('', TenderListView.as_view(), name='tender-list'),
     path('', include(router.urls)),
