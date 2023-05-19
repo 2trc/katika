@@ -129,7 +129,7 @@ class Incident(models.Model):
 
     tag_ids = models.TextField(default="", blank=True)
 
-    location_inaccurate = models.NullBooleanField(null=True, blank=True)
+    location_inaccurate = models.BooleanField(null=True, blank=True)
 
     notes = models.TextField(null=True, blank=True)
 

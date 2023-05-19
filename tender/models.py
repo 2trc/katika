@@ -456,7 +456,7 @@ class EntrepriseSerializer(serializers.ModelSerializer):
 class ContribuableMixin(models.Model):
 
     niu_count = models.PositiveIntegerField(default=0)
-    is_active = models.NullBooleanField(null=True, blank=True)
+    is_active = models.BooleanField(null=True, blank=True)
     from_registration = models.SmallIntegerField(blank=True, null=True)
     is_contribuables_scanned = models.BooleanField(default=False)
 
@@ -476,7 +476,7 @@ class ArmpContract(ContribuableMixin):
     titulaire = models.CharField(blank=True, max_length=255)
     
     # niu_count = models.PositiveIntegerField(default=0)
-    # is_active = models.NullBooleanField(null=True, blank=True)
+    # is_active = models.BooleanField(null=True, blank=True)
     # from_registration = models.SmallIntegerField(blank=True, null=True)
     # is_contribuables_scanned = models.BooleanField(default=False)
 

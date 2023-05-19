@@ -47,8 +47,8 @@ class Incarceration(Person):
     prison = models.ForeignKey(Prison, null=True, blank=True, on_delete=models.SET_NULL)
     sources = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField(IncarcerationTag, blank=True)
-    deceased = models.NullBooleanField(null=True, blank=True)
-    dates_inaccurate = models.NullBooleanField(null=True, blank=True)
+    deceased = models.BooleanField(null=True, blank=True)
+    dates_inaccurate = models.BooleanField(null=True, blank=True)
 
     #related juges/magistrates
     judges = models.ManyToManyField(Judge, null=True, blank=True)
