@@ -316,7 +316,7 @@ INSTALLED_APPS = (
     'person',
 #    'eseka',
     'incident',
-    #'kthesis',
+    'kthesis',
     'kblog',
     #'khistory',
     'jailed',
