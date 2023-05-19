@@ -22,8 +22,8 @@ router.register('api', IncidentViewSet, basename="Incident")
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
     path('', incident_home),
+    path('', include(router.urls)),
     path('add', incident_add),
     #path('edit/<uuid:pk>/', incident_edit),
     path('edit', incident_edit),
