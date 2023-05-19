@@ -15,7 +15,7 @@ django-spurl==0.6.8
 filebrowser-safe==1.1.1
 future==0.16.0
 geopy==2.3.0
-grappelli-safe==0.5.2
+grappelli-safe==1.1.1
 gunicorn==19.7.1
 html5lib==1.1
 idna==2.7
