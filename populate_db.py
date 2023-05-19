@@ -3,6 +3,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'katika.settings')
 
 import django
 from django.conf import settings
+from django.utils import timezone
 django.setup()
 
 
@@ -42,7 +43,7 @@ def populate():
 	from incident.models import Incident
 	from datetime import date
 
-	Incident.objects.create(type=t, location=p, date=date.today())
+	Incident.objects.create(type=t, location=p, date=timezone.datetime.today().date())
 
 
 if __name__ == "__main__":

@@ -142,7 +142,7 @@ class Incident(models.Model):
 
     def get_address(self):
 
-        geolocator = Nominatim()
+        geolocator = Nominatim(user_agent='katika237')
         # set Nomatim timeout to 10sec as it might happen that the service is slow
         # default is 1s and that speed is not needed for our service
         geolocator.timeout = 10
