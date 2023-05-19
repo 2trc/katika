@@ -7,7 +7,7 @@ django-datetime-widget==0.9.3
 django-forms-bootstrap==3.1.0
 django-hitcount==1.3.5
 django-modelcluster==6.0
-django-taggit==4.0.0
+django-taggit==3.1.0
 django-treebeard==4.7
 
 pyparsing==3.0.9
