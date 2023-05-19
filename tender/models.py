@@ -34,7 +34,7 @@ class TenderOwnerSerializer(serializers.ModelSerializer):
 
 class ArmpEntry(models.Model):
 
-    owner = models.ForeignKey(TenderOwner, blank=True, null=True)
+    owner = models.ForeignKey(TenderOwner, blank=True, null=True, on_delete=models.SET_NULL)
     title = models.TextField(null=True, blank=True)
     link = models.URLField(verbose_name="primary source")
     publication_type = models.CharField(max_length=20, blank=True, null=True)
@@ -312,7 +312,7 @@ class Entreprise(models.Model):
     #cri = models.CharField(max_length=50, null=True, blank=True, verbose_name='Centre Régional des Impôts')
     # CDI, CENTRE DES IMPOTS DE RATTACHEMENT, CENTRE DE RATTACHEMENT, CENTRE_DE_RATTACHEMENT
     #cdi = models.CharField(max_length=50, null=True, blank=True, verbose_name='Centre des Impôts de Rattachement')
-    cdi_cri = models.ForeignKey(CDI_CRI, blank=True, null=True)
+    cdi_cri = models.ForeignKey(CDI_CRI, blank=True, null=True, on_delete=models.SET_NULL)
 
     # ETAT NIU, ETATNIU
     etat_niu = models.CharField(max_length=20, null=True, blank=True)
