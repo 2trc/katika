@@ -67,7 +67,7 @@ urlpatterns += [
     path('', home, name='home'),
     path('anycluster/', include('anycluster.urls')),
     path('incident/', include('incident.urls')),
-    #path('^kthesis/', include('kthesis.urls')),
+    path('kthesis/', include('kthesis.urls')),
     #path('^khistory/', include('khistory.urls')),
     path('about/', about, name='about'),
 
