@@ -27,7 +27,7 @@ class CovidProducer(models.Model):
     #     default=FACE_MASK
     # )
 
-    type = models.ForeignKey(CovidCategory, blank=True, null=True)
+    type = models.ForeignKey(CovidCategory, blank=True, null=True, on_delete=models.SET_NULL)
 
     LITTORAL = 'LT'
     CENTER = 'CE'
