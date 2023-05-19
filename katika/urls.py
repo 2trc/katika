@@ -64,27 +64,27 @@ urlpatterns += [
     # path("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
     #path("^eseka/", include("eseka.urls")),
 
-    path(r'', home, name='home'),
-    path(r'anycluster/', include('anycluster.urls')),
-    path(r'incident/', include('incident.urls')),
-    #path(r'^kthesis/', include('kthesis.urls')),
-    #path(r'^khistory/', include('khistory.urls')),
-    path(r'about/', about, name='about'),
+    path('', home, name='home'),
+    path('anycluster/', include('anycluster.urls')),
+    path('incident/', include('incident.urls')),
+    #path('^kthesis/', include('kthesis.urls')),
+    #path('^khistory/', include('khistory.urls')),
+    path('about/', about, name='about'),
 
-    path(r'blog/', include('kblog.urls')),
-    path(r'jailed/', include('jailed.urls')),
-    path(r'covid19/', include('covid19.urls')),
-    path(r'transcribe/', include('transcribe.urls')),
-    path(r'tender/', include('tender.urls')),
-    path(r'budget/', include('budget.urls')),
+    path('blog/', include('kblog.urls')),
+    path('jailed/', include('jailed.urls')),
+    path('covid19/', include('covid19.urls')),
+    path('transcribe/', include('transcribe.urls')),
+    path('tender/', include('tender.urls')),
+    path('budget/', include('budget.urls')),
 
 
     ## User mgnmt, signup, login, logout
     # https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
 
-    path(r'login/$', auth_views.login, name='login'),
-    path(r'logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
-    path(r'oauth/', include('social_django.urls', namespace='social')),  # <--
+    path('login/$', auth_views.login, name='login'),
+    path('logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path('oauth/', include('social_django.urls', namespace='social')),  # <--
 
     path("__debug__/", include(debug_toolbar.urls)),
 

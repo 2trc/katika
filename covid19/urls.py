@@ -24,5 +24,5 @@ urlpatterns = [
         name='update-fund'),
     path('funds/add/', permission_required('covid19.add_covidfund')(views.FundCreate.as_view()),
         name='add-fund'),
-    url('funds/', views.FundList.as_view(), name='fund-list'),
+    path('funds/', views.FundList.as_view(), name='fund-list'),
     ]
