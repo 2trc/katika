@@ -236,3 +236,7 @@ ENV/
 # Migrations
 migrations/
 .vagrant/
+
+# local NGINX CONF
+katika_site*.conf
+katika_site*.conf.backup
