@@ -5,7 +5,7 @@ from django import forms
 from person.models import Person
 from mezzanine.core.fields import FileField
 from mezzanine.utils.models import upload_to
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
 from mezzanine.utils.urls import unique_slug
