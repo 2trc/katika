@@ -354,6 +354,7 @@ MAP_WIDGETS = {
 }
 
 # https://blog.bixly.com/awesome-forms-django-crispy-forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap3"
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 #https://stackoverflow.com/questions/19256919/location-of-django-logs-and-errors/19257221
