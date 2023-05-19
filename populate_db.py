@@ -2,6 +2,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'katika.settings')
 
 import django
+from django.conf import settings
 django.setup()
 
 
@@ -27,10 +28,10 @@ def populate():
 	from tender.models import ArmpEntry
 	from datetime import datetime
 
-	ArmpEntry.objects.create(title="AO for a few TV monitors", link="https://localhost:8002", owner=o1, 
+	ArmpEntry.objects.create(title="AO for a few TV monitors", link=settings.SITE_HOST, owner=o1, 
 		publication_type="AO", verbose_type="Appel d'Offres", region="SUD")
 	ArmpEntry.objects.create(title="Decision d'Attribution d'achat Numéro xxxx", 
-		link="https://localhost:8002", owner=o2, publication_datetime=datetime.today(), region="CENTRE")
+		link=settings.SITE_HOST, owner=o2, publication_datetime=datetime.today(), region="CENTRE")
 
 	from incident.models import IncidentType
 	t = IncidentType()

@@ -82,9 +82,11 @@ from django.utils.translation import gettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BLOG_USE_FEATURED_IMAGE = True
 SITE_NAME           =  os.environ.get('KATIKA_SITE_NAME', 'Katika')
+SITE_HOST           =  os.environ.get('KATIKA_HOST')
 
-INTERNAL_IPS = ["127.0.0.1", "localhost", "10.0.2.2"]
+#INTERNAL_IPS = ["127.0.0.1", "localhost", "10.0.2.2"]
 ALLOWED_HOSTS = [os.getenv('KATIKA_ALLOWED_HOST')]
+INTERNAL_IPS = ALLOWED_HOSTS
 
 # If True, the django-modeltranslation will be added to the
 # INSTALLED_APPS setting.
