@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.urls import path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.views.i18n import set_language
@@ -24,12 +25,12 @@ admin.autodiscover()
 urlpatterns = i18n_patterns(
     # Change the admin prefix here to use an alternate URL for the
     # admin interface, which would be marginally more secure.
-    url("^admin/", include(admin.site.urls)),
+    path("admin/", include(admin.site.urls)),
 )
 
 if settings.USE_MODELTRANSLATION:
     urlpatterns += [
-        url('^i18n/$', set_language, name='set_language'),
+        path('i18n/', set_language, name='set_language'),
     ]
 
 urlpatterns += [
@@ -43,7 +44,7 @@ urlpatterns += [
     # one homepage pattern, so if you use a different one, comment this
     # one out.
 
-    # url("^$", direct_to_template, {"template": "index.html"}, name="home"),
+    # path("^$", direct_to_template, {"template": "index.html"}, name="home"),
 
     # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
     # ---------------------------------------------
@@ -59,33 +60,33 @@ urlpatterns += [
     # should be used if you want to customize the homepage's template.
     # NOTE: Don't forget to import the view function too!
 
-    # url("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
-    # url("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
-    #url("^eseka/", include("eseka.urls")),
+    # path("^$", mezzanine.pages.views.page, {"slug": "/"}, name="home"),
+    # path("^busted", busted, name="busted"),#, {"slug": "/"}, name="home"),
+    #path("^eseka/", include("eseka.urls")),
 
-    url(r'anycluster/', include('anycluster.urls')),
-    url(r'^incident/', include('incident.urls')),
-    #url(r'^kthesis/', include('kthesis.urls')),
-    #url(r'^khistory/', include('khistory.urls')),
-    url(r'^about/', about, name='about'),
-    url(r'^$', home, name='home'),
+    path(r'', home, name='home'),
+    path(r'anycluster/', include('anycluster.urls')),
+    path(r'incident/', include('incident.urls')),
+    #path(r'^kthesis/', include('kthesis.urls')),
+    #path(r'^khistory/', include('khistory.urls')),
+    path(r'about/', about, name='about'),
 
-    url(r'^blog/', include('kblog.urls')),
-    url(r'^jailed/', include('jailed.urls')),
-    url(r'^covid19/', include('covid19.urls')),
-    url(r'^transcribe/', include('transcribe.urls')),
-    url(r'^tender/', include('tender.urls')),
-    url(r'^budget/', include('budget.urls')),
+    path(r'blog/', include('kblog.urls')),
+    path(r'jailed/', include('jailed.urls')),
+    path(r'covid19/', include('covid19.urls')),
+    path(r'transcribe/', include('transcribe.urls')),
+    path(r'tender/', include('tender.urls')),
+    path(r'budget/', include('budget.urls')),
 
 
     ## User mgnmt, signup, login, logout
     # https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
 
-    url(r'^login/$', auth_views.login, name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
-    url(r'^oauth/', include('social_django.urls', namespace='social')),  # <--
+    path(r'login/$', auth_views.login, name='login'),
+    path(r'logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path(r'oauth/', include('social_django.urls', namespace='social')),  # <--
 
-    url("__debug__/", include(debug_toolbar.urls)),
+    path("__debug__/", include(debug_toolbar.urls)),
 
 
     # HOMEPAGE FOR A BLOG-ONLY SITE
@@ -97,7 +98,7 @@ urlpatterns += [
     # page tree in the admin if it was installed.
     # NOTE: Don't forget to import the view function too!
 
-    # url("^$", mezzanine.blog.views.blog_post_list, name="home"),
+    # path("^$", mezzanine.blog.views.blog_post_list, name="home"),
 
     # MEZZANINE'S URLS
     # ----------------
@@ -110,7 +111,7 @@ urlpatterns += [
     # ``mezzanine.urls``, go right ahead and take the parts you want
     # from it, and use them directly below instead of using
     # ``mezzanine.urls``.
-    url("^", include("mezzanine.urls")),
+    #path("", include("mezzanine.urls")),
 
     # MOUNTING MEZZANINE UNDER A PREFIX
     # ---------------------------------

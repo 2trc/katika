@@ -1,11 +1,12 @@
-from django.conf.urls import url
+
+from django.urls import path
 
 from . import views
 
-
+app_name = 'budget'
 urlpatterns = [
-    url(r'^$', views.budget_global),
-    url(r'^add-budget-programme', views.budgetprogramme_add),
-    url(r'^region', views.region),
-    url(r'^prog$', views.budget_programme),
+    path('', views.budget_global),
+    path('add-budget-programme', views.budgetprogramme_add),
+    path('region', views.region),
+    path('prog', views.budget_programme),
     ]

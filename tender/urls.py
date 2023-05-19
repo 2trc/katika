@@ -1,24 +1,26 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import path
 from django.contrib import admin
 from .views import TenderListView, TenderOwnerListView, ContractListView, titulaire_stats, \
     EntrepriseListView, get_enterprise, TenderViewSet, ContribuableSet, TenderOwnerViewSet
 from rest_framework import routers
 
 
+app_name = 'tender'
 router = routers.DefaultRouter()
 
-router.register(r'api/tenders', TenderViewSet, base_name="ArmpEntry")
-router.register(r'api/tender_owners', TenderOwnerViewSet, base_name="TenderOwner")
-router.register(r'api/contribuables', ContribuableSet, base_name="Enterprise")
+router.register('api/tenders', TenderViewSet, base_name="ArmpEntry")
+router.register('api/tender_owners', TenderOwnerViewSet, base_name="TenderOwner")
+router.register('api/contribuables', ContribuableSet, base_name="Enterprise")
 
 
 urlpatterns = [
 
-    url(r'^owners/$', TenderOwnerListView.as_view()),
-    url(r'^contracts/titulaires/$', titulaire_stats),
-    url(r'^contracts/$', ContractListView.as_view()),
-    url(r'^contribuables/niu/(?P<niu>[A-Z0-9]+)/$', get_enterprise),
-    url(r'^contribuables/$', EntrepriseListView.as_view()),
-    url(r'^$', TenderListView.as_view(), name='tender-list'),
-    url(r'^', include(router.urls)),
+    path('owners/', TenderOwnerListView.as_view()),
+    path('contracts/titulaires/', titulaire_stats),
+    path('contracts/', ContractListView.as_view()),
+    path('contribuables/niu/(?P<niu>[A-Z0-9]+)/$', get_enterprise),
+    path('contribuables/', EntrepriseListView.as_view()),
+    path('', TenderListView.as_view(), name='tender-list'),
+    path('', include(router.urls)),
 ]
