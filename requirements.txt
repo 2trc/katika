@@ -20,7 +20,7 @@ gunicorn==19.7.1
 html5lib==0.999999999
 idna==2.7
 jedi==0.18.2
-Mezzanine
+Mezzanine==6.0.0
 oauthlib==3.2.2
 olefile==0.44
 parso==0.8.3
