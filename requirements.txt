@@ -17,7 +17,7 @@ future==0.16.0
 geopy==2.3.0
 grappelli-safe==0.5.2
 gunicorn==19.7.1
-html5lib==0.999999999
+html5lib==1.1
 idna==2.7
 jedi==0.18.2
 Mezzanine==6.0.0
@@ -42,9 +42,9 @@ six==1.16.0
 social-auth-app-django==5.2.0
 social-auth-core==4.4.2
 traitlets==4.3.2
-tzlocal==1.4
-urllib3==1.23
-wcwidth==0.1.7
+tzlocal==5.0.1
+urllib3==2.0.2
+wcwidth==0.2.6
 webencodings==0.5.1
 django-debug-toolbar==4.1.0
 ipython-genutils==0.2.0
