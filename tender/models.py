@@ -252,7 +252,7 @@ admin.site.register(Exercice, ExerciceAdmin)
 
 class EntrepriseChange(models.Model):
 
-    exercice = models.ForeignKey(Exercice)
+    exercice = models.ForeignKey(Exercice, null=True, blank=True, on_delete=models.SET_NULL)
     niu = models.CharField(max_length=255)
     log = models.CharField(max_length=255)
 
@@ -683,7 +683,7 @@ class WBContract(ContribuableMixin):
 
     # Maybe Integer?
     contract_id = models.CharField(max_length=50, unique=True)
-    project = models.ForeignKey(WBProject)
+    project = models.ForeignKey(WBProject, blank=True, null=True, on_delete=models.SET_NULL)
     description = models.TextField()
     date = models.DateField()
     suppliers = models.ManyToManyField(WBSupplier, blank=True)
