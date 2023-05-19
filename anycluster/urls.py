@@ -1,4 +1,3 @@
-from django.conf.urls import url
 from django.urls import path
 from anycluster import views
 from django.conf import settings
