@@ -5,7 +5,7 @@ from django.urls import path
 from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.views.i18n import set_language
-from django.contrib.auth import views as auth_views, login, logout
+from django.contrib.auth import views as auth_views
 
 import debug_toolbar
 
@@ -82,8 +82,8 @@ urlpatterns += [
     ## User mgnmt, signup, login, logout
     # https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
 
-    path('login/', login, name='login'),
-    path('logout/', logout, {'next_page': '/'}, name='logout'),
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}, name='logout'),
     path('oauth/', include('social_django.urls', namespace='social')),  # <--
 
     path("__debug__/", include(debug_toolbar.urls)),
