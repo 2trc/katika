@@ -118,8 +118,12 @@ class TenderListView(ListView):
         data = super().get_context_data(**kwargs)
         query_set = self.object_list
 
-        data['owners'] = query_set.values(owner_id=F('owner__owner_id'), short_name=F('owner__short_name'))\
+        #data['owners'] = query_set.values(owner_id=F('owner__owner_id'), short_name=F('owner__short_name'))\
+        #    .annotate(total=Count('owner')).order_by('-total')
+            
+        data['owners'] = query_set.values('owner__owner_id', 'owner__short_name')\
             .annotate(total=Count('owner')).order_by('-total')
+            
         data['regions'] = query_set.values('region').annotate(total=Count('region')).order_by('-total')
         data['years'] = query_set.annotate(year=ExtractYear('publication_datetime')).values('year')\
             .annotate(total=Count('year')).order_by('-year')
