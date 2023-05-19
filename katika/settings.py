@@ -330,6 +330,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'mapwidgets',
     'crispy_forms',
+    'bootstrapform',
     'django.contrib.gis',
     'anycluster',
     #'mylocation',
