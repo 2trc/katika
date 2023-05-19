@@ -23,7 +23,7 @@ jedi==0.18.2
 Mezzanine
 oauthlib==2.1.0
 olefile==0.44
-parso==0.1.0
+parso==0.8.3
 pexpect==4.2.1
 pickleshare==0.7.4
 Pillow
