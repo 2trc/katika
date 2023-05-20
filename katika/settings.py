@@ -492,6 +492,7 @@ MIDDLEWARE = (
 # at the moment we are using custom forks of them.
 PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
 PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
+JQUERY_FILENAME = "jquery-3.4.1.min.js"
 
 #########################
 # OPTIONAL APPLICATIONS #
