@@ -1,7 +1,8 @@
 from django.conf.urls import url, include
 from django.contrib import admin
 from .views import TenderListView, TenderOwnerListView, ContractListView, titulaire_stats, \
-    EntrepriseListView, get_enterprise, TenderViewSet, ContribuableSet, TenderOwnerViewSet
+    EntrepriseListView, get_enterprise, TenderViewSet, ContribuableSet, TenderOwnerViewSet, \
+    WBContractListView
 from rest_framework import routers
 
 
@@ -19,6 +20,7 @@ urlpatterns = [
     url(r'^contracts/$', ContractListView.as_view()),
     url(r'^contribuables/niu/(?P<niu>[A-Z0-9]+)/$', get_enterprise),
     url(r'^contribuables/$', EntrepriseListView.as_view()),
+    url(r'^wbcontracts/$', WBContractListView.as_view()),
     url(r'^$', TenderListView.as_view(), name='tender-list'),
     url(r'^', include(router.urls)),
 ]
