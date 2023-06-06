@@ -1,3 +1,4 @@
+from typing import List
 from django.shortcuts import render
 
 # Create your views here.
@@ -405,67 +406,92 @@ class EntrepriseListView(ListView):
 
     model = Entreprise
     paginate_by = 10
+    template_name = "tender/entreprise_list.html"
+
+    def get_params(self):
+
+        query_str = self.request.GET.get('q', '')
+        telephone = self.request.GET.get('t', self.request.GET.get('telephone', ''))
+        bp = self.request.GET.get('bp', '')
+        niu = self.request.GET.get('n', self.request.GET.get('niu', ''))
+
+        return query_str, telephone, bp, niu
+
+    def is_landing_page(self):
+
+        return len(self.request.GET)==0
+
 
     def get_queryset(self):
 
-        #return query_entreprise(self.request, self.model.objects.all())
-        return query_entreprise(self.request, self.model.objects.prefetch_related('cdi_cri'))
+        if self.is_landing_page():
+            return []
+
+        query_str, telephone, bp, niu = self.get_params()
+
+        object_list = self.model.objects.prefetch_related('cdi_cri')
+
+        if query_str:
+            object_list = object_list.filter(change_list__search_vector=SearchQuery(query_str, config='french_unaccent'))
+
+        if telephone:
+            object_list = object_list.filter(telephone__contains=telephone)
+
+        if bp:
+            object_list = object_list.filter(bp=bp)
+
+        if niu:
+            object_list = object_list.filter(niu__contains=niu)
+
+        return object_list.order_by('niu').distinct()  # .order_by(*sort_tuple)
+
 
     def get_context_data(self, **kwargs):
         # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
         data = super().get_context_data(**kwargs)
 
-        query_str = self.request.GET.get('q', '')
-        if query_str:
-            data['q'] = query_str
+        data['q'] = self.request.GET.get('q', '')
+
+        data['is_landing'] = self.is_landing_page()
 
         return data
 
-class Entreprise2ListView(ListView):
+class Entreprise2ListView(EntrepriseListView):
 
     model = Entreprise
     paginate_by = 10
-    template_name = "tender/entreprise2_list.html"
+    template_name = "tender/entreprise_list.html"
 
-    # def get_queryset(self):
+    def get_queryset(self):
 
-    #     #return query_entreprise(self.request, self.model.objects.all())
-    #     return query_entreprise(self.request, self.model.objects.prefetch_related('cdi_cri'))
+        if self.is_landing_page():
+            return []
 
-    # def get_context_data(self, **kwargs):
-    #     # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
-    #     data = super().get_context_data(**kwargs)
+        query_str, telephone, bp, niu = self.get_params()
 
-    #     query_str = self.request.GET.get('q', '')
-    #     if query_str:
-    #         data['q'] = query_str
+        search_query = Q(change_list__search_vector=SearchQuery(query_str, config='french_unaccent'))
 
-    #     return data
+        t2 = query_str.replace(" ", "")
 
+        if t2.isnumeric():
+            if len(t2) == 8:
+                search_query |= Q(change_list__search_vector=SearchQuery("6"+t2, config='french_unaccent')) | Q(telephone__contains=t2)
+            elif len(t2) == 9:
+                t2 = t2[1:]
+                search_query |= Q(change_list__search_vector=SearchQuery(t2, config='french_unaccent')) | Q(telephone__contains=t2)
 
+        object_list = self.model.objects.prefetch_related('cdi_cri')
 
-def query_entreprise(request, object_list):
+        object_list = object_list.filter(search_query)
 
-    query_str = request.GET.get('q', '')
-    telephone = request.GET.get('t', request.GET.get('telephone', ''))
-    bp = request.GET.get('bp', '')
-    niu = request.GET.get('n', request.GET.get('niu', ''))
+        return object_list.order_by('niu').distinct()
 
-    if query_str:
-        object_list = object_list.filter(change_list__search_vector=SearchQuery(query_str, config='french_unaccent'))
+    def get_template_names(self) -> List[str]:
 
-    if telephone:
-        object_list = object_list.filter(telephone__contains=telephone)
+        if self.is_landing_page():
+            return "tender/entreprise2_list.html"
 
-    if bp:
-        object_list = object_list.filter(bp=bp)
-
-    if niu:
-        object_list = object_list.filter(niu__contains=niu)
-
-    
-    return object_list.order_by('niu').distinct()  # .order_by(*sort_tuple)
-    #return object_list
+        return "tender/entreprise_list.html"
 
 
 def get_enterprise(request, niu):

@@ -66,11 +66,16 @@
         </div>
     </div>
 {% endcomment %}
+
     <div class="container">
+        {% if not is_landing %}
         <div class="row total">Total
                 <span class="result-count">{{page_obj.paginator.count}}</span>
                 entries found</div>
+        {% endif %}
+
     </div>
+
 
 
     <div class="container">
