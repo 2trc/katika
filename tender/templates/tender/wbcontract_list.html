@@ -109,7 +109,11 @@
                 {% if tender.is_scanned %}
                 <div class="row">
                   {% for supplier in tender.suppliers.all %}
-                    <span>{{supplier.supplier_id}}: {{supplier.name}} </span>
+                    <span>
+                    <a href="{% spurl base=request.get_full_path toggle_query="t={{supplier.name|urlencode}}," remove_query_param="page" %}">
+                        {{supplier.supplier_id}}: {{supplier.name}}</span>
+                    </a>
+                    </span>
                   {% endfor %}
                   {%if tender.niu_count == 0%}<span class="niu_annotation niu_missing">MISSING</span>{% endif %}
                   {%if tender.niu_count > 1%}<span class="niu_annotation niu_multiple">MULTIPLE</span>{% endif %}
@@ -150,7 +154,7 @@
                 <div class="facet-body">
                 {% for project in projects|slice:o_length %}
                 <div class="line">
-                    <a href="{% spurl base=request.get_full_path toggle_query="p={{project.project_id|urlencode}},"%}">
+                    <a href="{% spurl base=request.get_full_path toggle_query="p={{project.project_id|urlencode}}," remove_query_param="page"%}">
                         {{project.project_id}} <span class="count">{{project.total}}</span>
                     </a>
                 </div>
@@ -163,7 +167,7 @@
                 {% for status in statuses|slice:"10" %}
                     <div class="line">
 
-                        <a href="{% spurl base=request.get_full_path toggle_query="s={{status.status|urlencode}},"%}">
+                        <a href="{% spurl base=request.get_full_path toggle_query="s={{status.status|urlencode}}," remove_query_param="page"%}">
                                 {{status.name}} <span class="count">{{status.total}}</span>
                         </a>
 
@@ -178,7 +182,7 @@
                 <div class="facet-body">
                 {% for year in years|slice:o_length %}
                 <div class="line">
-                    <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year|urlencode}},"%}">
+                    <a href="{% spurl base=request.get_full_path toggle_query="y={{year.year|urlencode}}," remove_query_param="page"%}">
                         {{year.year}} <span class="count">{{year.total}}</span>
                     </a>
                 </div>
@@ -194,7 +198,7 @@
                     {% if titulaire.suppliers__name %}
                     <div class="line">
 
-                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.suppliers__name|urlencode}},"%}">
+                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.suppliers__name|urlencode}}," remove_query_param="page"%}">
                                 {{titulaire.suppliers__name}} <span class="count">{{titulaire.total}}</span>
                         </a>
 
