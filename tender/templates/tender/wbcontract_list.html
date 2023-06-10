@@ -75,7 +75,11 @@
 
             <div class="row total">Total
                 <span class="result-count">{{page_obj.paginator.count}}</span>
-                entries found</div>
+                entries found
+                {% if total_cost.value %}
+                , Cost: <span class="cost">{{total_cost.value|intword}} USD</span>
+                {% endif %}
+            </div>
 
 
             {% for tender in object_list %}

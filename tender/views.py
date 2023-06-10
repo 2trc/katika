@@ -582,6 +582,7 @@ class WBContractListView(ListView):
             .annotate(total=Count('year')).order_by('-year')
         data['titulaires'] = query_set.values('suppliers__name').annotate(total=Count('suppliers__name')).order_by('-total')
         data['statuses'] = query_set.values(status=F('project__status')).annotate(total=Count('status')).order_by('-total')
+        data['total_cost'] = query_set.aggregate(value=Sum('cost'))
 
         for item in data['statuses']:
             item['name'] = WBProject.STATUS[item['status']][1]
