@@ -574,11 +574,6 @@ class WBContractListView(ListView):
         # https://www.reddit.com/r/djangolearning/comments/9xdsnh/using_get_queryset_and_get_context_data_together/
         data = super().get_context_data(**kwargs)
 
-    #
-        query_str = self.request.GET.get('q', '')
-        if query_str:
-            data['q'] = query_str
-    #
         query_set = self.object_list
 
         data['projects'] = query_set.values(project_id=F('project__project_id'))\
