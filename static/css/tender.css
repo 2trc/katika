@@ -40,6 +40,10 @@
 
 }
 
+.cost {
+    font-weight: bold;
+}
+
 .tender-entry .cost {
 
     border-radius: 5px;
