@@ -524,7 +524,7 @@ class WBContractListView(ListView):
         project_id = self.request.GET.get('p')
         sort_str = self.request.GET.get('sort', '')
         year_str = self.request.GET.get('y', '')
-        titulaire_str = self.request.GET.get('t', '')
+        supplier_id = self.request.GET.get('t', '')
 
         object_list = self.model.objects.prefetch_related('project')
 
@@ -539,8 +539,8 @@ class WBContractListView(ListView):
         if year_str:
             object_list = object_list.filter(date__year=year_str)
 
-        if titulaire_str:
-            object_list = object_list.filter(suppliers__name=titulaire_str)
+        if supplier_id:
+            object_list = object_list.filter(suppliers__supplier_id=supplier_id)
 
 
         sort_tuple = []
@@ -580,7 +580,7 @@ class WBContractListView(ListView):
              .annotate(total=Count('project_id')).order_by('-total')
         data['years'] = query_set.annotate(year=ExtractYear('date')).values('year')\
             .annotate(total=Count('year')).order_by('-year')
-        data['titulaires'] = query_set.values('suppliers__name').annotate(total=Count('suppliers__name')).order_by('-total')
+        data['titulaires'] = query_set.values('suppliers__name', 'suppliers__supplier_id').annotate(total=Count('suppliers__name')).order_by('-total')
         data['statuses'] = query_set.values(status=F('project__status')).annotate(total=Count('status')).order_by('-total')
         data['total_cost'] = query_set.aggregate(value=Sum('cost'))
 
