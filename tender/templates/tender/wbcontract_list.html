@@ -87,8 +87,11 @@
                 <div class="row">
                     <span class="date">{{tender.date|date:"M d, Y"}}</span>
 
-                    <a class="owner">
-                        {{tender.project.project_id}}:{{tender.contract_id}}
+                    <a class="owner" href="https://projects.worldbank.org/en/projects-operations/project-detail/{{tender.project.project_id}}" target="_blank">
+                        {{tender.project.project_id}}
+                    </a>:
+                    <a class="owner" href="https://projects.worldbank.org/en/projects-operations/contractoverview/{{tender.contract_id}}" target="_blank">
+                        {{tender.contract_id}}
                     </a>
 
                     {% if tender.cost %}
