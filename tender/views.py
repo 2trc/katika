@@ -327,6 +327,7 @@ class ContractListView(ListView):
         data['titulaires'] = query_set.values('titulaire').annotate(total=Count('titulaire')).order_by('-total')
         data['years'] = query_set.values('year')\
              .annotate(total=Count('year')).order_by('-year')
+        data['total_cost'] = query_set.aggregate(value=Sum('cost'))
 
         query_str = self.request.GET.get('q', '')
         if query_str:
