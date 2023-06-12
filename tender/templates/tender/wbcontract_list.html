@@ -110,7 +110,7 @@
                 <div class="row">
                   {% for supplier in tender.suppliers.all %}
                     <span>
-                    <a href="{% spurl base=request.get_full_path toggle_query="t={{supplier.name|urlencode}}," remove_query_param="page" %}">
+                    <a href="{% spurl base=request.get_full_path toggle_query="t={{supplier.supplier_id}}," remove_query_param="page" %}">
                         {{supplier.supplier_id}}: {{supplier.name}}</span>
                     </a>
                     </span>
@@ -198,7 +198,7 @@
                     {% if titulaire.suppliers__name %}
                     <div class="line">
 
-                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.suppliers__name|urlencode}}," remove_query_param="page"%}">
+                        <a href="{% spurl base=request.get_full_path toggle_query="t={{titulaire.suppliers__supplier_id}}," remove_query_param="page"%}">
                                 {{titulaire.suppliers__name}} <span class="count">{{titulaire.total}}</span>
                         </a>
 
