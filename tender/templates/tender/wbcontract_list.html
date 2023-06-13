@@ -87,10 +87,13 @@
                 <div class="row">
                     <span class="date">{{tender.date|date:"M d, Y"}}</span>
 
-                    <a class="owner" href="https://projects.worldbank.org/en/projects-operations/project-detail/{{tender.project.project_id}}" target="_blank">
+                    <a title="Go to World Bank Project: {{tender.project.name}}" class="owner" target="_blank"
+                    href="https://projects.worldbank.org/en/projects-operations/project-detail/{{tender.project.project_id}}">
+
                         {{tender.project.project_id}}
                     </a>:
-                    <a class="owner" href="https://projects.worldbank.org/en/projects-operations/contractoverview/{{tender.contract_id}}" target="_blank">
+                    <a class="owner" title="Go to World Bank Contract ID: {{tender.contract_id}}"  target="_blank"
+                    href="https://projects.worldbank.org/en/projects-operations/contractoverview/{{tender.contract_id}}">
                         {{tender.contract_id}}
                     </a>
 
