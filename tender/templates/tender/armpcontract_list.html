@@ -229,7 +229,7 @@
                 <div class="facet-body">
 
 
-                {% for titulaire in titulaires|slice:"10" %}
+                {% for titulaire in titulaires|slice:o_length %}
                     {% if titulaire.titulaire %}
                     <div class="line">
 
