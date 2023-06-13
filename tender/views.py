@@ -261,14 +261,9 @@ class ContractListView(ListView):
         tender_type = self.request.GET.get('type', '')
         titulaire_str = self.request.GET.get('t', '')
         year_str = self.request.GET.get('y', '')
-        niu_str = self.request.GET.get('n', '')
+        is_active = self.request.GET.get('a', '')
 
         object_list = self.model.objects.all()
-
-        # if query_str:
-        #     object_list= object_list.annotate(
-        #         search=SearchVector('title', config='french_unaccent'),
-        #     ).filter(search=query_str)
 
         if query_str:
             object_list = object_list.filter(search_vector=SearchQuery(query_str, config='french_unaccent'))
@@ -288,10 +283,9 @@ class ContractListView(ListView):
             elif tender_type in ['1','2','5']:
                 object_list = object_list.filter(status=tender_type)
         
-        # if niu_str:
-        #     object_list = object_list.filter(is_niu_available=False)
-
-        #print("search done!")
+        if is_active:
+            is_active = is_active == 'true'
+            object_list = object_list.filter(is_active=is_active)
 
         sort_tuple = []
         # TODO use regex match
@@ -526,6 +520,7 @@ class WBContractListView(ListView):
         sort_str = self.request.GET.get('sort', '')
         year_str = self.request.GET.get('y', '')
         supplier_id = self.request.GET.get('t', '')
+        is_active = self.request.GET.get('a', '')
 
         object_list = self.model.objects.prefetch_related('project')
 
@@ -542,6 +537,10 @@ class WBContractListView(ListView):
 
         if supplier_id:
             object_list = object_list.filter(suppliers__supplier_id=supplier_id)
+
+        if is_active:
+            is_active = is_active == 'true'
+            object_list = object_list.filter(is_active=is_active)
 
 
         sort_tuple = []
