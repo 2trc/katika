@@ -248,6 +248,7 @@ class TenderViewSet(viewsets.ModelViewSet):
 
 
 class ContractListView(ListView):
+    # TODO abstract this class so it can be re-used with WBContractListView
 
     model = ArmpContract
     paginate_by = 100
@@ -285,7 +286,7 @@ class ContractListView(ListView):
         
         if is_active:
             is_active = is_active == 'true'
-            object_list = object_list.filter(is_active=is_active)
+            object_list = object_list.filter(Q(is_active=is_active)|Q(niu_count=0))
 
         sort_tuple = []
         # TODO use regex match
@@ -540,7 +541,7 @@ class WBContractListView(ListView):
 
         if is_active:
             is_active = is_active == 'true'
-            object_list = object_list.filter(is_active=is_active)
+            object_list = object_list.filter(Q(is_active=is_active)|Q(niu_count=0))
 
 
         sort_tuple = []
