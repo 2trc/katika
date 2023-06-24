@@ -522,6 +522,7 @@ class WBContractListView(ListView):
         year_str = self.request.GET.get('y', '')
         supplier_id = self.request.GET.get('t', '')
         is_active = self.request.GET.get('a', '')
+        status_str = self.request.GET.get('s', '')
 
         object_list = self.model.objects.prefetch_related('project')
 
@@ -543,6 +544,8 @@ class WBContractListView(ListView):
             is_active = is_active == 'true'
             object_list = object_list.filter(Q(is_active=is_active)|Q(niu_count=0))
 
+        if status_str:
+            object_list = object_list.filter(project__status=status_str)
 
         sort_tuple = []
         # TODO use regex match
