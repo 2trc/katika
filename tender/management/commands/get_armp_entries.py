@@ -7,6 +7,8 @@ from armp.tender_collector import get_next_url
 from armp.tender_parser import get_tous_les_avis, parse_one_avis
 from pytz import timezone
 from datetime import datetime, timedelta
+from retry.api import retry_call
+from django.db.utils import OperationalError, InterfaceError
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +53,7 @@ def avis_to_armp_entry(avis):
     try:
         entry.owner = TenderOwner.objects.get(short_name__exact=avis.get('owner_short'))
 
+    # TODO: Update exception to not found
     except Exception as e:
         logger.error("Owner list needs to be updated with short name: %s", avis.get('owner_short'))
         logger.exception(e)
@@ -112,10 +115,22 @@ def parse_and_persist(entries):
 
     for entry in entries:
 
-        tender = avis_to_armp_entry(entry)
-
         try:
-            tender.save()
+            #django.db.utils.OperationalError: server closed the connection unexpectedly
+            tender = retry_call(avis_to_armp_entry,
+                                fargs=[entry],
+                                exceptions=(InterfaceError,OperationalError),
+                                fkwargs=None,
+                                tries=3,
+                                delay=60)
+
+            # django.db.utils.InterfaceError: connection already closed
+            retry_call(tender.save,
+                       fargs=None,
+                       fkwargs=None,
+                       exceptions=(InterfaceError,OperationalError),
+                       tries=3,
+                       delay=60)
 
             save_count += 1
         except Exception as e:
