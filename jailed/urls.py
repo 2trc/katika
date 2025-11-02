@@ -8,5 +8,6 @@ router.register(r'api/incarcerations', views.IncarcerationViewSet, base_name="In
 
 urlpatterns = [
     url(r'^$', views.jailed_home),
-    url(r'^', include(router.urls))
+    url(r'^', include(router.urls)),
+    url(r'^add', views.incarceration_add),
     ]

@@ -39,7 +39,13 @@
     <div class="container">
         <div class="row">
             <div>
-                <div><h2>Prisoners in Cameroon</h2>
+                <div><h2>Prisoners in Cameroon
+                    {%if user.is_authenticated%}
+
+                            <span class="add_item"><a href="/jailed/add">REPORT CASE</a></span>
+
+                    {%endif%}
+                </h2>
                     <p>Please follow our Bot on Twitter with birthday announcements...
                     <a href="https://twitter.com/katika_237" target="_blank"><i class="fa fa-twitter"></i>katika_237</a>
                 </p>

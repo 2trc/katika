@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.postgres.search import SearchVector
-from .models import Incarceration, IncarcerationTag, IncarcerationSerializer
+from .models import Incarceration, IncarcerationTag, IncarcerationSerializer, IncarcerationForm
 from django.db.models import Count, Q, F
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required, permission_required
 import logging
 
 from rest_framework import viewsets
@@ -217,3 +218,28 @@ def export_data(filename='incarceration.csv', jailed_set=None):
         logger.info(f"{len(data)} rows written in {filename}")
 
     logger.info("Exiting!")
+
+@login_required
+@permission_required('incarceration.add_incarceration', raise_exception=True)
+def incarceration_add(request):
+    form = IncarcerationForm(data=request.POST or None, label_suffix='')
+
+    if request.method == 'POST' and form.is_valid():
+
+        incarceration = form.save(commit=False)
+
+        incarceration.save()
+
+        # for Many2Many Relationship
+        # https://docs.djangoproject.com/en/2.0/topics/forms/modelforms/
+        # http://www.joshuakehn.com/2013/6/23/django-m2m-modelform.html
+        form.save_m2m()
+
+        incarceration = form.instance
+
+        incarceration.reported_by = request.user
+
+        incarceration.save()
+        return HttpResponseRedirect('/jailed')
+
+    return render(request, 'add_incarceration.html', {'form': form})

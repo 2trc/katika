@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.gis import forms
 from katika.models import NullsLastQuerySet
 from django.contrib import admin
 from person.models import Person, SEX
@@ -145,4 +146,16 @@ admin.site.register(IncarcerationTag)
 admin.site.register(Prison, PrisonAdmin)
 
 
+class IncarcerationForm(forms.ModelForm):
+
+    arrest_date = forms.DateField(
+        widget=forms.TextInput(
+            attrs={'type': 'date'}
+        )
+    )
+
+    class Meta:
+        model = Incarceration
+        fields = ('first_name', 'last_name', 'arrest_date', 'sex',
+                  'tags', 'sources')
 
