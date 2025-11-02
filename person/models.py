@@ -22,7 +22,10 @@ class Person(models.Model):
                                format="Image", max_length=255, null=True, blank=True)
 
     def get_full_name(self):
-        return "{} {}".format(self.first_name, self.last_name.upper())
+        if self.first_name:
+            return "{} {}".format(self.first_name, self.last_name.upper())
+        else:
+            return "{}".format(self.last_name.upper())
 
     def __str__(self):
         # if self.alias:
