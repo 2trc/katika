@@ -115,10 +115,18 @@
                 <tbody>
                     {% for prisoner in jailed %}
                     <tr>
-                        <th scope="row" href="#" data-toggle="popover" title="More info" data-trigger="focus"
+                        <td href="#" data-toggle="popover" title="More info" data-trigger="focus"
                             tabindex="0" data-content="{{prisoner.more_info}}">
                             {{prisoner}}
-                        </th>
+                            <br>
+                            {% if prisoner.tags.all %}
+                                {% for tag in prisoner.tags.all %}
+                                    <span class="tag-mini">
+                                    {{tag.name}}
+                                </span>
+                                {% endfor %}
+                            {% endif %}
+                        </td>
                         <td>{{prisoner.arrest_date|default:""}}</td>
                         <td>{{prisoner.incarceration_date|default:""}}</td>
                         <td>{{prisoner.conviction_date|default:""}}</td>
@@ -139,10 +147,6 @@
             <h4><i class="glyphicon glyphicon-tag"></i> Tags</h4>
 
             {% for tag in tags %}
-            <script>
-                console.log("{{tag.name}}:{{tag.count}}")
-            </script>
-
                 {% if s_tag == tag.name %}
                     <span class="tag tag-selected">
                 {% else %}

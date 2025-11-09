@@ -21,3 +21,13 @@
     white-space: nowrap;
     width: 100%;
 }
+
+.tag-mini {
+    border-radius: 3px;
+    margin: 2px;
+    padding: 2px 2px;
+    display: inline-block;
+    font-size: 0.65em;
+    background-color: #000000;
+    color: #F0F0F0;
+}
